@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OBS Pump Sniper — Bot de Alta Frequência Binance</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green: #00ff87;
+  --gold: #f5c842;
+  --dark: #080c12;
+  --dark2: #0d1320;
+  --dark3: #111927;
+  --border: rgba(255,255,255,0.07);
+  --text: #e2e8f0;
+  --muted: #64748b;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.6;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,135,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,135,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 3rem;background:rgba(8,12,18,0.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Bebas Neue';font-size:22px;letter-spacing:2px;color:var(--green);}
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:14px;transition:color 0.2s;}
+.nav-links a:hover{color:var(--text);}
+.nav-cta{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:var(--green);color:#000;border:none;padding:8px 20px;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;}
+
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8rem 2rem 4rem;position:relative;z-index:1;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,255,135,0.08);border:1px solid rgba(0,255,135,0.2);color:var(--green);padding:6px 16px;border-radius:20px;font-size:12px;font-family:'JetBrains Mono';letter-spacing:1px;margin-bottom:2rem;animation:fadeUp 0.6s ease both;}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.hero h1{font-family:'Bebas Neue';font-size:clamp(56px,10vw,110px);line-height:0.95;letter-spacing:2px;color:#fff;margin-bottom:1.5rem;animation:fadeUp 0.6s 0.1s ease both;}
+.hero h1 span{color:var(--green);}
+.hero-sub{font-size:18px;color:var(--muted);max-width:600px;margin-bottom:3rem;animation:fadeUp 0.6s 0.2s ease both;}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:fadeUp 0.6s 0.3s ease both;}
+.btn-primary{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:var(--green);color:#000;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;border:none;transition:opacity 0.2s;}
+.btn-primary:hover{opacity:0.85;}
+.btn-outline{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:transparent;color:var(--text);border:1px solid var(--border);padding:14px 32px;border-radius:8px;font-size:15px;font-weight:500;cursor:pointer;transition:border-color 0.2s;}
+.btn-outline:hover{border-color:rgba(255,255,255,0.3);}
+
+.ticker-wrap{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--dark2);padding:10px 0;position:relative;z-index:1;}
+.ticker-inner{display:flex;gap:48px;white-space:nowrap;animation:ticker 30s linear infinite;font-family:'JetBrains Mono';font-size:13px;}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ticker-item{display:inline-flex;align-items:center;gap:8px;}
+.up{color:var(--green);}.dn{color:#f87171;}
+
+section{position:relative;z-index:1;}
+.container{max-width:1100px;margin:0 auto;padding:0 2rem;}
+.section-pad{padding:6rem 0;}
+.section-label{font-family:'JetBrains Mono';font-size:11px;letter-spacing:3px;color:var(--green);text-transform:uppercase;margin-bottom:1rem;}
+.section-title{font-family:'Bebas Neue';font-size:clamp(36px,5vw,56px);letter-spacing:1px;color:#fff;margin-bottom:1.5rem;line-height:1;}
+.section-sub{color:var(--muted);font-size:16px;max-width:560px;line-height:1.7;}
+.divider{border:none;border-top:1px solid var(--border);}
+
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:4rem 0;}
+.stat-box{background:var(--dark2);padding:2rem;text-align:center;}
+.stat-num{font-family:'Bebas Neue';font-size:52px;color:var(--green);line-height:1;}
+.stat-label{font-size:13px;color:var(--muted);margin-top:6px;}
+
+.steps{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:3rem;}
+.step-card{background:var(--dark2);border:1px solid var(--border);border-radius:12px;padding:1.5rem;transition:border-color 0.2s;}
+.step-card:hover{border-color:rgba(0,255,135,0.2);}
+.step-num{font-family:'Bebas Neue';font-size:48px;color:rgba(0,255,135,0.15);line-height:1;margin-bottom:8px;}
+.step-title{font-size:16px;font-weight:600;color:#fff;margin-bottom:8px;}
+.step-desc{font-size:14px;color:var(--muted);line-height:1.6;}
+.step-tag{display:inline-block;margin-top:12px;background:rgba(0,255,135,0.08);color:var(--green);font-size:11px;font-family:'JetBrains Mono';padding:3px 10px;border-radius:4px;}
+
+.ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;}
+.ai-cards{display:flex;flex-direction:column;gap:12px;}
+.ai-card{background:var(--dark2);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:0 10px 10px 0;padding:1.2rem 1.5rem;}
+.ai-card-title{font-size:14px;font-weight:600;color:#fff;margin-bottom:4px;}
+.ai-card-desc{font-size:13px;color:var(--muted);}
+.terminal-box{background:#0a0f1a;border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.terminal-bar{background:#111927;padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);}
+.dot{width:10px;height:10px;border-radius:50%;}
+.d1{background:#f87171}.d2{background:#fbbf24}.d3{background:#4ade80}
+.terminal-body{padding:1.5rem;font-family:'JetBrains Mono';font-size:12px;line-height:2;}
+.t-green{color:var(--green);}.t-gold{color:var(--gold);}.t-muted{color:#475569;}.t-white{color:#e2e8f0;}.t-red{color:#f87171;}
+
+/* ── APORTE ── */
+.aporte-section{background:var(--dark2);border-radius:20px;padding:3rem;margin-top:3rem;}
+.aporte-title{font-family:'Bebas Neue';font-size:42px;color:#fff;margin-bottom:0.5rem;}
+.aporte-title span{color:var(--green);}
+.aporte-sub{color:var(--muted);font-size:15px;margin-bottom:2.5rem;}
+.aporte-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:2.5rem;}
+.aporte-step{background:var(--dark3);border:1px solid var(--border);border-radius:12px;padding:1.5rem;text-align:center;position:relative;}
+.aporte-step-num{font-family:'Bebas Neue';font-size:40px;color:rgba(0,255,135,0.2);line-height:1;}
+.aporte-step-title{font-size:14px;font-weight:600;color:#fff;margin:8px 0 6px;}
+.aporte-step-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+.aporte-arrow{display:flex;align-items:center;justify-content:center;color:var(--green);font-size:20px;padding-top:2rem;}
+.min-table{width:100%;border-collapse:collapse;margin-top:0;}
+.min-table th{background:var(--dark3);padding:12px 16px;text-align:left;font-size:12px;font-family:'JetBrains Mono';color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+.min-table td{padding:14px 16px;font-size:14px;border-bottom:1px solid var(--border);}
+.min-table tr:last-child td{border-bottom:none;}
+.min-table tr:hover td{background:rgba(255,255,255,0.02);}
+.usdt-val{font-family:'JetBrains Mono';color:var(--green);font-weight:700;}
+.brl-val{color:var(--muted);font-size:13px;}
+.plan-badge{font-size:11px;padding:3px 10px;border-radius:4px;font-weight:600;}
+.badge-starter{background:rgba(100,116,139,0.2);color:#94a3b8;}
+.badge-pro{background:rgba(0,255,135,0.15);color:var(--green);}
+.badge-elite{background:rgba(245,200,66,0.15);color:var(--gold);}
+
+.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:3rem;}
+.plan-card{background:var(--dark2);border:1px solid var(--border);border-radius:14px;padding:2rem;position:relative;transition:transform 0.2s;}
+.plan-card:hover{transform:translateY(-4px);}
+.plan-card.featured{border-color:var(--green);background:linear-gradient(135deg,rgba(0,255,135,0.05),var(--dark2));}
+.plan-featured-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--green);color:#000;font-size:11px;font-weight:700;padding:4px 16px;border-radius:20px;white-space:nowrap;}
+.plan-name{font-family:'Bebas Neue';font-size:28px;color:#fff;letter-spacing:1px;}
+.plan-price-row{display:flex;align-items:baseline;gap:8px;margin:1rem 0 0.25rem;flex-wrap:wrap;}
+.plan-price-brl{font-family:'Bebas Neue';font-size:40px;color:#fff;line-height:1;}
+.plan-price-usdt{font-family:'JetBrains Mono';font-size:18px;color:var(--green);font-weight:700;background:rgba(0,255,135,0.1);padding:4px 10px;border-radius:6px;}
+.plan-period{font-size:13px;color:var(--muted);margin-bottom:1.5rem;}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:2rem;}
+.plan-features li{font-size:14px;color:var(--text);display:flex;align-items:flex-start;gap:8px;}
+.plan-features li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0;}
+.plan-btn{width:100%;padding:12px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:opacity 0.2s;}
+.plan-btn.filled{background:var(--green);color:#000;}
+.plan-btn.outlined{background:transparent;color:var(--text);border:1px solid var(--border);}
+.plan-btn:hover{opacity:0.85;}
+
+.binary-box{background:var(--dark2);border:1px solid var(--border);border-radius:16px;padding:3rem;margin-top:3rem;}
+.binary-title{font-family:'Bebas Neue';font-size:42px;color:#fff;margin-bottom:1rem;}
+.binary-title span{color:var(--green);}
+.binary-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;margin-top:2rem;}
+.binary-tree{text-align:center;}
+.tree-node{display:inline-flex;flex-direction:column;align-items:center;margin:0 auto;}
+.tree-box{background:var(--dark3);border:1px solid var(--green);border-radius:8px;padding:8px 20px;font-size:13px;font-weight:600;color:var(--green);white-space:nowrap;}
+.tree-box.you{background:rgba(0,255,135,0.15);font-size:15px;}
+.tree-line{width:1px;height:24px;background:var(--green);opacity:0.3;}
+.tree-row{display:flex;gap:16px;justify-content:center;}
+.tree-branch{display:flex;flex-direction:column;align-items:center;}
+.commission-row{display:flex;flex-direction:column;gap:12px;}
+.commission-item{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--dark3);border-radius:8px;border:1px solid var(--border);}
+.comm-label{font-size:14px;color:var(--muted);}
+.comm-val{font-family:'JetBrains Mono';font-size:15px;color:var(--green);font-weight:700;}
+.comm-val .brl{font-size:11px;color:var(--muted);font-weight:400;}
+
+.career-steps{display:flex;flex-direction:column;gap:0;margin-top:3rem;position:relative;}
+.career-steps::before{content:'';position:absolute;left:24px;top:24px;bottom:24px;width:1px;background:linear-gradient(to bottom,var(--green),transparent);}
+.career-item{display:flex;gap:2rem;align-items:flex-start;padding:1.5rem 0 1.5rem 4rem;position:relative;}
+.career-dot{position:absolute;left:16px;top:1.8rem;width:16px;height:16px;border-radius:50%;background:var(--dark);border:2px solid var(--green);flex-shrink:0;}
+.career-dot.active{background:var(--green);}
+.career-level{font-family:'JetBrains Mono';font-size:11px;color:var(--green);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;}
+.career-title{font-size:18px;font-weight:600;color:#fff;margin-bottom:6px;}
+.career-desc{font-size:14px;color:var(--muted);}
+.career-income-row{display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap;}
+.career-income{font-family:'JetBrains Mono';font-size:20px;color:var(--gold);font-weight:700;}
+.career-income-usdt{font-family:'JetBrains Mono';font-size:14px;color:var(--green);background:rgba(0,255,135,0.1);padding:4px 10px;border-radius:6px;}
+
+.concepts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:3rem;}
+.concept-card{background:var(--dark2);border:1px solid var(--border);border-radius:12px;padding:1.5rem;}
+.concept-icon{font-size:28px;margin-bottom:12px;}
+.concept-title{font-size:15px;font-weight:600;color:#fff;margin-bottom:8px;}
+.concept-desc{font-size:13px;color:var(--muted);line-height:1.6;}
+
+.cta-section{text-align:center;padding:8rem 2rem;background:radial-gradient(ellipse at center,rgba(0,255,135,0.06) 0%,transparent 70%);}
+.cta-title{font-family:'Bebas Neue';font-size:clamp(48px,8vw,96px);color:#fff;line-height:1;margin-bottom:1.5rem;}
+.cta-title span{color:var(--green);}
+
+footer{border-top:1px solid var(--border);padding:2rem 3rem;display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--muted);}
+.footer-logo{font-family:'Bebas Neue';font-size:18px;color:var(--green);letter-spacing:2px;}
+
+@media(max-width:768px){
+  nav{padding:1rem 1.5rem;}.nav-links{display:none;}
+  .stats-row{grid-template-columns:repeat(2,1fr);}
+  .steps{grid-template-columns:1fr;}
+  .ai-grid{grid-template-columns:1fr;}
+  .aporte-steps{grid-template-columns:repeat(2,1fr);}
+  .plans-grid{grid-template-columns:1fr;}
+  .binary-grid{grid-template-columns:1fr;}
+  .concepts-grid{grid-template-columns:1fr;}
+  footer{flex-direction:column;gap:1rem;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">OBS PUMP SNIPER</div>
+  <ul class="nav-links">
+    <li><a href="#como-funciona">Como Funciona</a></li>
+    <li><a href="#aporte">Aporte</a></li>
+    <li><a href="#ia">IA & Backteste</a></li>
+    <li><a href="#planos">Planos</a></li>
+    <li><a href="#carreira">Carreira</a></li>
+  </ul>
+  <a class="nav-cta" href="https://wa.me/556899541881?text=Ol%C3%A1%2C%20quero%20conhecer%20o%20OBS%20Pump%20Sniper" target="_blank" rel="noopener noreferrer">Começar Agora</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">🟢 BOT ATIVO · BINANCE API · TEMPO REAL</div>
+  <h1>O BOT QUE<br><span>CAÇA PUMPS</span><br>POR VOCÊ</h1>
+  <p class="hero-sub">Tecnologia de alta frequência conectada diretamente à Binance. Detecta, entra e sai de pumps em segundos — enquanto você dorme.</p>
+  <div class="hero-btns">
+    <a class="btn-primary" href="https://wa.me/556899541881?text=Ol%C3%A1%2C%20quero%20conhecer%20o%20OBS%20Pump%20Sniper" target="_blank" rel="noopener noreferrer">Quero o Bot Agora</a>
+    <a class="btn-outline" href="#ia">Ver Resultados →</a>
+  </div>
+</section>
+
+<div class="ticker-wrap">
+  <div class="ticker-inner">
+    <div class="ticker-item">BTC <span class="up">+2.1%</span></div>
+    <div class="ticker-item">ETH <span class="up">+1.8%</span></div>
+    <div class="ticker-item">SOL <span class="up">+4.3%</span></div>
+    <div class="ticker-item">BNB <span class="up">+1.2%</span></div>
+    <div class="ticker-item">INJ <span class="up">+6.7%</span></div>
+    <div class="ticker-item">AVAX <span class="dn">-0.9%</span></div>
+    <div class="ticker-item">LINK <span class="up">+3.1%</span></div>
+    <div class="ticker-item">DOGE <span class="dn">-1.4%</span></div>
+    <div class="ticker-item">APT <span class="up">+5.2%</span></div>
+    <div class="ticker-item">FET <span class="up">+8.9%</span></div>
+    <div class="ticker-item">ARB <span class="up">+2.7%</span></div>
+    <div class="ticker-item">SUI <span class="up">+3.5%</span></div>
+    <div class="ticker-item">BTC <span class="up">+2.1%</span></div>
+    <div class="ticker-item">ETH <span class="up">+1.8%</span></div>
+    <div class="ticker-item">SOL <span class="up">+4.3%</span></div>
+    <div class="ticker-item">BNB <span class="up">+1.2%</span></div>
+    <div class="ticker-item">INJ <span class="up">+6.7%</span></div>
+    <div class="ticker-item">AVAX <span class="dn">-0.9%</span></div>
+    <div class="ticker-item">LINK <span class="up">+3.1%</span></div>
+    <div class="ticker-item">DOGE <span class="dn">-1.4%</span></div>
+    <div class="ticker-item">APT <span class="up">+5.2%</span></div>
+    <div class="ticker-item">FET <span class="up">+8.9%</span></div>
+    <div class="ticker-item">ARB <span class="up">+2.7%</span></div>
+    <div class="ticker-item">SUI <span class="up">+3.5%</span></div>
+  </div>
+</div>
+
+<section class="section-pad">
+  <div class="container">
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-num">50+</div><div class="stat-label">Pares monitorados 24/7</div></div>
+      <div class="stat-box"><div class="stat-num">3s</div><div class="stat-label">Intervalo de escaneamento</div></div>
+      <div class="stat-box"><div class="stat-num">68%</div><div class="stat-label">Win rate médio histórico</div></div>
+      <div class="stat-box"><div class="stat-num">2min</div><div class="stat-label">Tempo médio por operação</div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section class="section-pad" id="como-funciona">
+  <div class="container">
+    <div class="section-label">Mecânica do Bot</div>
+    <h2 class="section-title">COMO O BOT<br>FUNCIONA</h2>
+    <p class="section-sub">O mercado cripto move bilhões por dia. Pumps acontecem dezenas de vezes ao dia — o bot captura esses movimentos em segundos, antes que a maioria perceba.</p>
+    <div class="steps">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div class="step-title">Conexão Direta com a Binance</div>
+        <div class="step-desc">Via API oficial da Binance, o bot acessa dados de preço e volume em tempo real dos top 50 pares com maior liquidez. Sem intermediários, sem delay.</div>
+        <span class="step-tag">python-binance · REST API</span>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div class="step-title">Detecção de Pump em 3 Camadas</div>
+        <div class="step-desc">O algoritmo confirma entrada somente quando 3 critérios batem ao mesmo tempo: variação de preço ≥1.5%, volume ≥2.5x acima da média, e rompimento do topo recente.</div>
+        <span class="step-tag">triple confirmation system</span>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div class="step-title">Gestão de Risco Automática</div>
+        <div class="step-desc">Cada trade usa uma fração fixa da banca em USDT. Take profit em +4%, stop loss em -2%, e saída forçada após 2 minutos. O bot nunca segura prejuízo.</div>
+        <span class="step-tag">risk manager · position sizing</span>
+      </div>
+      <div class="step-card">
+        <div class="step-num">04</div>
+        <div class="step-title">Saída Inteligente</div>
+        <div class="step-desc">Além do TP e SL, o bot detecta quando o momentum perde força e sai antes do tempo máximo — preservando capital e maximizando eficiência por operação.</div>
+        <span class="step-tag">momentum detection · auto exit</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- APORTE EM USDT -->
+<section class="section-pad" id="aporte">
+  <div class="container">
+    <div class="section-label">Como Fazer Aporte</div>
+    <h2 class="section-title">DEPOSITE EM<br><span style="color:var(--green)">USDT</span> E COMECE</h2>
+    <p class="section-sub">Todos os aportes, planos e comissões são em USDT — a stablecoin mais usada do mundo, sem variação cambial.</p>
+
+    <div class="aporte-section">
+      <div class="aporte-title">PASSO A PASSO DO <span>APORTE</span></div>
+      <div class="aporte-sub">Do zero ao bot operando em menos de 30 minutos</div>
+
+      <div class="aporte-steps">
+        <div class="aporte-step">
+          <div class="aporte-step-num">01</div>
+          <div class="aporte-step-title">Crie sua conta Binance</div>
+          <div class="aporte-step-desc">Acesse binance.com e crie sua conta. Faça o KYC (verificação de identidade) — leva cerca de 5 minutos.</div>
+        </div>
+        <div class="aporte-step">
+          <div class="aporte-step-num">02</div>
+          <div class="aporte-step-title">Deposite USDT ou BRL</div>
+          <div class="aporte-step-desc">Vá em Carteira → Depósito. Deposite BRL via Pix e converta para USDT, ou transfira USDT direto de outra exchange.</div>
+        </div>
+        <div class="aporte-step">
+          <div class="aporte-step-num">03</div>
+          <div class="aporte-step-title">Crie a API Key</div>
+          <div class="aporte-step-desc">Perfil → Gerenciamento de API. Crie uma chave com permissão de leitura + spot trading. Nunca habilite saques.</div>
+        </div>
+        <div class="aporte-step">
+          <div class="aporte-step-num">04</div>
+          <div class="aporte-step-title">Configure e rode o bot</div>
+          <div class="aporte-step-desc">Cole a API Key no config.py, defina o valor por trade em USDT e inicie. O bot opera sozinho 24/7.</div>
+        </div>
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table class="min-table">
+          <thead>
+            <tr>
+              <th>Plano</th>
+              <th>Aporte Mínimo</th>
+              <th>Valor por Trade</th>
+              <th>Assinatura Mensal</th>
+              <th>Retorno Estimado / mês</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="plan-badge badge-starter">STARTER</span></td>
+              <td><span class="usdt-val">50 USDT</span> <span class="brl-val">≈ R$290</span></td>
+              <td><span class="usdt-val">5 USDT</span> <span class="brl-val">por trade</span></td>
+              <td><span class="usdt-val">17 USDT</span> <span class="brl-val">≈ R$97</span></td>
+              <td><span class="usdt-val">+8 a +15 USDT</span></td>
+            </tr>
+            <tr>
+              <td><span class="plan-badge badge-pro">PRO</span></td>
+              <td><span class="usdt-val">200 USDT</span> <span class="brl-val">≈ R$1.160</span></td>
+              <td><span class="usdt-val">10 USDT</span> <span class="brl-val">por trade</span></td>
+              <td><span class="usdt-val">35 USDT</span> <span class="brl-val">≈ R$197</span></td>
+              <td><span class="usdt-val">+30 a +80 USDT</span></td>
+            </tr>
+            <tr>
+              <td><span class="plan-badge badge-elite">ELITE</span></td>
+              <td><span class="usdt-val">500 USDT</span> <span class="brl-val">≈ R$2.900</span></td>
+              <td><span class="usdt-val">25 USDT</span> <span class="brl-val">por trade</span></td>
+              <td><span class="usdt-val">87 USDT</span> <span class="brl-val">≈ R$497</span></td>
+              <td><span class="usdt-val">+100 a +300 USDT</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:#334155;margin-top:12px">* Cotação base: 1 USDT ≈ R$5,80 · Retornos estimados com base em backteste, não garantidos · Risco de perda de capital</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section class="section-pad" id="ia">
+  <div class="container">
+    <div class="section-label">Inteligência Artificial</div>
+    <h2 class="section-title">QUALIDADE<br>VALIDADA POR IA</h2>
+    <div class="ai-grid">
+      <div>
+        <p class="section-sub" style="margin-bottom:2rem">Os parâmetros do bot foram otimizados com IA usando backteste em mais de 18 meses de dados históricos da Binance. Três estratégias comparadas, uma vencedora.</p>
+        <div class="ai-cards">
+          <div class="ai-card">
+            <div class="ai-card-title">Backteste com IA — 18 meses de dados</div>
+            <div class="ai-card-desc">Testamos +2.400 combinações de parâmetros. Os valores atuais (TP 4%, SL 2%, Vol 2.5x) foram os que maximizaram o Sharpe Ratio no período.</div>
+          </div>
+          <div class="ai-card">
+            <div class="ai-card-title">Hold vs Pump — comparativo real</div>
+            <div class="ai-card-desc">Hold gerou retorno médio de 12% ao ano em USDT. O bot de pump gerou 3–8% ao mês em períodos de volatilidade normal — até 8x mais eficiente.</div>
+          </div>
+          <div class="ai-card">
+            <div class="ai-card-title">Watchlist dinâmica por volume</div>
+            <div class="ai-card-desc">A cada 5 minutos a IA recalcula os 50 pares com maior volume em USDT — sempre operando onde o dinheiro está fluindo naquele momento.</div>
+          </div>
+          <div class="ai-card">
+            <div class="ai-card-title">Proteção automática de banca</div>
+            <div class="ai-card-desc">O sistema trava quando a perda diária em USDT atinge o limite configurado — evitando drawdowns severos e preservando o capital investido.</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="terminal-box">
+          <div class="terminal-bar">
+            <div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div>
+            <span style="font-size:12px;color:#475569;margin-left:8px;font-family:'JetBrains Mono'">pump_sniper.log</span>
+          </div>
+          <div class="terminal-body">
+            <div class="t-muted">2026-04-06 09:14:22</div>
+            <div class="t-green">✅ OBS PUMP SNIPER — INICIANDO</div>
+            <div class="t-muted">─────────────────────────────</div>
+            <div class="t-white">Banca disponível: <span class="t-green">58.87 USDT</span></div>
+            <div class="t-white">Modo: <span class="t-gold">REAL</span></div>
+            <div class="t-green">📊 Top 50 pares atualizados</div>
+            <div class="t-muted">─────────────────────────────</div>
+            <div class="t-green">🚀 ENTRADA | INJUSDT</div>
+            <div class="t-white">   10 USDT @ $22.14 | Vol: <span class="t-gold">3.8x</span></div>
+            <div class="t-green">✅ SAÍDA TP | INJUSDT</div>
+            <div class="t-white">   PNL: <span class="t-green">+0.41 USDT</span></div>
+            <div class="t-muted">─────────────────────────────</div>
+            <div class="t-green">🚀 ENTRADA | FETUSDT</div>
+            <div class="t-white">   10 USDT @ $1.847 | Vol: <span class="t-gold">4.2x</span></div>
+            <div class="t-green">✅ SAÍDA TP | FETUSDT</div>
+            <div class="t-white">   PNL: <span class="t-green">+0.38 USDT</span></div>
+            <div class="t-muted">─────────────────────────────</div>
+            <div class="t-red">🛑 SAÍDA SL | SOLUSDT</div>
+            <div class="t-white">   PNL: <span class="t-red">-0.20 USDT</span></div>
+            <div class="t-muted">─────────────────────────────</div>
+            <div class="t-white">PNL dia: <span class="t-green">+4.20 USDT</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section class="section-pad" id="planos">
+  <div class="container">
+    <div class="section-label">Planos de Acesso</div>
+    <h2 class="section-title">ESCOLHA SEU<br>PLANO</h2>
+    <p class="section-sub">Todos os planos incluem 20% de comissão por indicação — pago automaticamente em USDT.</p>
+    <div class="plans-grid">
+      <div class="plan-card">
+        <div class="plan-name">Starter</div>
+        <div class="plan-price-row">
+          <div class="plan-price-brl">R$97</div>
+          <div class="plan-price-usdt">17 USDT</div>
+        </div>
+        <div class="plan-period">por mês · aporte mínimo 50 USDT</div>
+        <ul class="plan-features">
+          <li>Bot configurado e rodando</li>
+          <li>Banca até 100 USDT</li>
+          <li>Top 50 pares automático</li>
+          <li>Dashboard em tempo real</li>
+          <li>Suporte por WhatsApp</li>
+          <li>20% comissão por indicação em USDT</li>
+        </ul>
+        <button class="plan-btn outlined">Começar Agora</button>
+      </div>
+      <div class="plan-card featured">
+        <div class="plan-featured-badge">⚡ MAIS POPULAR</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price-row">
+          <div class="plan-price-brl">R$197</div>
+          <div class="plan-price-usdt">35 USDT</div>
+        </div>
+        <div class="plan-period">por mês · aporte mínimo 200 USDT</div>
+        <ul class="plan-features">
+          <li>Tudo do Starter</li>
+          <li>Banca até 500 USDT</li>
+          <li>Notificações no Telegram</li>
+          <li>Relatório de performance diário</li>
+          <li>Acesso ao grupo VIP</li>
+          <li>20% comissão por indicação em USDT</li>
+          <li>Suporte prioritário 24h</li>
+        </ul>
+        <button class="plan-btn filled">Quero o Pro</button>
+      </div>
+      <div class="plan-card">
+        <div class="plan-name">Elite</div>
+        <div class="plan-price-row">
+          <div class="plan-price-brl">R$497</div>
+          <div class="plan-price-usdt">87 USDT</div>
+        </div>
+        <div class="plan-period">por mês · aporte mínimo 500 USDT</div>
+        <ul class="plan-features">
+          <li>Tudo do Pro</li>
+          <li>Banca ilimitada em USDT</li>
+          <li>Bot em VPS dedicada</li>
+          <li>Parâmetros personalizados</li>
+          <li>Sessão 1:1 mensal</li>
+          <li>20% comissão por indicação em USDT</li>
+          <li>Acesso vitalício garantido</li>
+        </ul>
+        <button class="plan-btn outlined">Falar com Consultor</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section class="section-pad" id="indicacao">
+  <div class="container">
+    <div class="section-label">Programa de Indicação</div>
+    <h2 class="section-title">GANHE 20% EM<br>USDT POR INDICAÇÃO</h2>
+    <p class="section-sub">Sistema binário auto alimentado — cada novo usuário gera comissão automática em USDT direto na sua conta. Sem limite de indicações.</p>
+    <div class="binary-box">
+      <div class="binary-title">COMO O <span>BINÁRIO</span> FUNCIONA</div>
+      <div class="binary-grid">
+        <div class="binary-tree">
+          <div class="tree-node">
+            <div class="tree-box you">VOCÊ</div>
+            <div class="tree-line"></div>
+            <div class="tree-row">
+              <div class="tree-branch">
+                <div class="tree-box">Indicado A</div>
+                <div class="tree-line"></div>
+                <div class="tree-row">
+                  <div class="tree-branch"><div class="tree-box" style="font-size:11px">A1</div></div>
+                  <div class="tree-branch"><div class="tree-box" style="font-size:11px">A2</div></div>
+                </div>
+              </div>
+              <div class="tree-branch">
+                <div class="tree-box">Indicado B</div>
+                <div class="tree-line"></div>
+                <div class="tree-row">
+                  <div class="tree-branch"><div class="tree-box" style="font-size:11px">B1</div></div>
+                  <div class="tree-branch"><div class="tree-box" style="font-size:11px">B2</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p style="font-size:12px;color:#475569;margin-top:1.5rem">Cada novo indicado gera renda passiva em USDT</p>
+        </div>
+        <div class="commission-row">
+          <div class="commission-item">
+            <div><div class="comm-label">Indicação Starter</div><div style="font-size:12px;color:#334155">17 USDT/mês por usuário</div></div>
+            <div class="comm-val">3.4 USDT/mês <span class="brl">≈ R$20</span></div>
+          </div>
+          <div class="commission-item">
+            <div><div class="comm-label">Indicação Pro</div><div style="font-size:12px;color:#334155">35 USDT/mês por usuário</div></div>
+            <div class="comm-val">7 USDT/mês <span class="brl">≈ R$40</span></div>
+          </div>
+          <div class="commission-item">
+            <div><div class="comm-label">Indicação Elite</div><div style="font-size:12px;color:#334155">87 USDT/mês por usuário</div></div>
+            <div class="comm-val">17.4 USDT/mês <span class="brl">≈ R$100</span></div>
+          </div>
+          <div class="commission-item" style="border-color:rgba(0,255,135,0.3)">
+            <div><div class="comm-label" style="color:#e2e8f0;font-weight:600">10 indicados Pro ativos</div><div style="font-size:12px;color:#334155">renda passiva mensal em USDT</div></div>
+            <div class="comm-val" style="font-size:20px">70 USDT/mês <span class="brl">≈ R$406</span></div>
+          </div>
+          <p style="font-size:13px;color:#475569;margin-top:4px">Pagamentos automáticos em USDT — rastreados pelo sistema sem intervenção manual.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section class="section-pad" id="carreira">
+  <div class="container">
+    <div class="section-label">Plano de Carreira</div>
+    <h2 class="section-title">SUA JORNADA<br>FINANCEIRA</h2>
+    <p class="section-sub">Com o bot operando em USDT e o sistema de indicação crescendo, veja como sua renda evolui ao longo do tempo.</p>
+    <div class="career-steps">
+      <div class="career-item">
+        <div class="career-dot active"></div>
+        <div class="career-content">
+          <div class="career-level">Nível 01 — Mês 1-2</div>
+          <div class="career-title">Iniciante — Bot Configurado</div>
+          <div class="career-desc">Bot rodando com 50–100 USDT de banca. Aprendendo os padrões, ajustando parâmetros. Primeiros lucros do scalping de pump em USDT.</div>
+          <div class="career-income-row">
+            <div class="career-income">R$100 – R$300</div>
+            <div class="career-income-usdt">17 – 52 USDT/mês</div>
+          </div>
+        </div>
+      </div>
+      <div class="career-item">
+        <div class="career-dot"></div>
+        <div class="career-content">
+          <div class="career-level">Nível 02 — Mês 3-4</div>
+          <div class="career-title">Trader Ativo — Banca Crescendo</div>
+          <div class="career-desc">Reinvestindo lucros em USDT. Banca crescendo para 200–300 USDT. Primeiras indicações gerando comissão passiva. Bot 24/7 na VPS.</div>
+          <div class="career-income-row">
+            <div class="career-income">R$500 – R$1.200</div>
+            <div class="career-income-usdt">86 – 207 USDT/mês</div>
+          </div>
+        </div>
+      </div>
+      <div class="career-item">
+        <div class="career-dot"></div>
+        <div class="career-content">
+          <div class="career-level">Nível 03 — Mês 5-8</div>
+          <div class="career-title">Líder de Rede — Renda Dupla</div>
+          <div class="career-desc">Banca acima de 500 USDT. Rede de indicados crescendo. Renda do bot + comissões em USDT se equiparando ao salário médio brasileiro.</div>
+          <div class="career-income-row">
+            <div class="career-income">R$2.000 – R$5.000</div>
+            <div class="career-income-usdt">345 – 862 USDT/mês</div>
+          </div>
+        </div>
+      </div>
+      <div class="career-item">
+        <div class="career-dot"></div>
+        <div class="career-content">
+          <div class="career-level">Nível 04 — Mês 9-12</div>
+          <div class="career-title">Operador Profissional</div>
+          <div class="career-desc">Banca acima de 1.000 USDT. Rede consolidada com 20+ indicados ativos. Renda passiva robusta em USDT. Possibilidade de viver só de crypto.</div>
+          <div class="career-income-row">
+            <div class="career-income">R$8.000 – R$20.000</div>
+            <div class="career-income-usdt">1.380 – 3.450 USDT/mês</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section class="section-pad">
+  <div class="container">
+    <div class="section-label">Educação Financeira</div>
+    <h2 class="section-title">POR QUE O BOT<br>FUNCIONA</h2>
+    <p class="section-sub">Entenda os conceitos por trás da estratégia — porque o mercado cripto é o ambiente perfeito para esse tipo de operação.</p>
+    <div class="concepts-grid">
+      <div class="concept-card">
+        <div class="concept-icon">📈</div>
+        <div class="concept-title">O que é um Pump</div>
+        <div class="concept-desc">Um pump é uma valorização rápida de um ativo em minutos. Acontece por fluxo de ordens, notícias ou baleias. O bot detecta o início e entra cedo — não no topo.</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-icon">📊</div>
+        <div class="concept-title">Volume como Confirmação</div>
+        <div class="concept-desc">Volume alto em USDT significa fluxo real de dinheiro. Quando o preço sobe E o volume explode, é pump de verdade. O bot exige volume 2.5x acima da média antes de entrar.</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-icon">🔓</div>
+        <div class="concept-title">Rompimento de Topo</div>
+        <div class="concept-desc">Quando o preço supera o topo recente, quebra uma resistência. Isso atrai novos compradores, acelerando o movimento. O bot usa isso como terceiro filtro de confirmação.</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-icon">⚖️</div>
+        <div class="concept-title">Risco x Retorno 1:2 em USDT</div>
+        <div class="concept-desc">O bot arrisca 2% para ganhar 4% em USDT. Mesmo ganhando só 40% das operações, o resultado é positivo. Com 68% de win rate, a vantagem matemática é clara.</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-icon">🔄</div>
+        <div class="concept-title">Scalping de Alta Frequência</div>
+        <div class="concept-desc">Em vez de poucos trades grandes, o bot faz múltiplas operações pequenas em USDT por dia. Isso dilui o risco, acelera o crescimento da banca e aproveita mais oportunidades.</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-icon">🛡️</div>
+        <div class="concept-title">Proteção de Capital em USDT</div>
+        <div class="concept-desc">Stop loss fixo, limite de perda diária em USDT, máximo de posições simultâneas — o bot foi construído para sobreviver a mercados ruins e preservar seu capital.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <div class="section-label" style="display:flex;justify-content:center">Pronto para começar?</div>
+    <div class="cta-title">COMECE COM<br><span>50 USDT</span></div>
+    <p style="color:#64748b;max-width:500px;margin:0 auto 2.5rem;font-size:16px">O bot está pronto. A Binance está aberta. Deposite USDT, configure a API e deixe o bot trabalhar por você 24/7.</p>
+    <div class="hero-btns">
+      <a class="btn-primary" href="https://wa.me/556899541881?text=Ol%C3%A1%2C%20quero%20conhecer%20o%20OBS%20Pump%20Sniper" target="_blank" rel="noopener noreferrer">Quero o Bot Agora</a>
+      <button class="btn-outline">Tirar Dúvidas no WhatsApp</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">OBS PUMP SNIPER</div>
+  <div>© 2026 OBS Pump Sniper · Todos os direitos reservados</div>
+  <div style="font-size:11px;color:#334155;max-width:300px;text-align:right">Resultados passados não garantem resultados futuros. Trading envolve risco de perda de capital. Cotação 1 USDT ≈ R$5,80.</div>
+</footer>
+
+
+<a href="https://wa.me/556899541881?text=Ol%C3%A1%2C%20quero%20conhecer%20o%20OBS%20Pump%20Sniper" target="_blank" rel="noopener noreferrer" style="position:fixed;right:18px;bottom:18px;z-index:9999;background:#25D366;color:#000;text-decoration:none;padding:12px 18px;border-radius:999px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,0.35);">WhatsApp</a>
+</body>
+</html>
