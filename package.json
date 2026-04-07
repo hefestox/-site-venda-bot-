@@ -2,9 +2,10 @@
   "name": "site-venda-bot",
   "version": "1.0.0",
   "scripts": {
-    "start": "serve . --listen $PORT --host 0.0.0.0"
+    "start": "node server.js"
   },
   "dependencies": {
-    "serve": "^14.2.0"
+    "serve": "^14.2.0",
+    "serve-handler": "^6.1.5"
   }
 }
