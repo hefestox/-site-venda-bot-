@@ -1,5 +1,4 @@
-FROM node:18-alpine
+FROM caddy:alpine
 WORKDIR /app
 COPY . .
-RUN npm install -g serve
-CMD serve . -l $PORT --single
+CMD caddy file-server --root /app --listen :$PORT
