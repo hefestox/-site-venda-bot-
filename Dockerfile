@@ -1,4 +1,4 @@
-FROM caddy:alpine
+FROM python:3.11-alpine
 WORKDIR /app
 COPY . .
-CMD caddy file-server --root /app --listen :$PORT
+CMD python -m http.server $PORT
