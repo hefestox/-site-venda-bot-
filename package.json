@@ -2,10 +2,9 @@
   "name": "site-venda-bot",
   "version": "1.0.0",
   "scripts": {
-    "start": "node server.js"
+    "start": "npx serve . -l $PORT -H 0.0.0.0"
   },
   "dependencies": {
-    "serve": "^14.2.0",
-    "serve-handler": "^6.1.5"
+    "serve": "^14.2.0"
   }
 }
