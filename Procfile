@@ -1,1 +1,1 @@
-web: npx serve . -l tcp://0.0.0.0:$PORT
+web: npx serve . -l $PORT -H 0.0.0.0
