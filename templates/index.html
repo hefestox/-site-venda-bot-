@@ -174,15 +174,6 @@
     }
     .auth-card h2 { font-size: 22px; font-weight: 700; margin-bottom: .25rem; }
     .auth-card p { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; }
-    .auth-tabs { display: flex; gap: 0; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border); }
-    .auth-tab {
-      flex: 1; text-align: center; padding: .6rem;
-      font-size: 14px; font-weight: 600; cursor: pointer;
-      color: var(--muted); border-bottom: 2px solid transparent;
-      margin-bottom: -2px; transition: color .15s, border-color .15s;
-    }
-    .auth-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
-
     /* ── Forms ── */
     .form-group { margin-bottom: 1rem; }
     .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: .35rem; color: var(--text); }
@@ -336,12 +327,7 @@
 <div class="auth-overlay" id="authOverlay">
   <div class="auth-card">
     <h2>🗳️ Sistema de Campanha</h2>
-    <p>Faça login ou crie sua conta para acessar o painel.</p>
-
-    <div class="auth-tabs">
-      <div class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Entrar</div>
-      <div class="auth-tab" id="tabRegister" onclick="switchTab('register')">Cadastrar</div>
-    </div>
+    <p>Faça login para acessar o painel.</p>
 
     <div id="authAlert" class="alert"></div>
 
@@ -356,27 +342,6 @@
         <input type="password" class="form-control" id="loginSenha" placeholder="••••••••" required />
       </div>
       <button type="submit" class="btn btn-primary btn-full">Entrar</button>
-    </form>
-
-    <!-- Register form -->
-    <form id="registerForm" style="display:none" onsubmit="handleRegister(event)">
-      <div class="form-group">
-        <label>E-mail</label>
-        <input type="email" class="form-control" id="regEmail" placeholder="seu@email.com" required />
-      </div>
-      <div class="form-group">
-        <label>Senha</label>
-        <input type="password" class="form-control" id="regSenha" placeholder="••••••••" required />
-      </div>
-      <div class="form-group">
-        <label>Perfil</label>
-        <select class="form-control" id="regRole">
-          <option value="operador">Operador</option>
-          <option value="coordenador">Coordenador</option>
-          <option value="admin">Administrador</option>
-        </select>
-      </div>
-      <button type="submit" class="btn btn-primary btn-full">Criar Conta</button>
     </form>
   </div>
 </div>
@@ -1275,9 +1240,10 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" id="adminCreateUserCard" style="display:none">
         <div class="card-header">
           <span class="card-title">👤 Criar Novo Usuário</span>
+          <span class="badge badge-red" style="font-size:11px">Somente Admin</span>
         </div>
         <div class="card-body">
           <div id="perfilAlert" class="alert"></div>
@@ -1326,15 +1292,6 @@
     }
   });
 
-  /* ── Auth tab switch ── */
-  function switchTab(tab) {
-    document.getElementById('loginForm').style.display    = tab === 'login'    ? 'block' : 'none';
-    document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
-    document.getElementById('tabLogin').classList.toggle('active',    tab === 'login');
-    document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
-    clearAlert('authAlert');
-  }
-
   /* ── Show alert ── */
   function showAlert(id, msg, type = 'danger') {
     const el = document.getElementById(id);
@@ -1362,32 +1319,16 @@
       const data = await res.json();
       if (!res.ok) { showAlert('authAlert', data.error || 'Erro ao fazer login'); return; }
       token = data.token;
-      userInfo = { email, role: 'usuário' };
+      // Decode JWT payload (base64) to extract role without a library
+      let role = 'operador';
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        role = payload.role || 'operador';
+      } catch (_) {}
+      userInfo = { email, role };
       localStorage.setItem('campanha_token', token);
       localStorage.setItem('campanha_user', JSON.stringify(userInfo));
       showApp();
-    } catch (err) {
-      showAlert('authAlert', 'Erro de conexão com o servidor.');
-    }
-  }
-
-  /* ── Register ── */
-  async function handleRegister(e) {
-    e.preventDefault();
-    clearAlert('authAlert');
-    const email = document.getElementById('regEmail').value;
-    const senha = document.getElementById('regSenha').value;
-    const role  = document.getElementById('regRole').value;
-    try {
-      const res = await fetch('/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, senha, role })
-      });
-      const data = await res.json();
-      if (!res.ok) { showAlert('authAlert', data.error || 'Erro ao cadastrar'); return; }
-      showAlert('authAlert', 'Conta criada com sucesso! Faça login.', 'success');
-      switchTab('login');
     } catch (err) {
       showAlert('authAlert', 'Erro de conexão com o servidor.');
     }
@@ -1401,6 +1342,9 @@
     document.getElementById('userEmail').textContent  = email;
     document.getElementById('userRole').textContent   = role;
     document.getElementById('userAvatar').textContent = email.charAt(0).toUpperCase();
+    // Show admin-only user creation panel
+    const adminCard = document.getElementById('adminCreateUserCard');
+    if (adminCard) adminCard.style.display = role === 'admin' ? 'block' : 'none';
     loadDashboard();
   }
 
@@ -1409,8 +1353,8 @@
     token = null; userInfo = null;
     localStorage.removeItem('campanha_token');
     localStorage.removeItem('campanha_user');
+    clearAlert('authAlert');
     document.getElementById('authOverlay').style.display = 'flex';
-    switchTab('login');
   }
 
   /* ── Navigation ── */
@@ -1688,7 +1632,7 @@
     alert(`Relatório "${tipo}" gerado com sucesso!`);
   }
 
-  /* ── Criar usuário via /auth/register ── */
+  /* ── Criar usuário via /auth/register (admin only) ── */
   async function handleCriarUsuario(e) {
     e.preventDefault();
     clearAlert('perfilAlert');
@@ -1696,9 +1640,8 @@
     const senha = document.getElementById('novoUserSenha').value;
     const role  = document.getElementById('novoUserRole').value;
     try {
-      const res = await fetch('/auth/register', {
+      const res = await apiFetch('/auth/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, senha, role })
       });
       const data = await res.json();

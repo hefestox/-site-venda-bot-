@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from db import conn
+from auth_middleware import admin_required
 import bcrypt
 import jwt
 import os
@@ -7,6 +8,7 @@ import os
 auth_routes = Blueprint("auth", __name__)
 
 @auth_routes.route("/register", methods=["POST"])
+@admin_required
 def register():
     data = request.json
     senha = bcrypt.hashpw(data['senha'].encode(), bcrypt.gensalt()).decode()
