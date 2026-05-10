@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 from flask_cors import CORS
 from db import conn
 
@@ -8,6 +8,11 @@ CORS(app)
 @app.route("/", methods=["GET"])
 def home():
     return jsonify({"message": "Welcome to Site Venda Bot API", "status": "running"})
+
+
+@app.route("/app", methods=["GET"])
+def frontend():
+    return render_template("index.html")
 
 
 # Criar tabelas
