@@ -8,6 +8,19 @@ auth_routes = Blueprint("auth", __name__)
 
 @auth_routes.route("/register", methods=["POST"])
 def register():
+    # Only admins may create new users
+    token = request.headers.get("Authorization")
+    if not token:
+        return jsonify({"error": "Acesso negado: token não fornecido"}), 403
+
+    try:
+        decoded = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
+    except Exception:
+        return jsonify({"error": "Token inválido"}), 403
+
+    if decoded.get("role") != "admin":
+        return jsonify({"error": "Acesso negado: apenas administradores podem criar usuários"}), 403
+
     data = request.json
     senha = bcrypt.hashpw(data['senha'].encode(), bcrypt.gensalt()).decode()
 
@@ -17,8 +30,9 @@ def register():
             (data['email'], senha, data['role'])
         )
         user_id = cur.fetchone()[0]
+        conn.commit()
 
-    return jsonify({"id": user_id})
+    return jsonify({"id": user_id}), 201
 
 @auth_routes.route("/login", methods=["POST"])
 def login():
