@@ -1,11 +1,17 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 from db import conn
 
 app = Flask(__name__)
 CORS(app)
 
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({"message": "Welcome to Site Venda Bot API", "status": "running"})
+
+
 # Criar tabelas
+
 with conn.cursor() as cur:
     cur.execute("""
     CREATE TABLE IF NOT EXISTS usuarios (
