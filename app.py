@@ -29,8 +29,8 @@ with conn.cursor() as cur:
     """)
 
 # Rotas
-from routes.auth import auth_routes
-from routes.dashboard import dashboard_routes
+from auth import auth_routes
+from dashboard import dashboard_routes
 
 app.register_blueprint(auth_routes, url_prefix="/auth")
 app.register_blueprint(dashboard_routes, url_prefix="/dashboard")
