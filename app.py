@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, redirect
 from flask_cors import CORS
 from db import conn
 
@@ -7,7 +7,7 @@ CORS(app)
 
 @app.route("/", methods=["GET"])
 def home():
-    return jsonify({"message": "Welcome to Site Venda Bot API", "status": "running"})
+    return redirect("/app")
 
 
 @app.route("/app", methods=["GET"])
