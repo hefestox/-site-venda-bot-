@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 from db import conn
-from middleware.auth_middleware import auth_required
+from auth_middleware import auth_required
 
 dashboard_routes = Blueprint("dashboard", __name__)
 
