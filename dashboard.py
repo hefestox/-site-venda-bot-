@@ -1,4 +1,6 @@
-from flask import Blueprint, jsonify, request
+import csv
+import io
+from flask import Blueprint, jsonify, request, Response
 from db import conn
 from auth_middleware import auth_required
 
@@ -13,10 +15,7 @@ def dashboard():
         total = cur.fetchone()[0]
         cur.execute("SELECT COUNT(*) FROM pessoas WHERE lideranca != 'Nenhuma'")
         liderancas_count = cur.fetchone()[0]
-    return jsonify({
-        "total": total,
-        "liderancas": liderancas_count,
-    })
+    return jsonify({"total": total, "liderancas": liderancas_count})
 
 
 def _row_to_dict(row):
@@ -40,14 +39,12 @@ def pessoas():
 
         query = "SELECT id, nome, endereco, telefone, municipio, data_nascimento, lideranca FROM pessoas"
         filters, params = [], []
-
         if municipio:
             filters.append("municipio = %s")
             params.append(municipio)
         if lideranca:
             filters.append("lideranca = %s")
             params.append(lideranca)
-
         if filters:
             query += " WHERE " + " AND ".join(filters)
         query += " ORDER BY id DESC"
@@ -91,3 +88,43 @@ def deletar_pessoa(pessoa_id):
         return jsonify({"error": "Pessoa não encontrada."}), 404
     conn.commit()
     return jsonify({"ok": True, "deleted_id": pessoa_id})
+
+
+# ── Exportação CSV ──────────────────────────────────────────────
+@dashboard_routes.route("/exportar-csv", methods=["GET"])
+@auth_required
+def exportar_csv():
+    municipio = request.args.get("municipio", "").strip()
+    lideranca = request.args.get("lideranca", "").strip()
+
+    query = "SELECT id, nome, endereco, telefone, municipio, data_nascimento, lideranca FROM pessoas"
+    filters, params = [], []
+    if municipio:
+        filters.append("municipio = %s")
+        params.append(municipio)
+    if lideranca:
+        filters.append("lideranca = %s")
+        params.append(lideranca)
+    if filters:
+        query += " WHERE " + " AND ".join(filters)
+    query += " ORDER BY id DESC"
+
+    with conn.cursor() as cur:
+        cur.execute(query, params)
+        rows = cur.fetchall()
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["ID", "Nome", "Endereço", "Telefone", "Município", "Data de Nascimento", "Liderança"])
+    for row in rows:
+        writer.writerow([
+            row[0], row[1], row[2] or "", row[3] or "",
+            row[4], str(row[5]) if row[5] else "", row[6]
+        ])
+
+    output.seek(0)
+    return Response(
+        "\ufeff" + output.getvalue(),  # BOM para Excel abrir corretamente
+        mimetype="text/csv; charset=utf-8",
+        headers={"Content-Disposition": "attachment; filename=campanha_pessoas.csv"}
+    )
