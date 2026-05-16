@@ -24,16 +24,17 @@
     }
     html { scroll-behavior: smooth; }
     body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; overflow-x: hidden; }
-    .sidebar { width: 240px; min-height: 100vh; background: var(--sidebar); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 200; transition: transform .25s ease; }
+    .sidebar { width: 240px; min-height: 100vh; background: var(--sidebar); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 200; }
     .sidebar-logo { padding: 1.5rem 1.25rem 1rem; border-bottom: 1px solid rgba(255,255,255,.08); }
     .sidebar-logo h1 { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: .5px; line-height: 1.3; }
-    .sidebar-logo span { font-size: 11px; color: #94a3b8; font-weight: 400; }
+    .sidebar-logo span { font-size: 11px; color: #94a3b8; }
     .sidebar-nav { flex: 1; padding: 1rem 0; overflow-y: auto; }
     .nav-section-label { font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: #475569; padding: .5rem 1.25rem .25rem; margin-top: .5rem; }
     .nav-item { display: flex; align-items: center; gap: 10px; padding: .6rem 1.25rem; color: #94a3b8; font-size: 13.5px; cursor: pointer; border-left: 3px solid transparent; transition: background .15s, color .15s, border-color .15s; user-select: none; }
     .nav-item:hover { background: rgba(255,255,255,.05); color: #e2e8f0; }
     .nav-item.active { background: rgba(26,86,219,.18); color: #fff; border-left-color: var(--primary); font-weight: 600; }
     .nav-item .icon { font-size: 16px; flex-shrink: 0; }
+    .nav-item[data-role] { display: none; }
     .sidebar-footer { padding: 1rem 1.25rem; border-top: 1px solid rgba(255,255,255,.08); }
     .user-chip { display: flex; align-items: center; gap: 10px; }
     .user-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0; }
@@ -110,9 +111,12 @@
     .empty-state { text-align: center; padding: 3rem 1rem; color: var(--muted); }
     .empty-state .empty-icon { font-size: 40px; margin-bottom: .75rem; }
     .empty-state p { font-size: 14px; }
+    .acesso-negado { text-align:center; padding: 4rem 1rem; }
+    .acesso-negado .icon { font-size: 48px; margin-bottom: 1rem; }
+    .acesso-negado h2 { font-size: 20px; font-weight: 700; margin-bottom: .5rem; }
+    .acesso-negado p { color: var(--muted); font-size: 14px; }
     @media (max-width: 768px) {
       .sidebar { transform: translateX(-100%); }
-      .sidebar.open { transform: translateX(0); }
       .main { margin-left: 0; }
       .grid-2, .grid-3 { grid-template-columns: 1fr; }
       .metrics-grid { grid-template-columns: 1fr 1fr; }
@@ -144,23 +148,28 @@
   <nav class="sidebar-nav">
     <div class="nav-section-label">Principal</div>
     <div class="nav-item active" onclick="navigate('dashboard')"><span class="icon">📊</span> Dashboard</div>
+
     <div class="nav-section-label">Cadastros</div>
     <div class="nav-item" onclick="navigate('cadastro')"><span class="icon">👤</span> Cadastro de Pessoas</div>
-    <div class="nav-section-label">Operações</div>
-    <div class="nav-item" onclick="navigate('mapa')"><span class="icon">🗺️</span> Mapa Eleitoral</div>
-    <div class="nav-item" onclick="navigate('monitoramento')"><span class="icon">📡</span> Monitoramento</div>
-    <div class="nav-item" onclick="navigate('reunioes')"><span class="icon">📅</span> Reuniões</div>
-    <div class="nav-item" onclick="navigate('agenda')"><span class="icon">🗓️</span> Agenda</div>
-    <div class="nav-section-label">Gestão</div>
-    <div class="nav-item" onclick="navigate('relatorios')"><span class="icon">📋</span> Relatórios</div>
-    <div class="nav-item" onclick="navigate('perfis')"><span class="icon">🔐</span> Perfis de Acesso</div>
+
+    <!-- Somente coordenador e admin -->
+    <div class="nav-section-label nav-coord" data-role="coord">Operações</div>
+    <div class="nav-item nav-coord" data-role="coord" onclick="navigate('mapa')"><span class="icon">🗺️</span> Mapa Eleitoral</div>
+    <div class="nav-item nav-coord" data-role="coord" onclick="navigate('monitoramento')"><span class="icon">📡</span> Monitoramento</div>
+    <div class="nav-item nav-coord" data-role="coord" onclick="navigate('reunioes')"><span class="icon">📅</span> Reuniões</div>
+    <div class="nav-item nav-coord" data-role="coord" onclick="navigate('agenda')"><span class="icon">🗓️</span> Agenda</div>
+    <div class="nav-item nav-coord" data-role="coord" onclick="navigate('relatorios')"><span class="icon">📋</span> Relatórios</div>
+
+    <!-- Somente admin -->
+    <div class="nav-section-label nav-admin" data-role="admin">Gestão</div>
+    <div class="nav-item nav-admin" data-role="admin" onclick="navigate('perfis')"><span class="icon">🔐</span> Perfis de Acesso</div>
   </nav>
   <div class="sidebar-footer">
     <div class="user-chip">
       <div class="user-avatar" id="userAvatar">?</div>
       <div class="user-info">
         <div class="user-name" id="userEmail">—</div>
-        <div class="user-role" id="userRole">—</div>
+        <div class="user-role" id="userRoleLabel">—</div>
       </div>
       <button class="btn-logout" title="Sair" onclick="logout()">⏻</button>
     </div>
@@ -190,7 +199,7 @@
           <div class="card-header"><span class="card-title">Progresso por Município</span></div>
           <div class="card-body">
             <div style="display:flex;flex-direction:column;gap:14px">
-              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Rio Branco</span><span style="color:var(--muted)">82%</span></div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:82%;background:#1a56db"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Rio Branco</span><span style="color:var(--muted)">82%</span></div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:82%"></div></div></div>
               <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Cruzeiro do Sul</span><span style="color:var(--muted)">67%</span></div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:67%;background:#0ea5e9"></div></div></div>
               <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Sena Madureira</span><span style="color:var(--muted)">54%</span></div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:54%;background:#16a34a"></div></div></div>
               <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Tarauacá</span><span style="color:var(--muted)">41%</span></div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:41%;background:#d97706"></div></div></div>
@@ -202,9 +211,9 @@
           <div class="card-header"><span class="card-title">Atividade Recente</span></div>
           <div class="card-body">
             <div style="display:flex;flex-direction:column;gap:12px;font-size:13px">
-              <div style="display:flex;gap:10px;align-items:flex-start"><span style="font-size:18px">👤</span><div><strong>Nova pessoa cadastrada</strong><br><span style="color:var(--muted)">há 5 minutos</span></div></div>
-              <div style="display:flex;gap:10px;align-items:flex-start"><span style="font-size:18px">🤝</span><div><strong>Liderança Política confirmada — Rio Branco</strong><br><span style="color:var(--muted)">há 23 minutos</span></div></div>
-              <div style="display:flex;gap:10px;align-items:flex-start"><span style="font-size:18px">📅</span><div><strong>Reunião agendada para amanhã</strong><br><span style="color:var(--muted)">há 1 hora</span></div></div>
+              <div style="display:flex;gap:10px"><span style="font-size:18px">👤</span><div><strong>Nova pessoa cadastrada</strong><br><span style="color:var(--muted)">há 5 minutos</span></div></div>
+              <div style="display:flex;gap:10px"><span style="font-size:18px">🤝</span><div><strong>Liderança Política — Rio Branco</strong><br><span style="color:var(--muted)">há 23 minutos</span></div></div>
+              <div style="display:flex;gap:10px"><span style="font-size:18px">📅</span><div><strong>Reunião agendada para amanhã</strong><br><span style="color:var(--muted)">há 1 hora</span></div></div>
             </div>
           </div>
         </div>
@@ -249,15 +258,13 @@
         <div class="card-header">
           <span class="card-title">👥 Pessoas Cadastradas</span>
           <div class="filters-bar">
-            <div class="form-group">
-              <label>Município</label>
+            <div class="form-group"><label>Município</label>
               <select class="form-control" id="filtroMunicipio" onchange="loadPessoas()">
                 <option value="">Todos</option>
                 <option>Rio Branco</option><option>Cruzeiro do Sul</option><option>Sena Madureira</option><option>Tarauacá</option><option>Feijó</option><option>Brasileia</option><option>Epitaciolândia</option><option>Xapuri</option><option>Plácido de Castro</option><option>Senador Guiomard</option><option>Acrelândia</option><option>Capixaba</option><option>Porto Acre</option><option>Bujari</option><option>Rodrigues Alves</option><option>Mâncio Lima</option><option>Marechal Thaumaturgo</option><option>Porto Walter</option><option>Jordão</option><option>Santa Rosa do Purus</option><option>Manoel Urbano</option><option>Assis Brasil</option>
               </select>
             </div>
-            <div class="form-group">
-              <label>Liderança</label>
+            <div class="form-group"><label>Liderança</label>
               <select class="form-control" id="filtroLideranca" onchange="loadPessoas()">
                 <option value="">Todos</option>
                 <option value="Nenhuma">Apoiador</option>
@@ -270,9 +277,7 @@
         </div>
         <div class="table-wrap">
           <table>
-            <thead>
-              <tr><th>#</th><th>Nome</th><th>Município</th><th>Telefone</th><th>Nascimento</th><th>Liderança</th><th>Ação</th></tr>
-            </thead>
+            <thead><tr><th>#</th><th>Nome</th><th>Município</th><th>Telefone</th><th>Nascimento</th><th>Liderança</th><th>Ação</th></tr></thead>
             <tbody id="pessoasTableBody">
               <tr><td colspan="7"><div class="empty-state"><div class="empty-icon">👥</div><p>Nenhuma pessoa cadastrada ainda.</p></div></td></tr>
             </tbody>
@@ -286,7 +291,7 @@
       <div class="card">
         <div class="card-header"><span class="card-title">🗺️ Mapa Eleitoral — Acre</span></div>
         <div class="card-body">
-          <div class="map-placeholder"><div class="map-icon">🗺️</div><strong>Mapa Interativo do Acre</strong><p style="max-width:360px;text-align:center">Integre Leaflet.js ou Google Maps para visualizar a distribuição por município.</p><button class="btn btn-primary btn-sm">Configurar Mapa</button></div>
+          <div class="map-placeholder"><div class="map-icon">🗺️</div><strong>Mapa Interativo do Acre</strong><p style="max-width:360px;text-align:center">Integre Leaflet.js ou Google Maps para visualizar a distribuição por município.</p></div>
           <div class="grid-3" style="margin-top:1.25rem">
             <div class="metric-card"><div class="metric-label">Municípios Cobertos</div><div class="metric-value">22</div><div class="metric-sub">de 22 no Acre</div></div>
             <div class="metric-card"><div class="metric-label">Zonas Eleitorais</div><div class="metric-value">47</div><div class="metric-sub">mapeadas</div></div>
@@ -325,14 +330,14 @@
         <div class="card-body">
           <form onsubmit="handleNovaReuniao(event)">
             <div class="grid-2">
-              <div class="form-group"><label>Título</label><input type="text" class="form-control" id="reuniaoTitulo" placeholder="Ex: Reunião com lideranças" required /></div>
+              <div class="form-group"><label>Título</label><input type="text" class="form-control" id="reuniaoTitulo" required /></div>
               <div class="form-group"><label>Município</label><select class="form-control" id="reuniaoMunicipio"><option>Rio Branco</option><option>Cruzeiro do Sul</option><option>Sena Madureira</option><option>Tarauacá</option><option>Feijó</option></select></div>
             </div>
             <div class="grid-2">
               <div class="form-group"><label>Data</label><input type="date" class="form-control" id="reuniaoData" required /></div>
               <div class="form-group"><label>Horário</label><input type="time" class="form-control" id="reuniaoHora" required /></div>
             </div>
-            <div class="form-group"><label>Observações</label><textarea class="form-control" id="reuniaoObs" rows="2" placeholder="Detalhes adicionais..."></textarea></div>
+            <div class="form-group"><label>Observações</label><textarea class="form-control" id="reuniaoObs" rows="2"></textarea></div>
             <button type="submit" class="btn btn-primary">Agendar Reunião</button>
           </form>
         </div>
@@ -359,7 +364,6 @@
             <div style="display:flex;flex-direction:column;gap:10px;font-size:13.5px">
               <div style="display:flex;gap:12px;align-items:center;padding:.75rem;background:#f8fafc;border-radius:8px;border-left:4px solid var(--primary)"><div style="text-align:center;min-width:40px"><strong>SEG</strong><br><span style="font-size:18px;font-weight:700">16</span></div><div><strong>Visita às comunidades — Xapuri</strong><br><span style="color:var(--muted)">08:00 – 12:00</span></div></div>
               <div style="display:flex;gap:12px;align-items:center;padding:.75rem;background:#f8fafc;border-radius:8px;border-left:4px solid var(--success)"><div style="text-align:center;min-width:40px"><strong>TER</strong><br><span style="font-size:18px;font-weight:700">17</span></div><div><strong>Reunião de coordenadores</strong><br><span style="color:var(--muted)">14:00 – 17:00</span></div></div>
-              <div style="display:flex;gap:12px;align-items:center;padding:.75rem;background:#f8fafc;border-radius:8px;border-left:4px solid var(--warning)"><div style="text-align:center;min-width:40px"><strong>QUI</strong><br><span style="font-size:18px;font-weight:700">19</span></div><div><strong>Evento público — Rio Branco</strong><br><span style="color:var(--muted)">18:00 – 21:00</span></div></div>
             </div>
           </div>
         </div>
@@ -367,9 +371,9 @@
           <div class="card-header"><span class="card-title">➕ Novo Compromisso</span></div>
           <div class="card-body">
             <form onsubmit="handleNovoCompromisso(event)">
-              <div class="form-group"><label>Título</label><input type="text" class="form-control" placeholder="Descrição" required /></div>
+              <div class="form-group"><label>Título</label><input type="text" class="form-control" required /></div>
               <div class="form-group"><label>Data e Hora</label><input type="datetime-local" class="form-control" required /></div>
-              <div class="form-group"><label>Local</label><input type="text" class="form-control" placeholder="Endereço ou município" /></div>
+              <div class="form-group"><label>Local</label><input type="text" class="form-control" /></div>
               <div class="form-group"><label>Tipo</label><select class="form-control"><option>Reunião</option><option>Evento Público</option><option>Visita</option><option>Entrevista</option><option>Caminhada</option></select></div>
               <button type="submit" class="btn btn-primary">Salvar Compromisso</button>
             </form>
@@ -384,16 +388,13 @@
         <div class="card">
           <div class="card-header"><span class="card-title">📋 Gerar Relatório CSV</span></div>
           <div class="card-body">
-            <div id="relatorioAlert" class="alert"></div>
-            <div class="form-group">
-              <label>Filtrar por Município</label>
+            <div class="form-group"><label>Filtrar por Município</label>
               <select class="form-control" id="relMunicipio">
                 <option value="">Todos os municípios</option>
                 <option>Rio Branco</option><option>Cruzeiro do Sul</option><option>Sena Madureira</option><option>Tarauacá</option><option>Feijó</option><option>Brasileia</option><option>Epitaciolândia</option><option>Xapuri</option><option>Plácido de Castro</option><option>Senador Guiomard</option><option>Acrelândia</option><option>Capixaba</option><option>Porto Acre</option><option>Bujari</option><option>Rodrigues Alves</option><option>Mâncio Lima</option><option>Marechal Thaumaturgo</option><option>Porto Walter</option><option>Jordão</option><option>Santa Rosa do Purus</option><option>Manoel Urbano</option><option>Assis Brasil</option>
               </select>
             </div>
-            <div class="form-group">
-              <label>Filtrar por Tipo</label>
+            <div class="form-group"><label>Filtrar por Tipo</label>
               <select class="form-control" id="relLideranca">
                 <option value="">Todos</option>
                 <option value="Nenhuma">Somente Apoiadores</option>
@@ -403,7 +404,6 @@
             <button class="btn btn-success" onclick="baixarCSVRelatorio()">⬇️ Baixar CSV</button>
           </div>
         </div>
-
         <div class="card">
           <div class="card-header"><span class="card-title">📊 Resumo Geral</span></div>
           <div class="card-body">
@@ -418,34 +418,49 @@
       </div>
     </div>
 
-    <!-- PERFIS -->
+    <!-- PERFIS — somente admin -->
     <div class="page" id="page-perfis">
       <div class="card" style="margin-bottom:1.25rem">
         <div class="card-header"><span class="card-title">🔐 Perfis de Acesso</span></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Perfil</th><th>Permissões</th><th>Usuários</th><th>Status</th></tr></thead>
+            <thead><tr><th>Perfil</th><th>Permissões</th><th>Status</th></tr></thead>
             <tbody>
-              <tr><td><strong>Administrador</strong></td><td>Acesso total</td><td>2</td><td><span class="badge badge-green">Ativo</span></td></tr>
-              <tr><td><strong>Coordenador</strong></td><td>Cadastros, reuniões, relatórios</td><td>8</td><td><span class="badge badge-green">Ativo</span></td></tr>
-              <tr><td><strong>Operador</strong></td><td>Cadastro de pessoas</td><td>24</td><td><span class="badge badge-green">Ativo</span></td></tr>
-              <tr><td><strong>Visualizador</strong></td><td>Somente leitura</td><td>5</td><td><span class="badge badge-gray">Inativo</span></td></tr>
+              <tr><td><strong>Administrador</strong></td><td>Acesso total ao sistema</td><td><span class="badge badge-green">Ativo</span></td></tr>
+              <tr><td><strong>Coordenador</strong></td><td>Tudo menos Perfis de Acesso</td><td><span class="badge badge-green">Ativo</span></td></tr>
+              <tr><td><strong>Operador</strong></td><td>Somente Cadastro de Pessoas</td><td><span class="badge badge-green">Ativo</span></td></tr>
             </tbody>
           </table>
         </div>
       </div>
-      <div class="card" id="adminCreateUserCard" style="display:none">
+
+      <div class="card">
         <div class="card-header"><span class="card-title">👤 Criar Novo Usuário</span><span class="badge badge-red" style="font-size:11px">Somente Admin</span></div>
         <div class="card-body">
           <div id="perfilAlert" class="alert"></div>
           <form onsubmit="handleCriarUsuario(event)">
             <div class="grid-2">
-              <div class="form-group"><label>E-mail</label><input type="email" class="form-control" id="novoUserEmail" placeholder="usuario@campanha.com" required /></div>
+              <div class="form-group"><label>E-mail</label><input type="email" class="form-control" id="novoUserEmail" placeholder="usuario@email.com" required /></div>
               <div class="form-group"><label>Senha</label><input type="password" class="form-control" id="novoUserSenha" placeholder="••••••••" required /></div>
             </div>
-            <div class="form-group"><label>Perfil</label><select class="form-control" id="novoUserRole"><option value="operador">Operador</option><option value="coordenador">Coordenador</option><option value="admin">Administrador</option></select></div>
+            <div class="form-group"><label>Perfil de Acesso</label>
+              <select class="form-control" id="novoUserRole">
+                <option value="operador">Operador — só Cadastro de Pessoas</option>
+                <option value="coordenador">Coordenador — tudo menos Perfis</option>
+                <option value="admin">Administrador — acesso total</option>
+              </select>
+            </div>
             <button type="submit" class="btn btn-primary">Criar Usuário</button>
           </form>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:1.25rem">
+        <div class="card-header"><span class="card-title">🔄 Resetar Banco de Dados</span><span class="badge badge-red" style="font-size:11px">Perigo</span></div>
+        <div class="card-body">
+          <div id="resetAlert" class="alert"></div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:1rem">⚠️ Isso apaga <strong>todos os dados</strong> e recria o banco com o usuário admin padrão.</p>
+          <button class="btn btn-danger" onclick="handleResetDB()">🗑️ Resetar Banco</button>
         </div>
       </div>
     </div>
@@ -456,6 +471,13 @@
 <script>
   let token    = localStorage.getItem('campanha_token') || null;
   let userInfo = JSON.parse(localStorage.getItem('campanha_user') || 'null');
+
+  // Permissões por perfil
+  const PERMISSIONS = {
+    admin:       ['dashboard','cadastro','mapa','monitoramento','reunioes','agenda','relatorios','perfis'],
+    coordenador: ['dashboard','cadastro','mapa','monitoramento','reunioes','agenda','relatorios'],
+    operador:    ['dashboard','cadastro'],
+  };
 
   window.addEventListener('DOMContentLoaded', () => {
     if (token && userInfo) showApp();
@@ -476,7 +498,7 @@
     const email = document.getElementById('loginEmail').value;
     const senha = document.getElementById('loginSenha').value;
     try {
-      const res  = await fetch('/auth/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({email, senha}) });
+      const res  = await fetch('/auth/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email,senha}) });
       const data = await res.json();
       if (!res.ok) { showAlert('authAlert', data.error || 'Erro ao fazer login'); return; }
       token = data.token;
@@ -492,12 +514,22 @@
   function showApp() {
     document.getElementById('authOverlay').style.display = 'none';
     const email = userInfo?.email || '—';
-    const role  = userInfo?.role  || '—';
-    document.getElementById('userEmail').textContent  = email;
-    document.getElementById('userRole').textContent   = role;
-    document.getElementById('userAvatar').textContent = email.charAt(0).toUpperCase();
-    const adminCard = document.getElementById('adminCreateUserCard');
-    if (adminCard) adminCard.style.display = role === 'admin' ? 'block' : 'none';
+    const role  = userInfo?.role  || 'operador';
+
+    document.getElementById('userEmail').textContent    = email;
+    document.getElementById('userAvatar').textContent   = email.charAt(0).toUpperCase();
+
+    const roleLabels = { admin: 'Administrador', coordenador: 'Coordenador', operador: 'Operador' };
+    document.getElementById('userRoleLabel').textContent = roleLabels[role] || role;
+
+    // Mostrar itens do menu conforme perfil
+    document.querySelectorAll('.nav-coord').forEach(el => {
+      el.style.display = (role === 'admin' || role === 'coordenador') ? '' : 'none';
+    });
+    document.querySelectorAll('.nav-admin').forEach(el => {
+      el.style.display = role === 'admin' ? '' : 'none';
+    });
+
     loadDashboard();
   }
 
@@ -508,17 +540,35 @@
     document.getElementById('authOverlay').style.display = 'flex';
   }
 
-  const pageTitles = { dashboard:'Dashboard', cadastro:'Cadastro de Pessoas', mapa:'Mapa Eleitoral', monitoramento:'Monitoramento', reunioes:'Reuniões', agenda:'Agenda', relatorios:'Relatórios', perfis:'Perfis de Acesso' };
+  const pageTitles = {
+    dashboard:'Dashboard', cadastro:'Cadastro de Pessoas',
+    mapa:'Mapa Eleitoral', monitoramento:'Monitoramento',
+    reunioes:'Reuniões', agenda:'Agenda',
+    relatorios:'Relatórios', perfis:'Perfis de Acesso',
+  };
 
   function navigate(page) {
+    const role = userInfo?.role || 'operador';
+    const allowed = PERMISSIONS[role] || ['dashboard','cadastro'];
+
+    // Bloqueia acesso direto a páginas não permitidas
+    if (!allowed.includes(page)) {
+      alert('Você não tem permissão para acessar esta página.');
+      return;
+    }
+
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
     const pageEl = document.getElementById('page-' + page);
     if (pageEl) pageEl.classList.add('active');
+
     document.querySelectorAll('.nav-item').forEach(n => {
       if (n.getAttribute('onclick') === `navigate('${page}')`) n.classList.add('active');
     });
+
     document.getElementById('topbarTitle').textContent = pageTitles[page] || page;
+
     if (page === 'dashboard')  loadDashboard();
     if (page === 'cadastro')   loadPessoas();
     if (page === 'relatorios') loadRelatoriosSummary();
@@ -551,7 +601,7 @@
       lideranca:       document.getElementById('cLideranca').value,
     };
     try {
-      const res = await apiFetch('/dashboard/pessoas', { method: 'POST', body: JSON.stringify(payload) });
+      const res = await apiFetch('/dashboard/pessoas', { method:'POST', body:JSON.stringify(payload) });
       if (res.status === 401) { logout(); return; }
       if (res.ok) {
         showAlert('cadastroAlert', `"${payload.nome}" cadastrado(a) com sucesso!`, 'success');
@@ -577,7 +627,7 @@
         tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">👥</div><p>Nenhuma pessoa encontrada.</p></div></td></tr>';
         return;
       }
-      const liderancaBadge = l => l === 'Liderança Política'
+      const badge = l => l === 'Liderança Política'
         ? '<span class="badge badge-purple">Liderança Política</span>'
         : '<span class="badge badge-gray">Apoiador</span>';
       tbody.innerHTML = data.pessoas.map(p => `
@@ -587,7 +637,7 @@
           <td>${p.municipio}</td>
           <td>${p.telefone || '—'}</td>
           <td>${p.data_nascimento || '—'}</td>
-          <td>${liderancaBadge(p.lideranca)}</td>
+          <td>${badge(p.lideranca)}</td>
           <td><button class="btn btn-danger btn-sm" onclick="deletarPessoa(${p.id},'${p.nome.replace(/'/g,"\\'")}')">🗑️</button></td>
         </tr>`).join('');
     } catch(err) {}
@@ -596,52 +646,41 @@
   async function deletarPessoa(id, nome) {
     if (!confirm(`Remover "${nome}" do cadastro?`)) return;
     try {
-      const res = await apiFetch(`/dashboard/pessoas/${id}`, { method: 'DELETE' });
+      const res = await apiFetch(`/dashboard/pessoas/${id}`, { method:'DELETE' });
       if (res.ok) { loadPessoas(); loadDashboard(); }
       else alert('Erro ao remover.');
     } catch(err) { alert('Erro de conexão.'); }
-  }
-
-  // ── Download CSV ─────────────────────────────────────────────
-
-  // Botão na tabela de cadastro (respeita filtros ativos)
-  function baixarCSV() {
-    const municipio = document.getElementById('filtroMunicipio')?.value || '';
-    const lideranca = document.getElementById('filtroLideranca')?.value || '';
-    _dispararDownloadCSV(municipio, lideranca);
-  }
-
-  // Botão na página de relatórios (usa os selects próprios)
-  function baixarCSVRelatorio() {
-    const municipio = document.getElementById('relMunicipio')?.value || '';
-    const lideranca = document.getElementById('relLideranca')?.value || '';
-    _dispararDownloadCSV(municipio, lideranca);
   }
 
   function _dispararDownloadCSV(municipio, lideranca) {
     const params = new URLSearchParams();
     if (municipio) params.append('municipio', municipio);
     if (lideranca) params.append('lideranca', lideranca);
-
-    // Cria link invisível com o token no header via fetch + blob
     apiFetch('/dashboard/exportar-csv?' + params.toString())
-      .then(res => {
-        if (res.status === 401) { logout(); return; }
-        if (!res.ok) { alert('Erro ao gerar CSV.'); return; }
-        return res.blob();
-      })
+      .then(res => { if (res.status === 401) { logout(); return; } return res.blob(); })
       .then(blob => {
         if (!blob) return;
         const url = URL.createObjectURL(blob);
-        const a   = document.createElement('a');
-        a.href     = url;
-        a.download = 'campanha_pessoas.csv';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'campanha_pessoas.csv';
+        document.body.appendChild(a); a.click();
+        document.body.removeChild(a); URL.revokeObjectURL(url);
       })
-      .catch(() => alert('Erro de conexão ao baixar CSV.'));
+      .catch(() => alert('Erro ao baixar CSV.'));
+  }
+
+  function baixarCSV() {
+    _dispararDownloadCSV(
+      document.getElementById('filtroMunicipio')?.value || '',
+      document.getElementById('filtroLideranca')?.value || ''
+    );
+  }
+
+  function baixarCSVRelatorio() {
+    _dispararDownloadCSV(
+      document.getElementById('relMunicipio')?.value || '',
+      document.getElementById('relLideranca')?.value || ''
+    );
   }
 
   async function loadRelatoriosSummary() {
@@ -657,10 +696,11 @@
   let reunioes = [];
   function handleNovaReuniao(e) {
     e.preventDefault();
-    reunioes.push({ titulo: document.getElementById('reuniaoTitulo').value, municipio: document.getElementById('reuniaoMunicipio').value, data: document.getElementById('reuniaoData').value, hora: document.getElementById('reuniaoHora').value });
+    reunioes.push({ titulo:document.getElementById('reuniaoTitulo').value, municipio:document.getElementById('reuniaoMunicipio').value, data:document.getElementById('reuniaoData').value, hora:document.getElementById('reuniaoHora').value });
     document.getElementById('reuniaoTitulo').value = '';
-    const tbody = document.getElementById('reunioesTableBody');
-    tbody.innerHTML = reunioes.map(r => `<tr><td>${r.data}</td><td>${r.hora}</td><td>${r.titulo}</td><td>${r.municipio}</td><td><span class="badge badge-yellow">Agendada</span></td></tr>`).join('');
+    document.getElementById('reunioesTableBody').innerHTML = reunioes.map(r =>
+      `<tr><td>${r.data}</td><td>${r.hora}</td><td>${r.titulo}</td><td>${r.municipio}</td><td><span class="badge badge-yellow">Agendada</span></td></tr>`
+    ).join('');
   }
 
   function handleNovoCompromisso(e) { e.preventDefault(); alert('Compromisso salvo!'); e.target.reset(); }
@@ -671,11 +711,22 @@
     const senha = document.getElementById('novoUserSenha').value;
     const role  = document.getElementById('novoUserRole').value;
     try {
-      const res  = await apiFetch('/auth/register', { method: 'POST', body: JSON.stringify({ email, senha, role }) });
+      const res  = await apiFetch('/auth/register', { method:'POST', body:JSON.stringify({email,senha,role}) });
       const data = await res.json();
-      if (res.ok) { showAlert('perfilAlert', `Usuário "${email}" criado! ID: ${data.id}`, 'success'); e.target.reset(); }
+      if (res.ok) { showAlert('perfilAlert', `Usuário "${email}" criado com sucesso!`, 'success'); e.target.reset(); }
       else showAlert('perfilAlert', data.error || 'Erro ao criar usuário.');
     } catch(err) { showAlert('perfilAlert', 'Erro de conexão.'); }
+  }
+
+  async function handleResetDB() {
+    if (!confirm('⚠️ Isso apaga TODOS os dados. Tem certeza?')) return;
+    if (!confirm('Última confirmação: resetar o banco de dados?')) return;
+    try {
+      const res  = await fetch('/reset-db', { method:'POST' });
+      const data = await res.json();
+      showAlert('resetAlert', `✅ ${data.message} — Login: ${data.login} | Senha: ${data.senha}`, 'success');
+      logout();
+    } catch(err) { showAlert('resetAlert', 'Erro ao resetar banco.'); }
   }
 </script>
 </body>
