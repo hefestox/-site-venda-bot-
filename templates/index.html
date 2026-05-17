@@ -339,10 +339,10 @@
             <div class="grid-2">
               <div class="form-group"><label>Telefone</label><input type="tel" class="form-control" id="cTelefone" placeholder="(00) 9 9999-9999" /></div>
               <div class="form-group">
-                <label>Região *</label>
-                <select class="form-control" id="cRegiao" required>
+                <label>Município *</label>
+                <select class="form-control" id="cMunicipio" required>
                   <option value="">Selecione...</option>
-                  <option>Região A</option><option>Região B</option><option>Região C</option>
+                  <option>Rio Branco</option><option>Cruzeiro do Sul</option><option>Sena Madureira</option>
                 </select>
               </div>
             </div>
@@ -362,10 +362,10 @@
         <div class="card-header">
           <span class="card-title">Contatos Registrados</span>
           <div class="filters-bar">
-            <div class="form-group"><label>Região</label>
-              <select class="form-control" id="filtroRegiao" onchange="loadPessoas()">
-                <option value="">Todas</option>
-                <option>Região A</option><option>Região B</option><option>Região C</option>
+            <div class="form-group"><label>Município</label>
+              <select class="form-control" id="filtroMunicipio" onchange="loadPessoas()">
+                <option value="">Todos</option>
+                <option>Rio Branco</option><option>Cruzeiro do Sul</option><option>Sena Madureira</option>
               </select>
             </div>
             <button class="btn btn-outline btn-sm" onclick="loadPessoas()">Atualizar</button>
@@ -374,7 +374,7 @@
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>#</th><th>Nome</th><th>Região</th><th>Telefone</th><th>Tipo</th><th>Ação</th></tr></thead>
+            <thead><tr><th>#</th><th>Nome</th><th>Município</th><th>Telefone</th><th>Tipo</th><th>Ação</th></tr></thead>
             <tbody id="pessoasTableBody">
               <tr><td colspan="6"><div class="empty-state"><div class="empty-icon">👥</div><p>Nenhum contato registrado ainda.</p></div></td></tr>
             </tbody>
@@ -388,9 +388,9 @@
       <div class="card">
         <div class="card-header"><span class="card-title">Mapa de Cobertura</span></div>
         <div class="card-body">
-          <div class="map-placeholder"><strong>Mapa Interativo</strong><p style="max-width:360px;text-align:center">Visualização de cobertura e distribuição de contatos por região</p></div>
+          <div class="map-placeholder"><strong>Mapa Interativo</strong><p style="max-width:360px;text-align:center">Visualização de cobertura e distribuição de contatos por município</p></div>
           <div class="grid-3" style="margin-top:1.25rem">
-            <div class="metric-card"><div class="metric-label">Regiões Cobertas</div><div class="metric-value">3</div></div>
+            <div class="metric-card"><div class="metric-label">Municípios Cobertos</div><div class="metric-value">3</div></div>
             <div class="metric-card"><div class="metric-label">Pontos Ativos</div><div class="metric-value">45</div></div>
             <div class="metric-card"><div class="metric-label">Cobertura Total</div><div class="metric-value">78%</div></div>
           </div>
@@ -428,7 +428,7 @@
           <form onsubmit="handleNovaReuniao(event)">
             <div class="grid-2">
               <div class="form-group"><label>Título</label><input type="text" class="form-control" id="reuniaoTitulo" required /></div>
-              <div class="form-group"><label>Região</label><select class="form-control" id="reuniaoRegiao"><option>Região A</option><option>Região B</option><option>Região C</option></select></div>
+              <div class="form-group"><label>Município</label><select class="form-control" id="reuniaoMunicipio"><option>Rio Branco</option><option>Cruzeiro do Sul</option><option>Sena Madureira</option></select></div>
             </div>
             <div class="grid-2">
               <div class="form-group"><label>Data</label><input type="date" class="form-control" id="reuniaoData" required /></div>
@@ -443,7 +443,7 @@
         <div class="card-header"><span class="card-title">Próximas Reuniões</span></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Data</th><th>Horário</th><th>Título</th><th>Região</th><th>Status</th></tr></thead>
+            <thead><tr><th>Data</th><th>Horário</th><th>Título</th><th>Município</th><th>Status</th></tr></thead>
             <tbody id="reunioesTableBody">
               <tr><td colspan="5"><div class="empty-state"><div class="empty-icon">📅</div><p>Nenhuma reunião agendada.</p></div></td></tr>
             </tbody>
@@ -459,8 +459,8 @@
           <div class="card-header"><span class="card-title">Agenda da Semana</span></div>
           <div class="card-body">
             <div style="display:flex;flex-direction:column;gap:10px;font-size:13.5px">
-              <div style="display:flex;gap:12px;align-items:center;padding:.75rem;background:#f8fafc;border-radius:8px;border-left:4px solid var(--primary)"><div style="text-align:center;min-width:40px"><strong>SEG</strong><div style="font-size:18px;font-weight:700">15</div></div><div><strong>Reunião Regional</strong><br><span style="color:var(--muted)">14:00 - Região A</span></div></div>
-              <div style="display:flex;gap:12px;align-items:center;padding:.75rem;background:#f8fafc;border-radius:8px;border-left:4px solid var(--success)"><div style="text-align:center;min-width:40px"><strong>QUA</strong><div style="font-size:18px;font-weight:700">17</div></div><div><strong>Visita de Contatos</strong><br><span style="color:var(--muted)">10:00 - Região B</span></div></div>
+              <div style="display:flex;gap:12px;align-items:center;padding:.75rem;background:#f8fafc;border-radius:8px;border-left:4px solid var(--primary)"><div style="text-align:center;min-width:40px"><strong>SEG</strong><div style="font-size:18px;font-weight:700">15</div></div><div><strong>Reunião Regional</strong><br><span style="color:var(--muted)">14:00</span></div></div>
+              <div style="display:flex;gap:12px;align-items:center;padding:.75rem;background:#f8fafc;border-radius:8px;border-left:4px solid var(--success)"><div style="text-align:center;min-width:40px"><strong>QUA</strong><div style="font-size:18px;font-weight:700">17</div></div><div><strong>Visita de Contatos</strong><br><span style="color:var(--muted)">10:00</span></div></div>
             </div>
           </div>
         </div>
@@ -485,13 +485,13 @@
         <div class="card">
           <div class="card-header"><span class="card-title">Gerar Relatório</span></div>
           <div class="card-body">
-            <div class="form-group"><label>Filtrar por Região</label>
-              <select class="form-control" id="relRegiao">
-                <option value="">Todas</option>
-                <option>Região A</option><option>Região B</option><option>Região C</option>
+            <div class="form-group"><label>Filtrar por Município</label>
+              <select class="form-control" id="relMunicipio">
+                <option value="">Todos</option>
+                <option>Rio Branco</option><option>Cruzeiro do Sul</option><option>Sena Madureira</option>
               </select>
             </div>
-            <button class="btn btn-success btn-full">Baixar Relatório</button>
+            <button class="btn btn-success btn-full" onclick="baixarCSVRelatorio()">Baixar Relatório</button>
           </div>
         </div>
         <div class="card">
@@ -500,7 +500,7 @@
             <div style="display:flex;flex-direction:column;gap:12px;font-size:13.5px">
               <div style="display:flex;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid var(--border)"><span>Total de Contatos</span><strong id="relTotal">—</strong></div>
               <div style="display:flex;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid var(--border)"><span>Lideranças</span><strong id="relLiderancas">—</strong></div>
-              <div style="display:flex;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid var(--border)"><span>Regiões Cobertas</span><strong>3</strong></div>
+              <div style="display:flex;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid var(--border)"><span>Municípios Cobertos</span><strong>3</strong></div>
               <div style="display:flex;justify-content:space-between;padding:.6rem 0"><span>Taxa de Engajamento</span><strong>78%</strong></div>
             </div>
           </div>
@@ -828,7 +828,7 @@
       nome:            document.getElementById('cNome').value.trim(),
       endereco:        document.getElementById('cEndereco').value.trim(),
       telefone:        document.getElementById('cTelefone').value.trim(),
-      regiao:          document.getElementById('cRegiao').value,
+      municipio:       document.getElementById('cMunicipio').value,
       data_nascimento: document.getElementById('cDataNasc').value || null,
       lideranca:       document.getElementById('cLideranca').value,
     };
@@ -845,9 +845,9 @@
   }
 
   async function loadPessoas() {
-    const regiao = document.getElementById('filtroRegiao')?.value || '';
+    const municipio = document.getElementById('filtroMunicipio')?.value || '';
     const params = new URLSearchParams();
-    if (regiao) params.append('regiao', regiao);
+    if (municipio) params.append('municipio', municipio);
     try {
       const res   = await apiFetch('/dashboard/pessoas?' + params.toString());
       if (!res.ok) return;
@@ -864,7 +864,7 @@
         <tr>
           <td>${p.id}</td>
           <td><strong>${p.nome}</strong></td>
-          <td>${p.regiao || '—'}</td>
+          <td>${p.municipio || '—'}</td>
           <td>${p.telefone || '—'}</td>
           <td>${badge(p.lideranca)}</td>
           <td><button class="btn btn-danger btn-sm" onclick="deletarPessoa(${p.id},'${p.nome.replace(/'/g,"\\'")}')">Remover</button></td>
@@ -881,9 +881,9 @@
     } catch(err) { alert('Erro de conexão.'); }
   }
 
-  function _dispararDownloadCSV(regiao) {
+  function _dispararDownloadCSV(municipio) {
     const params = new URLSearchParams();
-    if (regiao) params.append('regiao', regiao);
+    if (municipio) params.append('municipio', municipio);
     apiFetch('/dashboard/exportar-csv?' + params.toString())
       .then(res => { if (res.status === 401) { logout(); return; } return res.blob(); })
       .then(blob => {
@@ -898,11 +898,11 @@
   }
 
   function baixarCSV() {
-    _dispararDownloadCSV(document.getElementById('filtroRegiao')?.value || '');
+    _dispararDownloadCSV(document.getElementById('filtroMunicipio')?.value || '');
   }
 
   function baixarCSVRelatorio() {
-    _dispararDownloadCSV(document.getElementById('relRegiao')?.value || '');
+    _dispararDownloadCSV(document.getElementById('relMunicipio')?.value || '');
   }
 
   async function loadRelatoriosSummary() {
@@ -918,10 +918,10 @@
   let reunioes = [];
   function handleNovaReuniao(e) {
     e.preventDefault();
-    reunioes.push({ titulo:document.getElementById('reuniaoTitulo').value, regiao:document.getElementById('reuniaoRegiao').value, data:document.getElementById('reuniaoData').value, hora:document.getElementById('reuniaoHora').value });
+    reunioes.push({ titulo:document.getElementById('reuniaoTitulo').value, municipio:document.getElementById('reuniaoMunicipio').value, data:document.getElementById('reuniaoData').value, hora:document.getElementById('reuniaoHora').value });
     document.getElementById('reuniaoTitulo').value = '';
     document.getElementById('reunioesTableBody').innerHTML = reunioes.map(r =>
-      `<tr><td>${r.data}</td><td>${r.hora}</td><td>${r.titulo}</td><td>${r.regiao}</td><td><span class="badge badge-yellow">Agendada</span></td></tr>`
+      `<tr><td>${r.data}</td><td>${r.hora}</td><td>${r.titulo}</td><td>${r.municipio}</td><td><span class="badge badge-yellow">Agendada</span></td></tr>`
     ).join('');
   }
 
