@@ -25,22 +25,20 @@
     html { scroll-behavior: smooth; }
     body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; overflow-x: hidden; }
     .sidebar { width: 240px; min-height: 100vh; background: var(--sidebar); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 200; }
-    .sidebar-logo { padding: 1.5rem 1.25rem 1rem; border-bottom: 1px solid rgba(255,255,255,.08); text-align: center; }
-    .sidebar-logo .campaign-photo { width: 60px; height: 60px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem; overflow: hidden; }
-    .sidebar-logo .campaign-photo img { width: 100%; height: 100%; object-fit: cover; }
-    .sidebar-logo h1 { font-size: 14px; font-weight: 700; color: #fff; letter-spacing: .5px; line-height: 1.2; margin-bottom: 0.25rem; }
-    .sidebar-logo span { font-size: 11px; color: #94a3b8; display: block; }
-    .sidebar-logo .campaign-type { font-size: 10px; color: #64748b; margin-top: 0.5rem; }
+    .sidebar-logo { padding: 1.5rem 1.25rem 1rem; border-bottom: 1px solid rgba(255,255,255,.08); display: flex; align-items: center; gap: 12px; }
+    .sidebar-logo-img { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 16px; object-fit: cover; flex-shrink: 0; }
+    .sidebar-logo-text h1 { font-size: 14px; font-weight: 700; color: #fff; letter-spacing: .5px; line-height: 1.2; }
+    .sidebar-logo-text span { font-size: 10px; color: #94a3b8; }
     .sidebar-nav { flex: 1; padding: 1rem 0; overflow-y: auto; }
     .nav-section-label { font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: #475569; padding: .5rem 1.25rem .25rem; margin-top: .5rem; }
     .nav-item { display: flex; align-items: center; gap: 10px; padding: .6rem 1.25rem; color: #94a3b8; font-size: 13.5px; cursor: pointer; border-left: 3px solid transparent; transition: background .1s; }
     .nav-item:hover { background: rgba(255,255,255,.05); color: #e2e8f0; }
     .nav-item.active { background: rgba(26,86,219,.18); color: #fff; border-left-color: var(--primary); font-weight: 600; }
     .nav-item .icon { font-size: 16px; flex-shrink: 0; }
-    .nav-item[data-role] { display: none; }
+    .nav-section-label.hidden, .nav-item.hidden { display: none; }
     .sidebar-footer { padding: 1rem 1.25rem; border-top: 1px solid rgba(255,255,255,.08); }
     .user-chip { display: flex; align-items: center; gap: 10px; }
-    .user-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #fff; }
+    .user-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #fff; object-fit: cover; flex-shrink: 0; }
     .user-info { flex: 1; min-width: 0; }
     .user-name { font-size: 13px; font-weight: 600; color: #e2e8f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .user-role { font-size: 11px; color: #64748b; }
@@ -60,10 +58,15 @@
     .auth-card p { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; }
     .form-group { margin-bottom: 1rem; }
     .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: .35rem; color: var(--text); }
-    .form-control { width: 100%; padding: .6rem .85rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; color: var(--text); background: var(--surface); transition: border-color .15s; }
+    .form-control { width: 100%; padding: .6rem .85rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; color: var(--text); background: var(--surface); transition: border .15s; }
     .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(26,86,219,.12); outline: none; }
     select.form-control { cursor: pointer; }
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: .6rem 1.25rem; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: opacity .15s, transform .1s; }
+    .file-input-wrapper { position: relative; }
+    .file-input-label { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 1.5rem; border: 2px dashed var(--border); border-radius: var(--radius); cursor: pointer; transition: all .2s; background: #f8fafc; }
+    .file-input-label:hover { border-color: var(--primary); background: rgba(26,86,219,.05); }
+    .file-input-label input { display: none; }
+    .preview-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 1rem auto 0; display: block; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: .6rem 1.25rem; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all .15s; }
     .btn:active { transform: scale(.98); }
     .btn:hover { opacity: .88; }
     .btn-primary { background: var(--primary); color: #fff; }
@@ -78,7 +81,7 @@
     .alert-danger  { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
     .alert-info    { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
     .metrics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.75rem; }
-    .metric-card { background: var(--surface); border-radius: var(--radius); padding: 1.25rem 1.5rem; box-shadow: var(--shadow); border: 1px solid var(--border); display: flex; flex-direction: column; }
+    .metric-card { background: var(--surface); border-radius: var(--radius); padding: 1.25rem 1.5rem; box-shadow: var(--shadow); border: 1px solid var(--border); display: flex; flex-direction: column; gap: .5rem; }
     .metric-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; }
     .metric-value { font-size: 32px; font-weight: 700; color: var(--text); line-height: 1; }
     .metric-sub   { font-size: 12px; color: var(--muted); }
@@ -101,505 +104,746 @@
     .badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
     .badge-green  { background: #dcfce7; color: #166534; }
     .badge-blue   { background: #dbeafe; color: #1e40af; }
-    .badge-yellow { background: #fef3c7; color: #92400e; }
+    .badge-purple { background: #ede9fe; color: #5b21b6; }
+    .badge-yellow { background: #fef9c3; color: #854d0e; }
     .badge-red    { background: #fee2e2; color: #991b1b; }
-    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 600; align-items: center; justify-content: center; }
-    .modal.show { display: flex; }
-    .modal-content { background: var(--surface); border-radius: 12px; padding: 2rem; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; }
-    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
-    .modal-header h3 { font-size: 18px; font-weight: 700; }
-    .modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--muted); }
-    .photo-upload { margin: 1rem 0; }
-    .photo-preview { width: 100px; height: 100px; border-radius: 8px; background: var(--bg); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; overflow: hidden; }
-    .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
-    .campaign-preview { background: var(--bg); border-radius: var(--radius); padding: 1.5rem; margin-top: 1.5rem; }
-    .preview-item { display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; }
-    .preview-photo { width: 60px; height: 60px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
-    .preview-photo img { width: 100%; height: 100%; object-fit: cover; }
-    .preview-info h4 { font-size: 14px; font-weight: 700; margin-bottom: 0.25rem; }
-    .preview-info p { font-size: 12px; color: var(--muted); }
+    .badge-gray   { background: #f1f5f9; color: #475569; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; }
+    .map-placeholder { background: #e2e8f0; border-radius: var(--radius); height: 420px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--muted); gap: 1rem; }
+    .progress-bar-wrap { background: #e2e8f0; border-radius: 99px; height: 8px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; border-radius: 99px; background: var(--primary); transition: width .4s; }
+    .empty-state { text-align: center; padding: 3rem 1rem; color: var(--muted); }
+    .empty-state .empty-icon { font-size: 20px; margin-bottom: .75rem; }
+    .empty-state p { font-size: 14px; }
+    .config-preview { display: flex; gap: 2rem; align-items: flex-start; padding: 1.5rem; background: #f8fafc; border-radius: var(--radius); }
+    .config-preview-img { width: 120px; height: 120px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 24px; object-fit: cover; flex-shrink: 0; }
+    .config-preview-info { flex: 1; }
+    .config-preview-label { font-size: 12px; color: var(--muted); text-transform: uppercase; font-weight: 600; }
+    .config-preview-value { font-size: 18px; font-weight: 700; color: var(--text); margin-top: .25rem; }
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .main { margin-left: 0; }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .metrics-grid { grid-template-columns: 1fr 1fr; }
+      .config-preview { flex-direction: column; align-items: center; text-align: center; }
+    }
   </style>
 </head>
 <body>
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="campaign-photo" id="sidebarPhoto">
-        <span>📷</span>
-      </div>
-      <h1 id="sidebarName">Campanha</h1>
-      <span id="sidebarType">Configurar</span>
-      <div class="campaign-type" id="sidebarTypeLabel"></div>
+
+<!-- AUTH -->
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-card">
+    <h2>Sistema de Campanha</h2>
+    <p>Faça login para acessar o painel.</p>
+    <div id="authAlert" class="alert"></div>
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group"><label>E-mail</label><input type="email" class="form-control" id="loginEmail" placeholder="seu@email.com" required /></div>
+      <div class="form-group"><label>Senha</label><input type="password" class="form-control" id="loginSenha" placeholder="••••••••" required /></div>
+      <button type="submit" class="btn btn-primary btn-full">Entrar</button>
+    </form>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar" style="display:none;">
+  <div class="sidebar-logo">
+    <img id="sidebarLogo" class="sidebar-logo-img" />
+    <div class="sidebar-logo-text">
+      <h1 id="sidebarNome">Sistema</h1>
+      <span id="sidebarCargo">Campanha</span>
     </div>
-    <nav class="sidebar-nav">
-      <div class="nav-section-label">Menu</div>
-      <div class="nav-item active" onclick="showPage('dashboard')">
-        <span class="icon">📊</span> Dashboard
-      </div>
-      <div class="nav-item" onclick="showPage('pessoas')">
-        <span class="icon">👥</span> Cadastro de Pessoas
-      </div>
-      
-      <div class="nav-section-label" data-role="admin">Gestão</div>
-      <div class="nav-item" data-role="admin" onclick="showPage('operacoes')">
-        <span class="icon">⚙️</span> Operações
-      </div>
-      <div class="nav-item" data-role="admin" onclick="showPage('campanha-config')">
-        <span class="icon">🎯</span> Configurar Campanha
-      </div>
-    </nav>
-    <footer class="sidebar-footer">
-      <div class="user-chip">
-        <div class="user-avatar" id="userAvatar">U</div>
-        <div class="user-info">
-          <div class="user-name" id="userName">Usuário</div>
-          <div class="user-role" id="userRole">Visitante</div>
-        </div>
-      </div>
-      <button class="btn-logout" onclick="logout()" title="Sair">🚪</button>
-    </footer>
-  </aside>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Principal</div>
+    <div class="nav-item active" onclick="navigate('dashboard')"><span class="icon">📊</span> Dashboard</div>
 
-  <!-- Main Content -->
-  <main class="main">
-    <div class="topbar">
-      <h2 class="topbar-title" id="pageTitle">Dashboard</h2>
-      <div class="topbar-right">
-        <div class="badge-online">● Online</div>
+    <div class="nav-section-label">Cadastros</div>
+    <div class="nav-item" onclick="navigate('cadastro')"><span class="icon">👤</span> Cadastro de Pessoas</div>
+
+    <!-- Somente coordenador e admin -->
+    <div class="nav-section-label" data-role="coord">Operações</div>
+    <div class="nav-item" data-role="coord" onclick="navigate('mapa')"><span class="icon">📍</span> Mapa Eleitoral</div>
+    <div class="nav-item" data-role="coord" onclick="navigate('monitoramento')"><span class="icon">📊</span> Monitoramento</div>
+    <div class="nav-item" data-role="coord" onclick="navigate('reunioes')"><span class="icon">📅</span> Reuniões</div>
+    <div class="nav-item" data-role="coord" onclick="navigate('agenda')"><span class="icon">📆</span> Agenda</div>
+    <div class="nav-item" data-role="coord" onclick="navigate('relatorios')"><span class="icon">📋</span> Relatórios</div>
+
+    <!-- Somente admin -->
+    <div class="nav-section-label" data-role="admin">Gestão</div>
+    <div class="nav-item" data-role="admin" onclick="navigate('config')"><span class="icon">⚙️</span> Configurar Campanha</div>
+    <div class="nav-item" data-role="admin" onclick="navigate('perfis')"><span class="icon">🔐</span> Perfis de Acesso</div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-chip">
+      <img id="userAvatar" class="user-avatar" />
+      <div class="user-info">
+        <div class="user-name" id="userEmail">—</div>
+        <div class="user-role" id="userRoleLabel">—</div>
       </div>
+      <button class="btn-logout" title="Sair" onclick="logout()">⏻</button>
     </div>
+  </div>
+</aside>
 
-    <div class="content">
-      <!-- Auth Overlay -->
-      <div class="auth-overlay" id="authOverlay">
-        <div class="auth-card">
-          <h2>Acesso ao Sistema</h2>
-          <p>Faça login para continuar</p>
-          <div class="alert alert-danger" id="authError"></div>
-          <div class="form-group">
-            <label>Usuário</label>
-            <input type="text" class="form-control" id="authUser" placeholder="Digite seu usuário">
-          </div>
-          <div class="form-group">
-            <label>Senha</label>
-            <input type="password" class="form-control" id="authPass" placeholder="Digite sua senha">
-          </div>
-          <button class="btn btn-primary btn-full" onclick="login()">Entrar</button>
-        </div>
+<!-- MAIN -->
+<main class="main" id="main" style="display:none;">
+  <div class="topbar">
+    <div class="topbar-title" id="topbarTitle">Dashboard</div>
+    <div class="topbar-right"><span class="badge-online">Sistema online</span></div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div id="dashAlert" class="alert"></div>
+      <div class="metrics-grid">
+        <div class="metric-card"><div class="metric-label">Total de Pessoas</div><div class="metric-value" id="metricTotal">—</div><div class="metric-sub">cadastradas</div></div>
+        <div class="metric-card"><div class="metric-label">Lideranças Políticas</div><div class="metric-value" id="metricLiderancas">—</div><div class="metric-sub">ativas</div></div>
+        <div class="metric-card"><div class="metric-label">Regiões</div><div class="metric-value" id="metricRegioes">—</div><div class="metric-sub">cobertas</div></div>
+        <div class="metric-card"><div class="metric-label">Meta de Votos</div><div class="metric-value">70%</div><div class="metric-sub">progresso estimado</div></div>
       </div>
-
-      <!-- Dashboard Page -->
-      <div class="page active" id="dashboard">
+      <div class="grid-2">
         <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">📊 Resumo da Campanha</h3>
-          </div>
+          <div class="card-header"><span class="card-title">Progresso Regional</span></div>
           <div class="card-body">
-            <div class="metrics-grid">
-              <div class="metric-card">
-                <div class="metric-icon">👥</div>
-                <div class="metric-label">Total de Pessoas</div>
-                <div class="metric-value" id="totalPessoas">0</div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-icon">✅</div>
-                <div class="metric-label">Confirmadas</div>
-                <div class="metric-value" id="confirmadas">0</div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-icon">❌</div>
-                <div class="metric-label">Recusadas</div>
-                <div class="metric-value" id="recusadas">0</div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-icon">⏳</div>
-                <div class="metric-label">Pendentes</div>
-                <div class="metric-value" id="pendentes">0</div>
-              </div>
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Região A</span><span style="color:var(--muted)">82%</span></div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:82%"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Região B</span><span style="color:var(--muted)">67%</span></div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:67%"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Região C</span><span style="color:var(--muted)">54%</span></div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:54%"></div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Atividades Recentes</span></div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:12px;font-size:13px">
+              <div style="display:flex;gap:10px"><div style="flex:1"><strong>Novo contato registrado</strong><br><span style="color:var(--muted)">há 15 minutos</span></div></div>
+              <div style="display:flex;gap:10px"><div style="flex:1"><strong>Liderança confirmada</strong><br><span style="color:var(--muted)">há 1 hora</span></div></div>
+              <div style="display:flex;gap:10px"><div style="flex:1"><strong>Reunião agendada</strong><br><span style="color:var(--muted)">há 2 horas</span></div></div>
             </div>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Cadastro de Pessoas Page -->
-      <div class="page" id="pessoas">
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">👥 Cadastro de Pessoas</h3>
-            <button class="btn btn-primary btn-sm" onclick="openNewPersonModal()">+ Novo</button>
-          </div>
-          <div class="card-body">
-            <div class="filters-bar">
+    <!-- CADASTRO -->
+    <div class="page" id="page-cadastro">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Registrar Novo Contato</span></div>
+        <div class="card-body">
+          <div id="cadastroAlert" class="alert"></div>
+          <form onsubmit="handleCadastro(event)">
+            <div class="grid-2">
+              <div class="form-group"><label>Nome Completo *</label><input type="text" class="form-control" id="cNome" placeholder="Nome da pessoa" required /></div>
+              <div class="form-group"><label>Data de Nascimento</label><input type="date" class="form-control" id="cDataNasc" /></div>
+            </div>
+            <div class="form-group"><label>Endereço</label><input type="text" class="form-control" id="cEndereco" placeholder="Rua, número, bairro..." /></div>
+            <div class="grid-2">
+              <div class="form-group"><label>Telefone</label><input type="tel" class="form-control" id="cTelefone" placeholder="(00) 9 9999-9999" /></div>
               <div class="form-group">
-                <label>Status</label>
-                <select class="form-control" id="filterStatus" onchange="loadPessoas()">
-                  <option value="">Todos</option>
-                  <option value="confirmada">Confirmadas</option>
-                  <option value="recusada">Recusadas</option>
-                  <option value="pendente">Pendentes</option>
+                <label>Região *</label>
+                <select class="form-control" id="cRegiao" required>
+                  <option value="">Selecione...</option>
+                  <option>Região A</option><option>Região B</option><option>Região C</option>
                 </select>
               </div>
             </div>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Nome</th>
-                    <th>Email</th>
-                    <th>Telefone</th>
-                    <th>Status</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
-                <tbody id="pessoasTable">
-                  <tr><td colspan="5" style="text-align:center; color: var(--muted);">Nenhuma pessoa cadastrada</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Operações Page (Admin only) -->
-      <div class="page" id="operacoes">
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">⚙️ Operações do Sistema</h3>
-          </div>
-          <div class="card-body">
-            <p style="color: var(--muted); margin-bottom: 1.5rem;">Painel de controle administrativo</p>
-            <button class="btn btn-outline" onclick="alert('Importar dados')">📥 Importar Dados</button>
-            <button class="btn btn-outline" onclick="alert('Exportar dados')">📤 Exportar Dados</button>
-            <button class="btn btn-outline" onclick="alert('Sincronizar')">🔄 Sincronizar</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Configurar Campanha Page (Admin only) -->
-      <div class="page" id="campanha-config">
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">🎯 Configurar Campanha</h3>
-          </div>
-          <div class="card-body">
             <div class="form-group">
-              <label>Tipo de Cargo</label>
-              <select class="form-control" id="campaignType">
-                <option value="">Selecionar...</option>
-                <option value="deputado-estadual">Deputado Estadual</option>
-                <option value="deputado-federal">Deputado Federal</option>
+              <label>Tipo de Liderança</label>
+              <select class="form-control" id="cLideranca">
+                <option value="Nenhuma">Apoiador</option>
+                <option value="Liderança">Liderança Local</option>
               </select>
             </div>
-            <div class="form-group">
-              <label>Nome do Candidato</label>
-              <input type="text" class="form-control" id="campaignName" placeholder="Digite o nome completo">
+            <button type="submit" class="btn btn-primary">Registrar Contato</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Contatos Registrados</span>
+          <div class="filters-bar">
+            <div class="form-group"><label>Região</label>
+              <select class="form-control" id="filtroRegiao" onchange="loadPessoas()">
+                <option value="">Todas</option>
+                <option>Região A</option><option>Região B</option><option>Região C</option>
+              </select>
             </div>
-            <div class="form-group">
-              <label>Foto do Candidato</label>
-              <input type="file" class="form-control" id="campaignPhoto" accept="image/*" onchange="previewPhoto()">
-              <div class="photo-preview" id="photoPreview">
-                <span style="font-size: 24px;">📷</span>
-              </div>
+            <button class="btn btn-outline btn-sm" onclick="loadPessoas()">Atualizar</button>
+            <button class="btn btn-success btn-sm" onclick="baixarCSV()">Baixar CSV</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Nome</th><th>Região</th><th>Telefone</th><th>Tipo</th><th>Ação</th></tr></thead>
+            <tbody id="pessoasTableBody">
+              <tr><td colspan="6"><div class="empty-state"><div class="empty-icon">👥</div><p>Nenhum contato registrado ainda.</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAPA -->
+    <div class="page" id="page-mapa">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Mapa de Cobertura</span></div>
+        <div class="card-body">
+          <div class="map-placeholder"><strong>Mapa Interativo</strong><p style="max-width:360px;text-align:center">Visualização de cobertura e distribuição de contatos por região</p></div>
+          <div class="grid-3" style="margin-top:1.25rem">
+            <div class="metric-card"><div class="metric-label">Regiões Cobertas</div><div class="metric-value">3</div></div>
+            <div class="metric-card"><div class="metric-label">Pontos Ativos</div><div class="metric-value">45</div></div>
+            <div class="metric-card"><div class="metric-label">Cobertura Total</div><div class="metric-value">78%</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MONITORAMENTO -->
+    <div class="page" id="page-monitoramento">
+      <div class="metrics-grid">
+        <div class="metric-card"><div class="metric-label">Intenção de Voto</div><div class="metric-value">58%</div><div class="metric-sub">última pesquisa</div></div>
+        <div class="metric-card"><div class="metric-label">Rejeição</div><div class="metric-value">12%</div><div class="metric-sub">índice atual</div></div>
+        <div class="metric-card"><div class="metric-label">Indecisos</div><div class="metric-value">30%</div><div class="metric-sub">a conquistar</div></div>
+        <div class="metric-card"><div class="metric-label">Contatos Ativos</div><div class="metric-value">142</div><div class="metric-sub">últimos 7 dias</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Monitoramento de Pesquisas</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Data</th><th>Fonte</th><th>Intenção</th><th>Rejeição</th><th>Indecisos</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>17/05/2026</td><td>Pesquisa Interna</td><td><span class="badge badge-green">58%</span></td><td><span class="badge badge-red">12%</span></td><td>30%</td><td><span class="badge badge-blue">Atual</span></td></tr>
+              <tr><td>10/05/2026</td><td>Pesquisa Interna</td><td><span class="badge badge-green">54%</span></td><td><span class="badge badge-red">14%</span></td><td>32%</td><td><span class="badge badge-blue">Anterior</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- REUNIÕES -->
+    <div class="page" id="page-reunioes">
+      <div class="card" style="margin-bottom:1.25rem">
+        <div class="card-header"><span class="card-title">Agendar Reunião</span></div>
+        <div class="card-body">
+          <form onsubmit="handleNovaReuniao(event)">
+            <div class="grid-2">
+              <div class="form-group"><label>Título</label><input type="text" class="form-control" id="reuniaoTitulo" required /></div>
+              <div class="form-group"><label>Região</label><select class="form-control" id="reuniaoRegiao"><option>Região A</option><option>Região B</option><option>Região C</option></select></div>
             </div>
-            <button class="btn btn-success btn-full" onclick="saveCampaignConfig()">💾 Salvar Configurações</button>
-            
-            <div class="campaign-preview">
-              <h4 style="font-size: 13px; font-weight: 600; margin-bottom: 1rem; color: var(--muted);">PRÉVIA</h4>
-              <div class="preview-item">
-                <div class="preview-photo" id="previewPhotoBox">
-                  <span>📷</span>
-                </div>
-                <div class="preview-info">
-                  <h4 id="previewName">Candidato</h4>
-                  <p id="previewType">Cargo não definido</p>
-                </div>
-              </div>
+            <div class="grid-2">
+              <div class="form-group"><label>Data</label><input type="date" class="form-control" id="reuniaoData" required /></div>
+              <div class="form-group"><label>Horário</label><input type="time" class="form-control" id="reuniaoHora" required /></div>
+            </div>
+            <div class="form-group"><label>Observações</label><textarea class="form-control" id="reuniaoObs" rows="2"></textarea></div>
+            <button type="submit" class="btn btn-primary">Agendar Reunião</button>
+          </form>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Próximas Reuniões</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Data</th><th>Horário</th><th>Título</th><th>Região</th><th>Status</th></tr></thead>
+            <tbody id="reunioesTableBody">
+              <tr><td colspan="5"><div class="empty-state"><div class="empty-icon">📅</div><p>Nenhuma reunião agendada.</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- AGENDA -->
+    <div class="page" id="page-agenda">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Agenda da Semana</span></div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:10px;font-size:13.5px">
+              <div style="display:flex;gap:12px;align-items:center;padding:.75rem;background:#f8fafc;border-radius:8px;border-left:4px solid var(--primary)"><div style="text-align:center;min-width:40px;font-weight:700">20</div><div><strong>Reunião com Lideranças</strong><br><span style="color:var(--muted)">14:00</span></div></div>
+              <div style="display:flex;gap:12px;align-items:center;padding:.75rem;background:#f8fafc;border-radius:8px;border-left:4px solid var(--success)"><div style="text-align:center;min-width:40px;font-weight:700">21</div><div><strong>Evento Regional</strong><br><span style="color:var(--muted)">10:00</span></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Novo Compromisso</span></div>
+          <div class="card-body">
+            <form onsubmit="handleNovoCompromisso(event)">
+              <div class="form-group"><label>Título</label><input type="text" class="form-control" required /></div>
+              <div class="form-group"><label>Data e Hora</label><input type="datetime-local" class="form-control" required /></div>
+              <div class="form-group"><label>Local</label><input type="text" class="form-control" /></div>
+              <div class="form-group"><label>Tipo</label><select class="form-control"><option>Reunião</option><option>Evento</option><option>Visita</option><option>Entrevista</option></select></div>
+              <button type="submit" class="btn btn-primary">Salvar Compromisso</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RELATÓRIOS -->
+    <div class="page" id="page-relatorios">
+      <div class="grid-2" style="margin-bottom:1.25rem">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Gerar Relatório</span></div>
+          <div class="card-body">
+            <div class="form-group"><label>Filtrar por Região</label>
+              <select class="form-control" id="relRegiao">
+                <option value="">Todas</option>
+                <option>Região A</option><option>Região B</option><option>Região C</option>
+              </select>
+            </div>
+            <button class="btn btn-success" onclick="baixarCSVRelatorio()">Baixar Relatório</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Resumo Geral</span></div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:12px;font-size:13.5px">
+              <div style="display:flex;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid var(--border)"><span>Total de Contatos</span><strong id="relTotal">—</strong></div>
+              <div style="display:flex;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid var(--border)"><span>Lideranças</span><strong id="relLiderancas">—</strong></div>
+              <div style="display:flex;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid var(--border)"><span>Regiões Cobertas</span><strong>3</strong></div>
+              <div style="display:flex;justify-content:space-between;padding:.6rem 0"><span>Taxa de Engajamento</span><strong>78%</strong></div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </main>
 
-  <script>
-    // ============ STATE & STORAGE ============
-    let currentUser = null;
-    let pessoas = [];
-    let campaignConfig = {
-      name: '',
-      type: '',
-      photo: ''
+    <!-- CONFIGURAR CAMPANHA — somente admin -->
+    <div class="page" id="page-config">
+      <div class="card" style="margin-bottom:1.25rem">
+        <div class="card-header"><span class="card-title">Configurar Campanha</span></div>
+        <div class="card-body">
+          <div id="configAlert" class="alert"></div>
+          <form onsubmit="handleSaveConfig(event)">
+            <div class="grid-2">
+              <div class="form-group">
+                <label>Tipo de Cargo *</label>
+                <select class="form-control" id="configCargo" required>
+                  <option value="">Selecione...</option>
+                  <option value="estadual">Deputado Estadual</option>
+                  <option value="federal">Deputado Federal</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Nome do Candidato *</label>
+                <input type="text" class="form-control" id="configNome" placeholder="Ex: João Silva" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Foto do Candidato</label>
+              <div class="file-input-wrapper">
+                <label class="file-input-label">
+                  <span>Clique para fazer upload</span>
+                  <input type="file" id="configFoto" accept="image/*" />
+                </label>
+                <img id="configPreviewImg" class="preview-img" style="display:none;" />
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top: 1.5rem;">Salvar Configurações</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">Prévia da Campanha</span></div>
+        <div class="card-body">
+          <div class="config-preview">
+            <img id="previewLogo" class="config-preview-img" />
+            <div class="config-preview-info">
+              <div class="config-preview-label">Nome do Candidato</div>
+              <div class="config-preview-value" id="previewNome">—</div>
+              <div class="config-preview-label" style="margin-top:1rem">Tipo de Cargo</div>
+              <div class="config-preview-value" id="previewCargo">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PERFIS — somente admin -->
+    <div class="page" id="page-perfis">
+      <div class="card" style="margin-bottom:1.25rem">
+        <div class="card-header"><span class="card-title">Perfis de Acesso</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Perfil</th><th>Permissões</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Administrador</strong></td><td>Acesso total ao sistema</td><td><span class="badge badge-green">Ativo</span></td></tr>
+              <tr><td><strong>Coordenador</strong></td><td>Tudo menos Perfis de Acesso</td><td><span class="badge badge-green">Ativo</span></td></tr>
+              <tr><td><strong>Operador</strong></td><td>Somente Cadastro de Contatos</td><td><span class="badge badge-green">Ativo</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">Criar Novo Usuário</span></div>
+        <div class="card-body">
+          <div id="perfilAlert" class="alert"></div>
+          <form onsubmit="handleCriarUsuario(event)">
+            <div class="grid-2">
+              <div class="form-group"><label>E-mail</label><input type="email" class="form-control" id="novoUserEmail" placeholder="usuario@email.com" required /></div>
+              <div class="form-group"><label>Senha</label><input type="password" class="form-control" id="novoUserSenha" placeholder="••••••••" required /></div>
+            </div>
+            <div class="form-group"><label>Perfil de Acesso</label>
+              <select class="form-control" id="novoUserRole">
+                <option value="operador">Operador</option>
+                <option value="coordenador">Coordenador</option>
+                <option value="admin">Administrador</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Criar Usuário</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+  let campaignConfig = JSON.parse(localStorage.getItem('campaignConfig') || 'null');
+  let token    = localStorage.getItem('campanha_token') || null;
+  let userInfo = JSON.parse(localStorage.getItem('campanha_user') || 'null');
+
+  const PERMISSIONS = {
+    admin:       ['dashboard','cadastro','mapa','monitoramento','reunioes','agenda','relatorios','config','perfis'],
+    coordenador: ['dashboard','cadastro','mapa','monitoramento','reunioes','agenda','relatorios'],
+    operador:    ['dashboard','cadastro'],
+  };
+
+  window.addEventListener('DOMContentLoaded', () => {
+    if (token && userInfo) showApp();
+    else document.getElementById('authOverlay').style.display = 'flex';
+  });
+
+  function showAlert(id, msg, type = 'danger') {
+    const el = document.getElementById(id);
+    el.textContent = msg; el.className = `alert alert-${type} show`;
+  }
+  function clearAlert(id) {
+    const el = document.getElementById(id);
+    el.className = 'alert'; el.textContent = '';
+  }
+
+  async function handleLogin(e) {
+    e.preventDefault(); clearAlert('authAlert');
+    const email = document.getElementById('loginEmail').value;
+    const senha = document.getElementById('loginSenha').value;
+    try {
+      const res  = await fetch('/auth/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email,senha}) });
+      const data = await res.json();
+      if (!res.ok) { showAlert('authAlert', data.error || 'Erro ao fazer login'); return; }
+      token = data.token;
+      let role = 'operador';
+      try { const p = JSON.parse(atob(token.split('.')[1])); role = p.role || 'operador'; } catch(_) {}
+      userInfo = { email, role };
+      localStorage.setItem('campanha_token', token);
+      localStorage.setItem('campanha_user', JSON.stringify(userInfo));
+      showApp();
+    } catch(err) { showAlert('authAlert', 'Erro de conexão.'); }
+  }
+
+  function showApp() {
+    document.getElementById('authOverlay').style.display = 'none';
+    document.getElementById('sidebar').style.display = 'flex';
+    document.getElementById('main').style.display = 'flex';
+
+    const email = userInfo?.email || '—';
+    const role  = userInfo?.role  || 'operador';
+
+    document.getElementById('userEmail').textContent = email;
+    
+    if (campaignConfig) {
+      document.getElementById('sidebarNome').textContent  = campaignConfig.nome || 'Sistema';
+      document.getElementById('sidebarCargo').textContent = campaignConfig.cargo === 'estadual' ? 'Deputado Estadual' : 'Deputado Federal';
+      if (campaignConfig.foto) {
+        document.getElementById('sidebarLogo').src = campaignConfig.foto;
+        document.getElementById('userAvatar').src = campaignConfig.foto;
+      } else {
+        document.getElementById('sidebarLogo').textContent = campaignConfig.nome.charAt(0).toUpperCase();
+        document.getElementById('userAvatar').textContent = email.charAt(0).toUpperCase();
+      }
+    } else {
+      document.getElementById('sidebarLogo').textContent = '?';
+      document.getElementById('sidebarNome').textContent = 'Sistema';
+      document.getElementById('sidebarCargo').textContent = 'Campanha';
+    }
+
+    const roleLabels = { admin: 'Administrador', coordenador: 'Coordenador', operador: 'Operador' };
+    document.getElementById('userRoleLabel').textContent = roleLabels[role] || role;
+
+    const items = document.querySelectorAll('[data-role]');
+    items.forEach(el => {
+      const itemRole = el.getAttribute('data-role');
+      if (itemRole === 'coord') {
+        const shouldShow = role === 'admin' || role === 'coordenador';
+        el.classList.toggle('hidden', !shouldShow);
+      } else if (itemRole === 'admin') {
+        const shouldShow = role === 'admin';
+        el.classList.toggle('hidden', !shouldShow);
+      }
+    });
+
+    loadConfigForm();
+    loadDashboard();
+  }
+
+  function logout() {
+    token = null; userInfo = null;
+    localStorage.removeItem('campanha_token');
+    localStorage.removeItem('campanha_user');
+    document.getElementById('sidebar').style.display = 'none';
+    document.getElementById('main').style.display = 'none';
+    document.getElementById('authOverlay').style.display = 'flex';
+  }
+
+  const pageTitles = {
+    dashboard:'Dashboard', cadastro:'Cadastro de Contatos',
+    mapa:'Mapa de Cobertura', monitoramento:'Monitoramento',
+    reunioes:'Reuniões', agenda:'Agenda',
+    relatorios:'Relatórios', config:'Configurar Campanha', perfis:'Perfis de Acesso',
+  };
+
+  function navigate(page) {
+    const role = userInfo?.role || 'operador';
+    const allowed = PERMISSIONS[role] || ['dashboard','cadastro'];
+
+    if (!allowed.includes(page)) {
+      alert('Você não tem permissão para acessar esta página.');
+      return;
+    }
+
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+    const pageEl = document.getElementById('page-' + page);
+    if (pageEl) pageEl.classList.add('active');
+
+    document.querySelectorAll('.nav-item').forEach(n => {
+      if (n.getAttribute('onclick') === `navigate('${page}')`) n.classList.add('active');
+    });
+
+    document.getElementById('topbarTitle').textContent = pageTitles[page] || page;
+
+    if (page === 'dashboard')  loadDashboard();
+    if (page === 'cadastro')   loadPessoas();
+    if (page === 'relatorios') loadRelatoriosSummary();
+    if (page === 'config')     loadConfigForm();
+  }
+
+  async function apiFetch(url, opts = {}) {
+    const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+    if (token) headers['Authorization'] = token;
+    return fetch(url, { ...opts, headers });
+  }
+
+  function loadConfigForm() {
+    if (campaignConfig) {
+      document.getElementById('configCargo').value = campaignConfig.cargo || '';
+      document.getElementById('configNome').value = campaignConfig.nome || '';
+      if (campaignConfig.foto) {
+        document.getElementById('configPreviewImg').src = campaignConfig.foto;
+        document.getElementById('configPreviewImg').style.display = 'block';
+      }
+      updateConfigPreview();
+    }
+  }
+
+  document.getElementById('configFoto')?.addEventListener('change', (e) => {
+    const preview = document.getElementById('configPreviewImg');
+    if (e.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        preview.src = event.target.result;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  });
+
+  function updateConfigPreview() {
+    const cargo = document.getElementById('configCargo').value;
+    const nome = document.getElementById('configNome').value || '—';
+    const foto = document.getElementById('configPreviewImg').src;
+    
+    const cargoLabel = cargo === 'estadual' ? 'Deputado Estadual' : cargo === 'federal' ? 'Deputado Federal' : '—';
+    document.getElementById('previewNome').textContent = nome;
+    document.getElementById('previewCargo').textContent = cargoLabel;
+    
+    if (foto && foto.startsWith('data:')) {
+      document.getElementById('previewLogo').src = foto;
+    } else {
+      document.getElementById('previewLogo').textContent = nome.charAt(0).toUpperCase();
+    }
+  }
+
+  async function handleSaveConfig(e) {
+    e.preventDefault(); clearAlert('configAlert');
+    const cargo = document.getElementById('configCargo').value;
+    const nome = document.getElementById('configNome').value.trim();
+    
+    if (!cargo || !nome) {
+      showAlert('configAlert', 'Preencha todos os campos obrigatórios', 'danger');
+      return;
+    }
+
+    const fotoInput = document.getElementById('configFoto');
+    
+    const saveFoto = () => {
+      campaignConfig = { cargo, nome, foto: fotoInput.files[0] ? document.getElementById('configPreviewImg').src : null };
+      localStorage.setItem('campaignConfig', JSON.stringify(campaignConfig));
+      showAlert('configAlert', 'Configurações salvas com sucesso!', 'success');
+      showApp();
     };
 
-    // ============ INITIALIZATION ============
-    function init() {
-      loadCampaignConfig();
-      checkAuth();
-      updateMetrics();
-      loadPessoas();
-    }
-
-    function checkAuth() {
-      const user = localStorage.getItem('currentUser');
-      if (user) {
-        currentUser = JSON.parse(user);
-        showApp();
-      } else {
-        showAuthOverlay();
-      }
-    }
-
-    function showAuthOverlay() {
-      document.getElementById('authOverlay').style.display = 'flex';
-    }
-
-    function showApp() {
-      document.getElementById('authOverlay').style.display = 'none';
-      updateUserDisplay();
-      updateCampaignDisplay();
-      showRoleItems();
-    }
-
-    // ============ AUTHENTICATION ============
-    function login() {
-      const user = document.getElementById('authUser').value.trim();
-      const pass = document.getElementById('authPass').value.trim();
-      const errorEl = document.getElementById('authError');
-
-      errorEl.textContent = '';
-      errorEl.classList.remove('show');
-
-      if (!user || !pass) {
-        errorEl.textContent = '❌ Usuário e senha são obrigatórios!';
-        errorEl.classList.add('show');
-        return;
-      }
-
-      // Simulação: qualquer usuário 'admin' é admin
-      const role = user.toLowerCase() === 'admin' ? 'admin' : 'user';
-      currentUser = { username: user, role: role };
-      localStorage.setItem('currentUser', JSON.stringify(currentUser));
-      
-      document.getElementById('authUser').value = '';
-      document.getElementById('authPass').value = '';
-      
-      showApp();
-    }
-
-    function logout() {
-      localStorage.removeItem('currentUser');
-      currentUser = null;
-      localStorage.removeItem('campaignConfig');
-      campaignConfig = { name: '', type: '', photo: '' };
-      showAuthOverlay();
-    }
-
-    // ============ UI UPDATES ============
-    function updateUserDisplay() {
-      if (!currentUser) return;
-      const avatar = currentUser.username.charAt(0).toUpperCase();
-      document.getElementById('userAvatar').textContent = avatar;
-      document.getElementById('userName').textContent = currentUser.username;
-      document.getElementById('userRole').textContent = currentUser.role === 'admin' ? '👑 Admin' : '👤 Usuário';
-    }
-
-    function showRoleItems() {
-      const items = document.querySelectorAll('[data-role]');
-      items.forEach(item => {
-        if (item.dataset.role === currentUser.role) {
-          item.style.display = '';
-        }
-      });
-    }
-
-    function showPage(pageId) {
-      // Hide all pages
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      
-      // Check admin access
-      if (pageId === 'operacoes' || pageId === 'campanha-config') {
-        if (currentUser.role !== 'admin') {
-          alert('❌ Acesso restrito a administradores!');
-          return;
-        }
-      }
-      
-      // Show selected page
-      document.getElementById(pageId).classList.add('active');
-      
-      // Update title
-      const titles = {
-        'dashboard': '📊 Dashboard',
-        'pessoas': '👥 Cadastro de Pessoas',
-        'operacoes': '⚙️ Operações',
-        'campanha-config': '🎯 Configurar Campanha'
-      };
-      document.getElementById('pageTitle').textContent = titles[pageId] || 'Painel';
-      
-      // Update active nav
-      document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.remove('active');
-      });
-      event.target.closest('.nav-item').classList.add('active');
-    }
-
-    // ============ CAMPAIGN CONFIGURATION ============
-    function loadCampaignConfig() {
-      const saved = localStorage.getItem('campaignConfig');
-      if (saved) {
-        campaignConfig = JSON.parse(saved);
-      }
-    }
-
-    function saveCampaignConfig() {
-      campaignConfig.name = document.getElementById('campaignName').value.trim();
-      campaignConfig.type = document.getElementById('campaignType').value;
-
-      if (!campaignConfig.name) {
-        alert('⚠️ Digite o nome do candidato!');
-        return;
-      }
-      if (!campaignConfig.type) {
-        alert('⚠️ Selecione o tipo de cargo!');
-        return;
-      }
-
-      localStorage.setItem('campaignConfig', JSON.stringify(campaignConfig));
-      updateCampaignDisplay();
-      alert('✅ Configurações salvas com sucesso!');
-    }
-
-    function previewPhoto() {
-      const file = document.getElementById('campaignPhoto').files[0];
-      if (!file) return;
-
+    if (fotoInput.files[0]) {
       const reader = new FileReader();
-      reader.onload = (e) => {
-        campaignConfig.photo = e.target.result;
-        
-        // Update preview
-        document.getElementById('photoPreview').innerHTML = `<img src="${e.target.result}" alt="Foto">`;
-        document.getElementById('previewPhotoBox').innerHTML = `<img src="${e.target.result}" alt="Foto">`;
+      reader.onload = () => {
+        campaignConfig = { cargo, nome, foto: reader.result };
+        localStorage.setItem('campaignConfig', JSON.stringify(campaignConfig));
+        showAlert('configAlert', 'Configurações salvas com sucesso!', 'success');
+        showApp();
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(fotoInput.files[0]);
+    } else {
+      saveFoto();
     }
+  }
 
-    function updateCampaignDisplay() {
-      // Sidebar
-      const sidebarPhoto = document.getElementById('sidebarPhoto');
-      const sidebarName = document.getElementById('sidebarName');
-      const sidebarType = document.getElementById('sidebarType');
-      const sidebarTypeLabel = document.getElementById('sidebarTypeLabel');
+  async function loadDashboard() {
+    try {
+      const res = await apiFetch('/dashboard/');
+      if (res.status === 401) { logout(); return; }
+      const data = await res.json();
+      document.getElementById('metricTotal').textContent      = data.total      ?? '—';
+      document.getElementById('metricLiderancas').textContent = data.liderancas ?? '—';
+      document.getElementById('metricRegioes').textContent    = '3';
+    } catch(err) { showAlert('dashAlert', 'Não foi possível carregar os dados.', 'info'); }
+  }
 
-      if (campaignConfig.photo) {
-        sidebarPhoto.innerHTML = `<img src="${campaignConfig.photo}" alt="Foto">`;
+  async function handleCadastro(e) {
+    e.preventDefault(); clearAlert('cadastroAlert');
+    const payload = {
+      nome:            document.getElementById('cNome').value.trim(),
+      endereco:        document.getElementById('cEndereco').value.trim(),
+      telefone:        document.getElementById('cTelefone').value.trim(),
+      regiao:          document.getElementById('cRegiao').value,
+      data_nascimento: document.getElementById('cDataNasc').value || null,
+      lideranca:       document.getElementById('cLideranca').value,
+    };
+    try {
+      const res = await apiFetch('/dashboard/pessoas', { method:'POST', body:JSON.stringify(payload) });
+      if (res.status === 401) { logout(); return; }
+      if (res.ok) {
+        showAlert('cadastroAlert', `"${payload.nome}" registrado(a) com sucesso!`, 'success');
+        e.target.reset(); loadPessoas(); loadDashboard();
+      } else {
+        const d = await res.json(); showAlert('cadastroAlert', d.error || 'Erro ao registrar.');
       }
-      
-      if (campaignConfig.name) {
-        sidebarName.textContent = campaignConfig.name;
-        sidebarType.style.display = 'none';
-      }
+    } catch(err) { showAlert('cadastroAlert', 'Erro de conexão.'); }
+  }
 
-      if (campaignConfig.type) {
-        const typeLabel = campaignConfig.type === 'deputado-estadual' ? 'Deputado Estadual' : 'Deputado Federal';
-        sidebarTypeLabel.textContent = typeLabel;
-      }
-
-      // Preview
-      document.getElementById('previewName').textContent = campaignConfig.name || 'Candidato';
-      const previewTypeText = campaignConfig.type === 'deputado-estadual' ? 'Deputado Estadual' : 
-                              campaignConfig.type === 'deputado-federal' ? 'Deputado Federal' : 'Cargo não definido';
-      document.getElementById('previewType').textContent = previewTypeText;
-
-      // Form fields
-      document.getElementById('campaignName').value = campaignConfig.name;
-      document.getElementById('campaignType').value = campaignConfig.type;
-      
-      if (campaignConfig.photo) {
-        document.getElementById('photoPreview').innerHTML = `<img src="${campaignConfig.photo}" alt="Foto">`;
-        document.getElementById('previewPhotoBox').innerHTML = `<img src="${campaignConfig.photo}" alt="Foto">`;
-      }
-    }
-
-    // ============ PESSOAS MANAGEMENT ============
-    function openNewPersonModal() {
-      const nome = prompt('Nome:');
-      if (!nome) return;
-      const email = prompt('Email:');
-      if (!email) return;
-      const telefone = prompt('Telefone:');
-      if (!telefone) return;
-
-      const pessoa = {
-        id: Date.now(),
-        nome,
-        email,
-        telefone,
-        status: 'pendente'
-      };
-
-      pessoas.push(pessoa);
-      localStorage.setItem('pessoas', JSON.stringify(pessoas));
-      loadPessoas();
-    }
-
-    function loadPessoas() {
-      const saved = localStorage.getItem('pessoas');
-      pessoas = saved ? JSON.parse(saved) : [];
-
-      const filter = document.getElementById('filterStatus').value;
-      const filtered = filter ? pessoas.filter(p => p.status === filter) : pessoas;
-
-      const tbody = document.getElementById('pessoasTable');
-      if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color: var(--muted);">Nenhuma pessoa encontrada</td></tr>';
+  async function loadPessoas() {
+    const regiao = document.getElementById('filtroRegiao')?.value || '';
+    const params = new URLSearchParams();
+    if (regiao) params.append('regiao', regiao);
+    try {
+      const res   = await apiFetch('/dashboard/pessoas?' + params.toString());
+      if (!res.ok) return;
+      const data  = await res.json();
+      const tbody = document.getElementById('pessoasTableBody');
+      if (!data.pessoas || data.pessoas.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">👥</div><p>Nenhum contato registrado.</p></div></td></tr>';
         return;
       }
+      const badge = l => l === 'Liderança'
+        ? '<span class="badge badge-purple">Liderança</span>'
+        : '<span class="badge badge-gray">Apoiador</span>';
+      tbody.innerHTML = data.pessoas.map(p => `
+        <tr>
+          <td>${p.id}</td>
+          <td><strong>${p.nome}</strong></td>
+          <td>${p.regiao || '—'}</td>
+          <td>${p.telefone || '—'}</td>
+          <td>${badge(p.lideranca)}</td>
+          <td><button class="btn btn-danger btn-sm" onclick="deletarPessoa(${p.id},'${p.nome.replace(/'/g,"\\'")}')">Remover</button></td>
+        </tr>`).join('');
+    } catch(err) {}
+  }
 
-      tbody.innerHTML = filtered.map(p => {
-        const statusBadges = {
-          'confirmada': '<span class="badge badge-green">✅ Confirmada</span>',
-          'recusada': '<span class="badge badge-red">❌ Recusada</span>',
-          'pendente': '<span class="badge badge-yellow">⏳ Pendente</span>'
-        };
+  async function deletarPessoa(id, nome) {
+    if (!confirm(`Remover "${nome}"?`)) return;
+    try {
+      const res = await apiFetch(`/dashboard/pessoas/${id}`, { method:'DELETE' });
+      if (res.ok) { loadPessoas(); loadDashboard(); }
+      else alert('Erro ao remover.');
+    } catch(err) { alert('Erro de conexão.'); }
+  }
 
-        return `
-          <tr>
-            <td>${p.nome}</td>
-            <td>${p.email}</td>
-            <td>${p.telefone}</td>
-            <td>${statusBadges[p.status]}</td>
-            <td>
-              <button class="btn btn-sm btn-success" onclick="updateStatus(${p.id}, 'confirmada')">✅</button>
-              <button class="btn btn-sm btn-danger" onclick="updateStatus(${p.id}, 'recusada')">❌</button>
-            </td>
-          </tr>
-        `;
-      }).join('');
-    }
+  function _dispararDownloadCSV(regiao) {
+    const params = new URLSearchParams();
+    if (regiao) params.append('regiao', regiao);
+    apiFetch('/dashboard/exportar-csv?' + params.toString())
+      .then(res => { if (res.status === 401) { logout(); return; } return res.blob(); })
+      .then(blob => {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'contatos.csv';
+        document.body.appendChild(a); a.click();
+        document.body.removeChild(a); URL.revokeObjectURL(url);
+      })
+      .catch(() => alert('Erro ao baixar CSV.'));
+  }
 
-    function updateStatus(id, status) {
-      const pessoa = pessoas.find(p => p.id === id);
-      if (pessoa) {
-        pessoa.status = status;
-        localStorage.setItem('pessoas', JSON.stringify(pessoas));
-        loadPessoas();
-        updateMetrics();
-      }
-    }
+  function baixarCSV() {
+    _dispararDownloadCSV(document.getElementById('filtroRegiao')?.value || '');
+  }
 
-    function updateMetrics() {
-      const saved = localStorage.getItem('pessoas');
-      const pessoas = saved ? JSON.parse(saved) : [];
+  function baixarCSVRelatorio() {
+    _dispararDownloadCSV(document.getElementById('relRegiao')?.value || '');
+  }
 
-      document.getElementById('totalPessoas').textContent = pessoas.length;
-      document.getElementById('confirmadas').textContent = pessoas.filter(p => p.status === 'confirmada').length;
-      document.getElementById('recusadas').textContent = pessoas.filter(p => p.status === 'recusada').length;
-      document.getElementById('pendentes').textContent = pessoas.filter(p => p.status === 'pendente').length;
-    }
+  async function loadRelatoriosSummary() {
+    try {
+      const res  = await apiFetch('/dashboard/');
+      if (!res.ok) return;
+      const data = await res.json();
+      document.getElementById('relTotal').textContent      = data.total      ?? '—';
+      document.getElementById('relLiderancas').textContent = data.liderancas ?? '—';
+    } catch(err) {}
+  }
 
-    // ============ INIT ============
-    window.addEventListener('load', init);
-  </script>
+  let reunioes = [];
+  function handleNovaReuniao(e) {
+    e.preventDefault();
+    reunioes.push({ titulo:document.getElementById('reuniaoTitulo').value, regiao:document.getElementById('reuniaoRegiao').value, data:document.getElementById('reuniaoData').value, hora:document.getElementById('reuniaoHora').value });
+    document.getElementById('reuniaoTitulo').value = '';
+    document.getElementById('reunioesTableBody').innerHTML = reunioes.map(r =>
+      `<tr><td>${r.data}</td><td>${r.hora}</td><td>${r.titulo}</td><td>${r.regiao}</td><td><span class="badge badge-yellow">Agendada</span></td></tr>`
+    ).join('');
+  }
+
+  function handleNovoCompromisso(e) { e.preventDefault(); alert('Compromisso salvo!'); e.target.reset(); }
+
+  async function handleCriarUsuario(e) {
+    e.preventDefault(); clearAlert('perfilAlert');
+    const email = document.getElementById('novoUserEmail').value;
+    const senha = document.getElementById('novoUserSenha').value;
+    const role  = document.getElementById('novoUserRole').value;
+    try {
+      const res  = await apiFetch('/auth/register', { method:'POST', body:JSON.stringify({email,senha,role}) });
+      const data = await res.json();
+      if (res.ok) { showAlert('perfilAlert', `Usuário "${email}" criado com sucesso!`, 'success'); e.target.reset(); }
+      else showAlert('perfilAlert', data.error || 'Erro ao criar usuário.');
+    } catch(err) { showAlert('perfilAlert', 'Erro de conexão.'); }
+  }
+</script>
 </body>
 </html>
