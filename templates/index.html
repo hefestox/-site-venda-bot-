@@ -26,7 +26,7 @@
     body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; overflow-x: hidden; }
     .sidebar { width: 240px; min-height: 100vh; background: var(--sidebar); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 200; }
     .sidebar-logo { padding: 1.5rem 1.25rem 1rem; border-bottom: 1px solid rgba(255,255,255,.08); display: flex; align-items: center; gap: 12px; }
-    .sidebar-logo-img { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; }
+    .sidebar-logo-img { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 18px; }
     .sidebar-logo-text h1 { font-size: 14px; font-weight: 700; color: #fff; letter-spacing: .5px; line-height: 1.2; }
     .sidebar-logo-text span { font-size: 10px; color: #94a3b8; }
     .sidebar-nav { flex: 1; padding: 1rem 0; overflow-y: auto; }
@@ -50,6 +50,7 @@
     .topbar-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
     .badge-online { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--success); background: #dcfce7; padding: 4px 10px; border-radius: 20px; }
     .badge-online::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--success); animation: pulse 1.5s infinite; }
+    .badge-municipio { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #1e40af; background: #dbeafe; padding: 4px 10px; border-radius: 20px; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
     .content { padding: 1.75rem; flex: 1; }
     .auth-overlay { position: fixed; inset: 0; background: rgba(15,23,42,.85); backdrop-filter: blur(6px); z-index: 500; display: flex; align-items: center; justify-content: center; padding: 1rem; }
@@ -85,7 +86,6 @@
     .metric-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; }
     .metric-value { font-size: 32px; font-weight: 700; color: var(--text); line-height: 1; }
     .metric-sub   { font-size: 12px; color: var(--muted); }
-    .metric-icon  { font-size: 22px; margin-bottom: 4px; }
     .page { display: none; }
     .page.active { display: block; }
     .card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 1.25rem; }
@@ -108,120 +108,33 @@
     .badge-yellow { background: #fef9c3; color: #854d0e; }
     .badge-red    { background: #fee2e2; color: #991b1b; }
     .badge-gray   { background: #f1f5f9; color: #475569; }
+    .badge-orange { background: #ffedd5; color: #9a3412; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
     .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; }
     .map-placeholder { background: #e2e8f0; border-radius: var(--radius); height: 420px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--muted); }
     .progress-bar-wrap { background: #e2e8f0; border-radius: 99px; height: 8px; overflow: hidden; }
     .progress-bar-fill { height: 100%; border-radius: 99px; background: var(--primary); transition: width .4s; }
     .empty-state { text-align: center; padding: 3rem 1rem; color: var(--muted); }
-    .empty-state .empty-icon { font-size: 20px; margin-bottom: .75rem; }
+    .empty-state .empty-icon { font-size: 40px; margin-bottom: .75rem; }
     .empty-state p { font-size: 14px; }
     .config-preview { display: flex; gap: 2rem; align-items: flex-start; padding: 1.5rem; background: #f8fafc; border-radius: var(--radius); }
-    .config-preview-img { width: 120px; height: 120px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; flex-shrink: 0; }
+    .config-preview-img { width: 120px; height: 120px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 36px; flex-shrink: 0; }
     .config-preview-info { flex: 1; }
     .config-preview-label { font-size: 12px; color: var(--muted); text-transform: uppercase; font-weight: 600; }
     .config-preview-value { font-size: 18px; font-weight: 700; color: var(--text); margin-top: .25rem; }
-    
-    /* RESPONSIVIDADE MELHORADA */
-    @media (max-width: 1024px) {
-      .sidebar { width: 200px; }
-      .main { margin-left: 200px; }
-      .content { padding: 1.5rem; }
-      .topbar { padding: .75rem 1.25rem; font-size: 15px; }
-      .metrics-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .75rem; }
-      .metric-card { padding: 1rem 1.25rem; }
-      .metric-value { font-size: 28px; }
-    }
-    
+    /* Campo municipio coordenador */
+    #municipioField { display: none; }
     @media (max-width: 768px) {
-      .sidebar { 
-        transform: translateX(-100%); 
-        transition: transform .3s ease;
-        width: 280px;
-      }
+      .sidebar { transform: translateX(-100%); transition: transform .3s ease; width: 280px; }
       .sidebar.open { transform: translateX(0); }
       .main { margin-left: 0; }
       .content { padding: 1rem; }
-      .topbar { padding: .75rem 1rem; gap: 1rem; }
-      .topbar-title { font-size: 16px; }
-      .auth-card { padding: 2rem 1.5rem; }
-      .card-header { flex-direction: column; align-items: flex-start; }
-      .filters-bar { width: 100%; }
-      .filters-bar .form-group { flex: 1; min-width: auto; }
       .grid-2, .grid-3 { grid-template-columns: 1fr; }
-      .metrics-grid { grid-template-columns: 1fr 1fr; gap: .75rem; }
-      .metric-card { padding: 1rem; }
-      .metric-value { font-size: 24px; }
-      .metric-label { font-size: 11px; }
-      .config-preview { 
-        flex-direction: column; 
-        align-items: center; 
-        text-align: center; 
-        padding: 1.25rem;
-      }
-      .config-preview-img { width: 100px; height: 100px; }
-      .table-wrap { font-size: 12px; }
-      table { font-size: 12px; }
-      thead th { padding: .5rem .75rem; font-size: 10px; }
-      tbody td { padding: .5rem .75rem; }
-      .btn-sm { padding: .3rem .6rem; font-size: 11px; }
-      .form-control { font-size: 16px; /* Evita zoom automático */ }
-      .empty-state { padding: 2rem 1rem; }
-      .empty-state .empty-icon { font-size: 32px; }
-      .card { margin-bottom: 1rem; }
-      .card-body { padding: 1rem; }
-      .card-header { padding: .75rem 1rem; }
+      .metrics-grid { grid-template-columns: 1fr 1fr; }
     }
-
     @media (max-width: 480px) {
-      .sidebar { width: 100%; }
-      .content { padding: 0.75rem; }
-      .topbar { 
-        padding: .6rem .75rem; 
-        font-size: 14px;
-      }
-      .topbar-title { font-size: 14px; margin-bottom: .5rem; flex-basis: 100%; }
-      .topbar-right { width: 100%; }
-      .badge-online { font-size: 11px; }
-      .auth-card { padding: 1.5rem 1rem; width: 95vw; }
-      .auth-card h2 { font-size: 20px; }
-      .auth-card p { font-size: 12px; }
-      .metrics-grid { grid-template-columns: 1fr; gap: .6rem; margin-bottom: 1rem; }
-      .metric-card { padding: .75rem 1rem; }
-      .metric-value { font-size: 20px; }
-      .metric-label { font-size: 10px; }
-      .metric-sub { font-size: 11px; }
-      .card { margin-bottom: .75rem; }
-      .card-body { padding: .75rem; }
-      .card-header { padding: .6rem .75rem; }
-      .card-title { font-size: 14px; }
-      .form-group { margin-bottom: .75rem; }
-      .form-group label { font-size: 12px; margin-bottom: .25rem; }
-      .form-control { padding: .5rem .75rem; font-size: 16px; }
-      .btn { padding: .5rem 1rem; font-size: 13px; }
-      .btn-full { width: 100%; }
-      .table-wrap { font-size: 11px; overflow-x: auto; }
-      table { font-size: 11px; }
-      thead th { padding: .4rem .5rem; font-size: 9px; }
-      tbody td { padding: .4rem .5rem; }
-      .grid-2, .grid-3 { gap: .75rem; }
-      .config-preview { 
-        padding: 1rem;
-        gap: 1rem;
-      }
-      .config-preview-img { width: 80px; height: 80px; }
-      .config-preview-info { flex: 1; }
-      .config-preview-label { font-size: 11px; }
-      .config-preview-value { font-size: 16px; }
-      .sidebar-nav { padding: .5rem 0; }
-      .nav-item { padding: .5rem 1rem; font-size: 13px; }
-      .nav-item .icon { font-size: 14px; }
-      .sidebar-logo { padding: 1rem .75rem .75rem; }
-      .sidebar-logo-img { width: 36px; height: 36px; }
-      .sidebar-logo-text h1 { font-size: 13px; }
-      .filters-bar .form-group { min-width: 100%; }
-      .filters-bar .btn { width: 100%; margin-top: .5rem; }
-      .map-placeholder { height: 250px; }
+      .metrics-grid { grid-template-columns: 1fr; }
+      .form-control { font-size: 16px; }
     }
   </style>
 </head>
@@ -244,7 +157,7 @@
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar" style="display:none;">
   <div class="sidebar-logo">
-    <img id="sidebarLogo" class="sidebar-logo-img" />
+    <div id="sidebarLogo" class="sidebar-logo-img">?</div>
     <div class="sidebar-logo-text">
       <h1 id="sidebarNome">Sistema</h1>
       <span id="sidebarCargo">Campanha</span>
@@ -253,26 +166,20 @@
   <nav class="sidebar-nav">
     <div class="nav-section-label">Principal</div>
     <div class="nav-item active" onclick="navigate('dashboard')"><span class="icon">📊</span> Dashboard</div>
-
     <div class="nav-section-label">Cadastros</div>
     <div class="nav-item" onclick="navigate('cadastro')"><span class="icon">👤</span> Cadastro de Pessoas</div>
-
-    <!-- Somente coordenador e admin -->
     <div class="nav-section-label" data-role="coord">Operações</div>
     <div class="nav-item" data-role="coord" onclick="navigate('mapa')"><span class="icon">📍</span> Mapa Eleitoral</div>
     <div class="nav-item" data-role="coord" onclick="navigate('monitoramento')"><span class="icon">📊</span> Monitoramento</div>
     <div class="nav-item" data-role="coord" onclick="navigate('reunioes')"><span class="icon">📅</span> Reuniões</div>
-    <div class="nav-item" data-role="coord" onclick="navigate('agenda')"><span class="icon">📆</span> Agenda</div>
     <div class="nav-item" data-role="coord" onclick="navigate('relatorios')"><span class="icon">📋</span> Relatórios</div>
-
-    <!-- Somente admin -->
     <div class="nav-section-label" data-role="admin">Gestão</div>
     <div class="nav-item" data-role="admin" onclick="navigate('config')"><span class="icon">⚙️</span> Configurar Campanha</div>
-    <div class="nav-item" data-role="admin" onclick="navigate('perfis')"><span class="icon">🔐</span> Perfis de Acesso</div>
+    <div class="nav-item" data-role="admin" onclick="navigate('usuarios')"><span class="icon">🔐</span> Gerenciar Usuários</div>
   </nav>
   <div class="sidebar-footer">
     <div class="user-chip">
-      <img id="userAvatar" class="user-avatar" />
+      <div id="userAvatar" class="user-avatar">?</div>
       <div class="user-info">
         <div class="user-name" id="userEmail">—</div>
         <div class="user-role" id="userRoleLabel">—</div>
@@ -286,7 +193,10 @@
 <main class="main" id="main" style="display:none;">
   <div class="topbar">
     <div class="topbar-title" id="topbarTitle">Dashboard</div>
-    <div class="topbar-right"><span class="badge-online">Sistema online</span></div>
+    <div class="topbar-right">
+      <span id="municipioBadge" class="badge-municipio" style="display:none;">📍 <span id="municipioBadgeText"></span></span>
+      <span class="badge-online">Sistema online</span>
+    </div>
   </div>
 
   <div class="content">
@@ -296,7 +206,7 @@
       <div id="dashAlert" class="alert"></div>
       <div class="metrics-grid">
         <div class="metric-card"><div class="metric-label">Total de Pessoas</div><div class="metric-value" id="metricTotal">—</div><div class="metric-sub">cadastradas</div></div>
-        <div class="metric-card"><div class="metric-label">Lideranças Políticas</div><div class="metric-value" id="metricLiderancas">—</div><div class="metric-sub">ativas</div></div>
+        <div class="metric-card"><div class="metric-label">Lideranças</div><div class="metric-value" id="metricLiderancas">—</div><div class="metric-sub">ativas</div></div>
         <div class="metric-card"><div class="metric-label">Regiões</div><div class="metric-value" id="metricRegioes">—</div><div class="metric-sub">cobertas</div></div>
         <div class="metric-card"><div class="metric-label">Meta de Votos</div><div class="metric-value">70%</div><div class="metric-sub">progresso estimado</div></div>
       </div>
@@ -315,9 +225,9 @@
           <div class="card-header"><span class="card-title">Atividades Recentes</span></div>
           <div class="card-body">
             <div style="display:flex;flex-direction:column;gap:12px;font-size:13px">
-              <div style="display:flex;gap:10px"><div style="flex:1"><strong>Novo contato registrado</strong><br><span style="color:var(--muted)">há 15 minutos</span></div></div>
-              <div style="display:flex;gap:10px"><div style="flex:1"><strong>Liderança confirmada</strong><br><span style="color:var(--muted)">há 1 hora</span></div></div>
-              <div style="display:flex;gap:10px"><div style="flex:1"><strong>Reunião agendada</strong><br><span style="color:var(--muted)">há 2 horas</span></div></div>
+              <div><strong>Novo contato registrado</strong><br><span style="color:var(--muted)">há 15 minutos</span></div>
+              <div><strong>Liderança confirmada</strong><br><span style="color:var(--muted)">há 1 hora</span></div>
+              <div><strong>Reunião agendada</strong><br><span style="color:var(--muted)">há 2 horas</span></div>
             </div>
           </div>
         </div>
@@ -338,7 +248,7 @@
             <div class="form-group"><label>Endereço</label><input type="text" class="form-control" id="cEndereco" placeholder="Rua, número, bairro..." /></div>
             <div class="grid-2">
               <div class="form-group"><label>Telefone</label><input type="tel" class="form-control" id="cTelefone" placeholder="(00) 9 9999-9999" /></div>
-              <div class="form-group">
+              <div class="form-group" id="municipioCadastroField">
                 <label>Município *</label>
                 <select class="form-control" id="cMunicipio" required>
                   <option value="">Selecione...</option>
@@ -362,7 +272,7 @@
         <div class="card-header">
           <span class="card-title">Contatos Registrados</span>
           <div class="filters-bar">
-            <div class="form-group"><label>Município</label>
+            <div class="form-group" id="filtroMunicipioWrap"><label>Município</label>
               <select class="form-control" id="filtroMunicipio" onchange="loadPessoas()">
                 <option value="">Todos</option>
                 <option>Rio Branco</option><option>Cruzeiro do Sul</option><option>Sena Madureira</option>
@@ -406,39 +316,10 @@
         <div class="metric-card"><div class="metric-label">Indecisos</div><div class="metric-value">30%</div><div class="metric-sub">a conquistar</div></div>
         <div class="metric-card"><div class="metric-label">Contatos Ativos</div><div class="metric-value">142</div><div class="metric-sub">últimos 7 dias</div></div>
       </div>
-      <div class="card">
-        <div class="card-header"><span class="card-title">Monitoramento de Pesquisas</span></div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Data</th><th>Fonte</th><th>Intenção</th><th>Rejeição</th><th>Indecisos</th><th>Status</th></tr></thead>
-            <tbody>
-              <tr><td>17/05/2026</td><td>Pesquisa Interna</td><td><span class="badge badge-green">58%</span></td><td><span class="badge badge-red">12%</span></td><td>30%</td><td><span class="badge badge-blue">Ativa</span></td></tr>
-              <tr><td>10/05/2026</td><td>Pesquisa Interna</td><td><span class="badge badge-green">54%</span></td><td><span class="badge badge-red">14%</span></td><td>32%</td><td><span class="badge badge-blue">Ativa</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
     </div>
 
     <!-- REUNIÕES -->
     <div class="page" id="page-reunioes">
-      <div class="card" style="margin-bottom:1.25rem">
-        <div class="card-header"><span class="card-title">Agendar Reunião</span></div>
-        <div class="card-body">
-          <form onsubmit="handleNovaReuniao(event)">
-            <div class="grid-2">
-              <div class="form-group"><label>Título</label><input type="text" class="form-control" id="reuniaoTitulo" required /></div>
-              <div class="form-group"><label>Município</label><select class="form-control" id="reuniaoMunicipio"><option>Rio Branco</option><option>Cruzeiro do Sul</option><option>Sena Madureira</option></select></div>
-            </div>
-            <div class="grid-2">
-              <div class="form-group"><label>Data</label><input type="date" class="form-control" id="reuniaoData" required /></div>
-              <div class="form-group"><label>Horário</label><input type="time" class="form-control" id="reuniaoHora" required /></div>
-            </div>
-            <div class="form-group"><label>Observações</label><textarea class="form-control" id="reuniaoObs" rows="2"></textarea></div>
-            <button type="submit" class="btn btn-primary btn-full">Agendar Reunião</button>
-          </form>
-        </div>
-      </div>
       <div class="card">
         <div class="card-header"><span class="card-title">Próximas Reuniões</span></div>
         <div class="table-wrap">
@@ -452,36 +333,9 @@
       </div>
     </div>
 
-    <!-- AGENDA -->
-    <div class="page" id="page-agenda">
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-header"><span class="card-title">Agenda da Semana</span></div>
-          <div class="card-body">
-            <div style="display:flex;flex-direction:column;gap:10px;font-size:13.5px">
-              <div style="display:flex;gap:12px;align-items:center;padding:.75rem;background:#f8fafc;border-radius:8px;border-left:4px solid var(--primary)"><div style="text-align:center;min-width:40px"><strong>SEG</strong><div style="font-size:18px;font-weight:700">15</div></div><div><strong>Reunião Regional</strong><br><span style="color:var(--muted)">14:00</span></div></div>
-              <div style="display:flex;gap:12px;align-items:center;padding:.75rem;background:#f8fafc;border-radius:8px;border-left:4px solid var(--success)"><div style="text-align:center;min-width:40px"><strong>QUA</strong><div style="font-size:18px;font-weight:700">17</div></div><div><strong>Visita de Contatos</strong><br><span style="color:var(--muted)">10:00</span></div></div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header"><span class="card-title">Novo Compromisso</span></div>
-          <div class="card-body">
-            <form onsubmit="handleNovoCompromisso(event)">
-              <div class="form-group"><label>Título</label><input type="text" class="form-control" required /></div>
-              <div class="form-group"><label>Data e Hora</label><input type="datetime-local" class="form-control" required /></div>
-              <div class="form-group"><label>Local</label><input type="text" class="form-control" /></div>
-              <div class="form-group"><label>Tipo</label><select class="form-control"><option>Reunião</option><option>Evento</option><option>Visita</option><option>Entrevista</option></select></div>
-              <button type="submit" class="btn btn-primary btn-full">Salvar Compromisso</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- RELATÓRIOS -->
     <div class="page" id="page-relatorios">
-      <div class="grid-2" style="margin-bottom:1.25rem">
+      <div class="grid-2">
         <div class="card">
           <div class="card-header"><span class="card-title">Gerar Relatório</span></div>
           <div class="card-body">
@@ -491,7 +345,7 @@
                 <option>Rio Branco</option><option>Cruzeiro do Sul</option><option>Sena Madureira</option>
               </select>
             </div>
-            <button class="btn btn-success btn-full" onclick="baixarCSVRelatorio()">Baixar Relatório</button>
+            <button class="btn btn-success btn-full" onclick="baixarCSVRelatorio()">Baixar Relatório CSV</button>
           </div>
         </div>
         <div class="card">
@@ -500,7 +354,6 @@
             <div style="display:flex;flex-direction:column;gap:12px;font-size:13.5px">
               <div style="display:flex;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid var(--border)"><span>Total de Contatos</span><strong id="relTotal">—</strong></div>
               <div style="display:flex;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid var(--border)"><span>Lideranças</span><strong id="relLiderancas">—</strong></div>
-              <div style="display:flex;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid var(--border)"><span>Municípios Cobertos</span><strong>3</strong></div>
               <div style="display:flex;justify-content:space-between;padding:.6rem 0"><span>Taxa de Engajamento</span><strong>78%</strong></div>
             </div>
           </div>
@@ -508,7 +361,7 @@
       </div>
     </div>
 
-    <!-- CONFIGURAR CAMPANHA — somente admin -->
+    <!-- CONFIGURAR CAMPANHA -->
     <div class="page" id="page-config">
       <div class="card" style="margin-bottom:1.25rem">
         <div class="card-header"><span class="card-title">Configurar Campanha</span></div>
@@ -539,16 +392,15 @@
                 <img id="configPreviewImg" class="preview-img" style="display:none;" />
               </div>
             </div>
-            <button type="submit" class="btn btn-primary btn-full" style="margin-top: 1.5rem;">Salvar Configurações</button>
+            <button type="submit" class="btn btn-primary btn-full" style="margin-top:1.5rem">Salvar Configurações</button>
           </form>
         </div>
       </div>
-
       <div class="card">
         <div class="card-header"><span class="card-title">Prévia da Campanha</span></div>
         <div class="card-body">
           <div class="config-preview">
-            <img id="previewLogo" class="config-preview-img" />
+            <div id="previewLogo" class="config-preview-img">?</div>
             <div class="config-preview-info">
               <div class="config-preview-label">Nome do Candidato</div>
               <div class="config-preview-value" id="previewNome">—</div>
@@ -560,40 +412,71 @@
       </div>
     </div>
 
-    <!-- PERFIS — somente admin -->
-    <div class="page" id="page-perfis">
+    <!-- GERENCIAR USUÁRIOS — somente admin -->
+    <div class="page" id="page-usuarios">
+
+      <!-- Criar novo usuário -->
       <div class="card" style="margin-bottom:1.25rem">
-        <div class="card-header"><span class="card-title">Perfis de Acesso</span></div>
+        <div class="card-header"><span class="card-title">Criar Novo Usuário</span></div>
+        <div class="card-body">
+          <div id="userAlert" class="alert"></div>
+          <form onsubmit="handleCriarUsuario(event)">
+            <div class="grid-2">
+              <div class="form-group"><label>E-mail *</label><input type="email" class="form-control" id="novoEmail" placeholder="usuario@email.com" required /></div>
+              <div class="form-group"><label>Senha *</label><input type="password" class="form-control" id="novaSenha" placeholder="••••••••" required /></div>
+            </div>
+            <div class="grid-2">
+              <div class="form-group">
+                <label>Perfil de Acesso *</label>
+                <select class="form-control" id="novoRole" onchange="toggleMunicipioField()">
+                  <option value="operador">Operador — só cadastro</option>
+                  <option value="coordenador">Coordenador — vê seu município</option>
+                  <option value="admin">Administrador — acesso total</option>
+                </select>
+              </div>
+              <div class="form-group" id="municipioField">
+                <label>Município do Coordenador *</label>
+                <select class="form-control" id="novoMunicipio">
+                  <option value="">Selecione...</option>
+                  <option>Rio Branco</option>
+                  <option>Cruzeiro do Sul</option>
+                  <option>Sena Madureira</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Criar Usuário</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tabela de permissões -->
+      <div class="card" style="margin-bottom:1.25rem">
+        <div class="card-header"><span class="card-title">Níveis de Acesso</span></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Perfil</th><th>Permissões</th><th>Status</th></tr></thead>
+            <thead><tr><th>Perfil</th><th>Permissões</th><th>Restrição de Município</th></tr></thead>
             <tbody>
-              <tr><td><strong>Administrador</strong></td><td>Acesso total ao sistema</td><td><span class="badge badge-green">Ativo</span></td></tr>
-              <tr><td><strong>Coordenador</strong></td><td>Tudo menos Perfis de Acesso</td><td><span class="badge badge-green">Ativo</span></td></tr>
-              <tr><td><strong>Operador</strong></td><td>Somente Cadastro de Contatos</td><td><span class="badge badge-green">Ativo</span></td></tr>
+              <tr><td><span class="badge badge-red">Admin</span></td><td>Acesso total ao sistema</td><td>Nenhuma — vê tudo</td></tr>
+              <tr><td><span class="badge badge-blue">Coordenador</span></td><td>Dashboard, cadastro, relatórios, reuniões</td><td>Apenas o município vinculado</td></tr>
+              <tr><td><span class="badge badge-gray">Operador</span></td><td>Somente cadastro de contatos</td><td>Livre</td></tr>
             </tbody>
           </table>
         </div>
       </div>
 
+      <!-- Lista de usuários cadastrados -->
       <div class="card">
-        <div class="card-header"><span class="card-title">Criar Novo Usuário</span></div>
-        <div class="card-body">
-          <div id="perfilAlert" class="alert"></div>
-          <form onsubmit="handleCriarUsuario(event)">
-            <div class="grid-2">
-              <div class="form-group"><label>E-mail</label><input type="email" class="form-control" id="novoUserEmail" placeholder="usuario@email.com" required /></div>
-              <div class="form-group"><label>Senha</label><input type="password" class="form-control" id="novoUserSenha" placeholder="••••••••" required /></div>
-            </div>
-            <div class="form-group"><label>Perfil de Acesso</label>
-              <select class="form-control" id="novoUserRole">
-                <option value="operador">Operador</option>
-                <option value="coordenador">Coordenador</option>
-                <option value="admin">Administrador</option>
-              </select>
-            </div>
-            <button type="submit" class="btn btn-primary btn-full">Criar Usuário</button>
-          </form>
+        <div class="card-header">
+          <span class="card-title">Usuários Cadastrados</span>
+          <button class="btn btn-outline btn-sm" onclick="loadUsuarios()">Atualizar</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>E-mail</th><th>Perfil</th><th>Município</th><th>Ação</th></tr></thead>
+            <tbody id="usuariosTableBody">
+              <tr><td colspan="5"><div class="empty-state"><div class="empty-icon">👤</div><p>Carregando usuários...</p></div></td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -607,8 +490,8 @@
   let userInfo = JSON.parse(localStorage.getItem('campanha_user') || 'null');
 
   const PERMISSIONS = {
-    admin:       ['dashboard','cadastro','mapa','monitoramento','reunioes','agenda','relatorios','config','perfis'],
-    coordenador: ['dashboard','cadastro','mapa','monitoramento','reunioes','agenda','relatorios'],
+    admin:       ['dashboard','cadastro','mapa','monitoramento','reunioes','relatorios','config','usuarios'],
+    coordenador: ['dashboard','cadastro','mapa','monitoramento','reunioes','relatorios'],
     operador:    ['dashboard','cadastro'],
   };
 
@@ -635,9 +518,9 @@
       const data = await res.json();
       if (!res.ok) { showAlert('authAlert', data.error || 'Erro ao fazer login'); return; }
       token = data.token;
-      let role = 'operador';
-      try { const p = JSON.parse(atob(token.split('.')[1])); role = p.role || 'operador'; } catch(_) {}
-      userInfo = { email, role };
+      let payload = {};
+      try { payload = JSON.parse(atob(token.split('.')[1])); } catch(_) {}
+      userInfo = { email, role: payload.role || 'operador', municipio: payload.municipio || '' };
       localStorage.setItem('campanha_token', token);
       localStorage.setItem('campanha_user', JSON.stringify(userInfo));
       showApp();
@@ -649,41 +532,47 @@
     document.getElementById('sidebar').style.display = 'flex';
     document.getElementById('main').style.display = 'flex';
 
-    const email = userInfo?.email || '—';
-    const role  = userInfo?.role  || 'operador';
+    const email     = userInfo?.email     || '—';
+    const role      = userInfo?.role      || 'operador';
+    const municipio = userInfo?.municipio || '';
 
     document.getElementById('userEmail').textContent = email;
-    
+
+    // Badge município para coordenador
+    if (role === 'coordenador' && municipio) {
+      document.getElementById('municipioBadge').style.display = 'inline-flex';
+      document.getElementById('municipioBadgeText').textContent = municipio;
+    }
+
     if (campaignConfig) {
       document.getElementById('sidebarNome').textContent  = campaignConfig.nome || 'Sistema';
-      document.getElementById('sidebarCargo').textContent = campaignConfig.cargo === 'estadual' ? 'Deputado Estadual' : 'Deputado Federal';
+      document.getElementById('sidebarCargo').textContent = campaignConfig.cargo === 'estadual' ? 'Dep. Estadual' : 'Dep. Federal';
       if (campaignConfig.foto) {
-        document.getElementById('sidebarLogo').src = campaignConfig.foto;
-        document.getElementById('userAvatar').src = campaignConfig.foto;
+        const logo = document.getElementById('sidebarLogo');
+        logo.innerHTML = `<img src="${campaignConfig.foto}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" />`;
       } else {
-        document.getElementById('sidebarLogo').textContent = campaignConfig.nome.charAt(0).toUpperCase();
-        document.getElementById('userAvatar').textContent = email.charAt(0).toUpperCase();
+        document.getElementById('sidebarLogo').textContent = (campaignConfig.nome || '?').charAt(0).toUpperCase();
       }
-    } else {
-      document.getElementById('sidebarLogo').textContent = '?';
-      document.getElementById('sidebarNome').textContent = 'Sistema';
-      document.getElementById('sidebarCargo').textContent = 'Campanha';
     }
 
     const roleLabels = { admin: 'Administrador', coordenador: 'Coordenador', operador: 'Operador' };
     document.getElementById('userRoleLabel').textContent = roleLabels[role] || role;
+    document.getElementById('userAvatar').textContent = email.charAt(0).toUpperCase();
 
-    const items = document.querySelectorAll('[data-role]');
-    items.forEach(el => {
+    // Mostrar/ocultar itens do menu por role
+    document.querySelectorAll('[data-role]').forEach(el => {
       const itemRole = el.getAttribute('data-role');
-      if (itemRole === 'coord') {
-        const shouldShow = role === 'admin' || role === 'coordenador';
-        el.classList.toggle('hidden', !shouldShow);
-      } else if (itemRole === 'admin') {
-        const shouldShow = role === 'admin';
-        el.classList.toggle('hidden', !shouldShow);
-      }
+      if (itemRole === 'coord') el.classList.toggle('hidden', role !== 'admin' && role !== 'coordenador');
+      else if (itemRole === 'admin') el.classList.toggle('hidden', role !== 'admin');
     });
+
+    // Coordenador: ocultar filtro de município no cadastro (é fixo)
+    if (role === 'coordenador' && municipio) {
+      const fm = document.getElementById('filtroMunicipioWrap');
+      if (fm) fm.style.display = 'none';
+      const cm = document.getElementById('municipioCadastroField');
+      if (cm) cm.style.display = 'none';
+    }
 
     loadConfigForm();
     loadDashboard();
@@ -696,40 +585,36 @@
     document.getElementById('sidebar').style.display = 'none';
     document.getElementById('main').style.display = 'none';
     document.getElementById('authOverlay').style.display = 'flex';
+    document.getElementById('municipioBadge').style.display = 'none';
   }
 
   const pageTitles = {
     dashboard:'Dashboard', cadastro:'Cadastro de Contatos',
     mapa:'Mapa de Cobertura', monitoramento:'Monitoramento',
-    reunioes:'Reuniões', agenda:'Agenda',
-    relatorios:'Relatórios', config:'Configurar Campanha', perfis:'Perfis de Acesso',
+    reunioes:'Reuniões', relatorios:'Relatórios',
+    config:'Configurar Campanha', usuarios:'Gerenciar Usuários',
   };
 
   function navigate(page) {
-    const role = userInfo?.role || 'operador';
+    const role    = userInfo?.role || 'operador';
     const allowed = PERMISSIONS[role] || ['dashboard','cadastro'];
-
-    if (!allowed.includes(page)) {
-      alert('Você não tem permissão para acessar esta página.');
-      return;
-    }
+    if (!allowed.includes(page)) { alert('Você não tem permissão para acessar esta página.'); return; }
 
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
     const pageEl = document.getElementById('page-' + page);
     if (pageEl) pageEl.classList.add('active');
-
     document.querySelectorAll('.nav-item').forEach(n => {
       if (n.getAttribute('onclick') === `navigate('${page}')`) n.classList.add('active');
     });
-
     document.getElementById('topbarTitle').textContent = pageTitles[page] || page;
 
     if (page === 'dashboard')  loadDashboard();
     if (page === 'cadastro')   loadPessoas();
     if (page === 'relatorios') loadRelatoriosSummary();
     if (page === 'config')     loadConfigForm();
+    if (page === 'usuarios')   loadUsuarios();
   }
 
   async function apiFetch(url, opts = {}) {
@@ -738,60 +623,45 @@
     return fetch(url, { ...opts, headers });
   }
 
+  // ── Config ──────────────────────────────────────────────────
   function loadConfigForm() {
-    if (campaignConfig) {
-      document.getElementById('configCargo').value = campaignConfig.cargo || '';
-      document.getElementById('configNome').value = campaignConfig.nome || '';
-      if (campaignConfig.foto) {
-        document.getElementById('configPreviewImg').src = campaignConfig.foto;
-        document.getElementById('configPreviewImg').style.display = 'block';
-      }
-      updateConfigPreview();
+    if (!campaignConfig) return;
+    document.getElementById('configCargo').value = campaignConfig.cargo || '';
+    document.getElementById('configNome').value  = campaignConfig.nome  || '';
+    if (campaignConfig.foto) {
+      document.getElementById('configPreviewImg').src          = campaignConfig.foto;
+      document.getElementById('configPreviewImg').style.display = 'block';
     }
+    updateConfigPreview();
   }
 
-  document.getElementById('configFoto')?.addEventListener('change', (e) => {
-    const preview = document.getElementById('configPreviewImg');
-    if (e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        preview.src = event.target.result;
-        preview.style.display = 'block';
-      };
-      reader.readAsDataURL(e.target.files[0]);
-    }
+  document.getElementById('configFoto')?.addEventListener('change', e => {
+    if (!e.target.files[0]) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      document.getElementById('configPreviewImg').src          = ev.target.result;
+      document.getElementById('configPreviewImg').style.display = 'block';
+    };
+    reader.readAsDataURL(e.target.files[0]);
   });
 
   function updateConfigPreview() {
     const cargo = document.getElementById('configCargo').value;
-    const nome = document.getElementById('configNome').value || '—';
-    const foto = document.getElementById('configPreviewImg').src;
-    
-    const cargoLabel = cargo === 'estadual' ? 'Deputado Estadual' : cargo === 'federal' ? 'Deputado Federal' : '—';
-    document.getElementById('previewNome').textContent = nome;
-    document.getElementById('previewCargo').textContent = cargoLabel;
-    
-    if (foto && foto.startsWith('data:')) {
-      document.getElementById('previewLogo').src = foto;
-    } else {
-      document.getElementById('previewLogo').textContent = nome.charAt(0).toUpperCase();
-    }
+    const nome  = document.getElementById('configNome').value || '—';
+    document.getElementById('previewNome').textContent  = nome;
+    document.getElementById('previewCargo').textContent = cargo === 'estadual' ? 'Deputado Estadual' : cargo === 'federal' ? 'Deputado Federal' : '—';
+    document.getElementById('previewLogo').textContent  = nome.charAt(0).toUpperCase();
   }
 
   async function handleSaveConfig(e) {
     e.preventDefault(); clearAlert('configAlert');
-    const cargo = document.getElementById('configCargo').value;
-    const nome = document.getElementById('configNome').value.trim();
-    
-    if (!cargo || !nome) {
-      showAlert('configAlert', 'Preencha todos os campos obrigatórios', 'danger');
-      return;
-    }
-
+    const cargo     = document.getElementById('configCargo').value;
+    const nome      = document.getElementById('configNome').value.trim();
     const fotoInput = document.getElementById('configFoto');
-    
-    const saveFoto = () => {
-      campaignConfig = { cargo, nome, foto: fotoInput.files[0] ? document.getElementById('configPreviewImg').src : null };
+    if (!cargo || !nome) { showAlert('configAlert', 'Preencha todos os campos obrigatórios', 'danger'); return; }
+
+    const save = foto => {
+      campaignConfig = { cargo, nome, foto };
       localStorage.setItem('campaignConfig', JSON.stringify(campaignConfig));
       showAlert('configAlert', 'Configurações salvas com sucesso!', 'success');
       showApp();
@@ -799,39 +669,39 @@
 
     if (fotoInput.files[0]) {
       const reader = new FileReader();
-      reader.onload = () => {
-        campaignConfig = { cargo, nome, foto: reader.result };
-        localStorage.setItem('campaignConfig', JSON.stringify(campaignConfig));
-        showAlert('configAlert', 'Configurações salvas com sucesso!', 'success');
-        showApp();
-      };
+      reader.onload = ev => save(ev.target.result);
       reader.readAsDataURL(fotoInput.files[0]);
     } else {
-      saveFoto();
+      save(campaignConfig?.foto || null);
     }
   }
 
+  // ── Dashboard ────────────────────────────────────────────────
   async function loadDashboard() {
     try {
-      const res = await apiFetch('/dashboard/');
+      const res  = await apiFetch('/dashboard/');
       if (res.status === 401) { logout(); return; }
       const data = await res.json();
       document.getElementById('metricTotal').textContent      = data.total      ?? '—';
       document.getElementById('metricLiderancas').textContent = data.liderancas ?? '—';
-      document.getElementById('metricRegioes').textContent    = '3';
+      document.getElementById('metricRegioes').textContent    = data.municipio ? '1' : '3';
     } catch(err) { showAlert('dashAlert', 'Não foi possível carregar os dados.', 'info'); }
   }
 
+  // ── Cadastro ─────────────────────────────────────────────────
   async function handleCadastro(e) {
     e.preventDefault(); clearAlert('cadastroAlert');
+    const role      = userInfo?.role      || 'operador';
+    const municipio = userInfo?.municipio || '';
     const payload = {
       nome:            document.getElementById('cNome').value.trim(),
       endereco:        document.getElementById('cEndereco').value.trim(),
       telefone:        document.getElementById('cTelefone').value.trim(),
-      municipio:       document.getElementById('cMunicipio').value,
+      municipio:       role === 'coordenador' ? municipio : document.getElementById('cMunicipio').value,
       data_nascimento: document.getElementById('cDataNasc').value || null,
       lideranca:       document.getElementById('cLideranca').value,
     };
+    if (!payload.municipio) { showAlert('cadastroAlert', 'Selecione um município.', 'danger'); return; }
     try {
       const res = await apiFetch('/dashboard/pessoas', { method:'POST', body:JSON.stringify(payload) });
       if (res.status === 401) { logout(); return; }
@@ -845,15 +715,17 @@
   }
 
   async function loadPessoas() {
-    const municipio = document.getElementById('filtroMunicipio')?.value || '';
-    const params = new URLSearchParams();
-    if (municipio) params.append('municipio', municipio);
+    const role      = userInfo?.role      || 'operador';
+    const municipio = userInfo?.municipio || '';
+    const filtro    = role === 'coordenador' ? municipio : (document.getElementById('filtroMunicipio')?.value || '');
+    const params    = new URLSearchParams();
+    if (filtro) params.append('municipio', filtro);
     try {
-      const res   = await apiFetch('/dashboard/pessoas?' + params.toString());
+      const res  = await apiFetch('/dashboard/pessoas?' + params.toString());
       if (!res.ok) return;
-      const data  = await res.json();
+      const data = await res.json();
       const tbody = document.getElementById('pessoasTableBody');
-      if (!data.pessoas || data.pessoas.length === 0) {
+      if (!data.pessoas?.length) {
         tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">👥</div><p>Nenhum contato registrado.</p></div></td></tr>';
         return;
       }
@@ -877,7 +749,7 @@
     try {
       const res = await apiFetch(`/dashboard/pessoas/${id}`, { method:'DELETE' });
       if (res.ok) { loadPessoas(); loadDashboard(); }
-      else alert('Erro ao remover.');
+      else { const d = await res.json(); alert(d.error || 'Erro ao remover.'); }
     } catch(err) { alert('Erro de conexão.'); }
   }
 
@@ -898,7 +770,9 @@
   }
 
   function baixarCSV() {
-    _dispararDownloadCSV(document.getElementById('filtroMunicipio')?.value || '');
+    const role      = userInfo?.role      || 'operador';
+    const municipio = userInfo?.municipio || '';
+    _dispararDownloadCSV(role === 'coordenador' ? municipio : (document.getElementById('filtroMunicipio')?.value || ''));
   }
 
   function baixarCSVRelatorio() {
@@ -915,29 +789,75 @@
     } catch(err) {}
   }
 
-  let reunioes = [];
-  function handleNovaReuniao(e) {
-    e.preventDefault();
-    reunioes.push({ titulo:document.getElementById('reuniaoTitulo').value, municipio:document.getElementById('reuniaoMunicipio').value, data:document.getElementById('reuniaoData').value, hora:document.getElementById('reuniaoHora').value });
-    document.getElementById('reuniaoTitulo').value = '';
-    document.getElementById('reunioesTableBody').innerHTML = reunioes.map(r =>
-      `<tr><td>${r.data}</td><td>${r.hora}</td><td>${r.titulo}</td><td>${r.municipio}</td><td><span class="badge badge-yellow">Agendada</span></td></tr>`
-    ).join('');
+  // ── Usuários ─────────────────────────────────────────────────
+  function toggleMunicipioField() {
+    const role = document.getElementById('novoRole').value;
+    document.getElementById('municipioField').style.display = role === 'coordenador' ? 'block' : 'none';
+    document.getElementById('novoMunicipio').required = role === 'coordenador';
   }
 
-  function handleNovoCompromisso(e) { e.preventDefault(); alert('Compromisso salvo!'); e.target.reset(); }
-
   async function handleCriarUsuario(e) {
-    e.preventDefault(); clearAlert('perfilAlert');
-    const email = document.getElementById('novoUserEmail').value;
-    const senha = document.getElementById('novoUserSenha').value;
-    const role  = document.getElementById('novoUserRole').value;
+    e.preventDefault(); clearAlert('userAlert');
+    const email     = document.getElementById('novoEmail').value.trim();
+    const senha     = document.getElementById('novaSenha').value;
+    const role      = document.getElementById('novoRole').value;
+    const municipio = document.getElementById('novoMunicipio').value;
+
+    if (role === 'coordenador' && !municipio) {
+      showAlert('userAlert', 'Selecione o município do coordenador.', 'danger'); return;
+    }
+
     try {
-      const res  = await apiFetch('/auth/register', { method:'POST', body:JSON.stringify({email,senha,role}) });
+      const res  = await apiFetch('/auth/register', { method:'POST', body:JSON.stringify({email, senha, role, municipio}) });
       const data = await res.json();
-      if (res.ok) { showAlert('perfilAlert', `Usuário "${email}" criado com sucesso!`, 'success'); e.target.reset(); }
-      else showAlert('perfilAlert', data.error || 'Erro ao criar usuário.');
-    } catch(err) { showAlert('perfilAlert', 'Erro de conexão.'); }
+      if (res.ok) {
+        showAlert('userAlert', `Usuário "${email}" criado com sucesso!`, 'success');
+        e.target.reset();
+        document.getElementById('municipioField').style.display = 'none';
+        loadUsuarios();
+      } else {
+        showAlert('userAlert', data.error || 'Erro ao criar usuário.');
+      }
+    } catch(err) { showAlert('userAlert', 'Erro de conexão.'); }
+  }
+
+  async function loadUsuarios() {
+    try {
+      const res  = await apiFetch('/auth/usuarios');
+      if (res.status === 401) { logout(); return; }
+      const data = await res.json();
+      const tbody = document.getElementById('usuariosTableBody');
+      if (!data.usuarios?.length) {
+        tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">👤</div><p>Nenhum usuário cadastrado.</p></div></td></tr>';
+        return;
+      }
+      const roleBadge = r => {
+        if (r === 'admin')       return '<span class="badge badge-red">Admin</span>';
+        if (r === 'coordenador') return '<span class="badge badge-blue">Coordenador</span>';
+        return '<span class="badge badge-gray">Operador</span>';
+      };
+      const myId = (() => { try { return JSON.parse(atob(token.split('.')[1])).id; } catch(_) { return null; } })();
+      tbody.innerHTML = data.usuarios.map(u => `
+        <tr>
+          <td>${u.id}</td>
+          <td><strong>${u.email}</strong></td>
+          <td>${roleBadge(u.role)}</td>
+          <td>${u.municipio || '<span style="color:var(--muted)">—</span>'}</td>
+          <td>${u.id === myId
+            ? '<span style="color:var(--muted);font-size:12px">você</span>'
+            : `<button class="btn btn-danger btn-sm" onclick="deletarUsuario(${u.id},'${u.email.replace(/'/g,"\\'")}')">Remover</button>`
+          }</td>
+        </tr>`).join('');
+    } catch(err) {}
+  }
+
+  async function deletarUsuario(id, email) {
+    if (!confirm(`Remover o usuário "${email}"? Esta ação não pode ser desfeita.`)) return;
+    try {
+      const res = await apiFetch(`/auth/usuarios/${id}`, { method:'DELETE' });
+      if (res.ok) { loadUsuarios(); }
+      else { const d = await res.json(); alert(d.error || 'Erro ao remover.'); }
+    } catch(err) { alert('Erro de conexão.'); }
   }
 </script>
 </body>
