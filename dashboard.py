@@ -19,26 +19,41 @@ def _row_to_dict(row):
     }
 
 
+def _municipio_filter(user):
+    """Retorna o município forçado se for coordenador, ou None se admin/operador."""
+    if user.get("role") == "coordenador":
+        return user.get("municipio") or ""
+    return None
+
+
 @dashboard_routes.route("/", methods=["GET"])
 @auth_required
 def dashboard():
+    municipio_fixo = _municipio_filter(request.user)
     c = get_conn()
     try:
         with c.cursor() as cur:
-            cur.execute("SELECT COUNT(*) FROM pessoas")
-            total = cur.fetchone()[0]
-            cur.execute("SELECT COUNT(*) FROM pessoas WHERE lideranca != 'Nenhuma'")
+            if municipio_fixo:
+                cur.execute("SELECT COUNT(*) FROM pessoas WHERE municipio = %s", (municipio_fixo,))
+                total = cur.fetchone()[0]
+                cur.execute("SELECT COUNT(*) FROM pessoas WHERE lideranca != 'Nenhuma' AND municipio = %s", (municipio_fixo,))
+            else:
+                cur.execute("SELECT COUNT(*) FROM pessoas")
+                total = cur.fetchone()[0]
+                cur.execute("SELECT COUNT(*) FROM pessoas WHERE lideranca != 'Nenhuma'")
             liderancas_count = cur.fetchone()[0]
     finally:
         release_conn(c)
-    return jsonify({"total": total, "liderancas": liderancas_count})
+    return jsonify({"total": total, "liderancas": liderancas_count, "municipio": municipio_fixo or ""})
 
 
 @dashboard_routes.route("/pessoas", methods=["GET", "POST"])
 @auth_required
 def pessoas():
+    municipio_fixo = _municipio_filter(request.user)
+
     if request.method == "GET":
-        municipio = request.args.get("municipio", "").strip()
+        municipio = municipio_fixo or request.args.get("municipio", "").strip()
         lideranca = request.args.get("lideranca", "").strip()
 
         query = "SELECT id, nome, endereco, telefone, municipio, data_nascimento, lideranca FROM pessoas"
@@ -60,14 +75,14 @@ def pessoas():
                 rows = cur.fetchall()
         finally:
             release_conn(c)
-        return jsonify({"pessoas": [_row_to_dict(r) for r in rows]})
+        return jsonify({"pessoas": [_row_to_dict(r) for r in rows], "municipio_fixo": municipio_fixo or ""})
 
     # POST
     data            = request.get_json(silent=True) or {}
     nome            = (data.get("nome")            or "").strip()
     endereco        = (data.get("endereco")        or "").strip()
     telefone        = (data.get("telefone")        or "").strip()
-    municipio       = (data.get("municipio")       or "").strip()
+    municipio       = municipio_fixo or (data.get("municipio") or "").strip()
     data_nascimento = data.get("data_nascimento")  or None
     lideranca       = (data.get("lideranca")       or "Nenhuma").strip()
 
@@ -97,13 +112,21 @@ def pessoas():
 @dashboard_routes.route("/pessoas/<int:pessoa_id>", methods=["DELETE"])
 @auth_required
 def deletar_pessoa(pessoa_id):
+    municipio_fixo = _municipio_filter(request.user)
     c = get_conn()
     try:
         with c.cursor() as cur:
-            cur.execute("DELETE FROM pessoas WHERE id = %s RETURNING id", (pessoa_id,))
+            if municipio_fixo:
+                # Coordenador só pode deletar do seu município
+                cur.execute(
+                    "DELETE FROM pessoas WHERE id = %s AND municipio = %s RETURNING id",
+                    (pessoa_id, municipio_fixo)
+                )
+            else:
+                cur.execute("DELETE FROM pessoas WHERE id = %s RETURNING id", (pessoa_id,))
             row = cur.fetchone()
         if not row:
-            return jsonify({"error": "Pessoa não encontrada."}), 404
+            return jsonify({"error": "Pessoa não encontrada ou sem permissão."}), 404
         c.commit()
     except Exception as e:
         c.rollback()
@@ -117,7 +140,8 @@ def deletar_pessoa(pessoa_id):
 @dashboard_routes.route("/exportar-csv", methods=["GET"])
 @auth_required
 def exportar_csv():
-    municipio = request.args.get("municipio", "").strip()
+    municipio_fixo = _municipio_filter(request.user)
+    municipio = municipio_fixo or request.args.get("municipio", "").strip()
     lideranca = request.args.get("lideranca", "").strip()
 
     query = "SELECT id, nome, endereco, telefone, municipio, data_nascimento, lideranca FROM pessoas"
