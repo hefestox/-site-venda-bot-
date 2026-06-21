@@ -8,17 +8,17 @@ app = Flask(__name__, template_folder='templates')
 CORS(app)
 
 
-# ================= INIT DB =================
 def init_db():
     c = get_conn()
     try:
         with c.cursor() as cur:
             cur.execute("""
             CREATE TABLE IF NOT EXISTS usuarios (
-                id    SERIAL PRIMARY KEY,
-                email TEXT UNIQUE,
-                senha TEXT,
-                role  TEXT
+                id        SERIAL PRIMARY KEY,
+                email     TEXT UNIQUE,
+                senha     TEXT,
+                role      TEXT,
+                municipio TEXT
             );
             CREATE TABLE IF NOT EXISTS pessoas (
                 id               SERIAL PRIMARY KEY,
@@ -29,6 +29,10 @@ def init_db():
                 data_nascimento  DATE,
                 lideranca        TEXT DEFAULT 'Nenhuma'
             );
+            """)
+            # Adiciona coluna municipio se ainda não existir (migração)
+            cur.execute("""
+            ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS municipio TEXT;
             """)
         c.commit()
         print("✅ Tabelas verificadas/criadas com sucesso!")
@@ -42,7 +46,6 @@ def init_db():
 
 init_db()
 
-# ================= BLUEPRINTS =================
 from auth import auth_routes
 from dashboard import dashboard_routes
 
@@ -50,7 +53,6 @@ app.register_blueprint(auth_routes, url_prefix="/auth")
 app.register_blueprint(dashboard_routes, url_prefix="/dashboard")
 
 
-# ================= ROTAS =================
 @app.route("/", methods=["GET"])
 def home():
     return redirect("/app")
@@ -66,10 +68,9 @@ def ping():
     return jsonify({"status": "ok"})
 
 
-# ================= RESET DB (protegido por chave secreta) =================
 @app.route("/reset-db", methods=["POST"])
 def reset_db():
-    secret = os.getenv("RESET_SECRET", "")
+    secret   = os.getenv("RESET_SECRET", "")
     provided = request.headers.get("X-Reset-Secret", "")
     if not secret or provided != secret:
         return jsonify({"error": "Não autorizado"}), 403
@@ -81,10 +82,11 @@ def reset_db():
             cur.execute("DROP TABLE IF EXISTS usuarios CASCADE")
             cur.execute("""
             CREATE TABLE usuarios (
-                id    SERIAL PRIMARY KEY,
-                email TEXT UNIQUE,
-                senha TEXT,
-                role  TEXT
+                id        SERIAL PRIMARY KEY,
+                email     TEXT UNIQUE,
+                senha     TEXT,
+                role      TEXT,
+                municipio TEXT
             );
             CREATE TABLE pessoas (
                 id               SERIAL PRIMARY KEY,
