@@ -7,134 +7,152 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --primary:   #1a56db;
-      --primary-d: #1e429f;
-      --accent:    #0ea5e9;
-      --success:   #16a34a;
-      --warning:   #d97706;
-      --danger:    #dc2626;
-      --bg:        #f1f5f9;
-      --surface:   #ffffff;
-      --sidebar:   #1e293b;
-      --text:      #1e293b;
-      --muted:     #64748b;
-      --border:    #e2e8f0;
-      --radius:    10px;
-      --shadow:    0 1px 4px rgba(0,0,0,.08);
+      --primary:#1a56db; --primary-d:#1e429f; --success:#16a34a;
+      --warning:#d97706; --danger:#dc2626; --bg:#f1f5f9;
+      --surface:#ffffff; --sidebar:#1e293b; --text:#1e293b;
+      --muted:#64748b; --border:#e2e8f0; --radius:10px;
+      --shadow:0 1px 4px rgba(0,0,0,.08);
     }
-    html { scroll-behavior: smooth; }
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; overflow-x: hidden; }
-    .sidebar { width: 240px; min-height: 100vh; background: var(--sidebar); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 200; }
-    .sidebar-logo { padding: 1.5rem 1.25rem 1rem; border-bottom: 1px solid rgba(255,255,255,.08); display: flex; align-items: center; gap: 12px; }
-    .sidebar-logo-img { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 18px; }
-    .sidebar-logo-text h1 { font-size: 14px; font-weight: 700; color: #fff; letter-spacing: .5px; line-height: 1.2; }
-    .sidebar-logo-text span { font-size: 10px; color: #94a3b8; }
-    .sidebar-nav { flex: 1; padding: 1rem 0; overflow-y: auto; }
-    .nav-section-label { font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: #475569; padding: .5rem 1.25rem .25rem; margin-top: .5rem; }
-    .nav-item { display: flex; align-items: center; gap: 10px; padding: .6rem 1.25rem; color: #94a3b8; font-size: 13.5px; cursor: pointer; border-left: 3px solid transparent; transition: background .15s, color .15s; }
-    .nav-item:hover { background: rgba(255,255,255,.05); color: #e2e8f0; }
-    .nav-item.active { background: rgba(26,86,219,.18); color: #fff; border-left-color: var(--primary); font-weight: 600; }
-    .nav-item .icon { font-size: 16px; flex-shrink: 0; }
-    .nav-section-label.hidden, .nav-item.hidden { display: none; }
-    .sidebar-footer { padding: 1rem 1.25rem; border-top: 1px solid rgba(255,255,255,.08); }
-    .user-chip { display: flex; align-items: center; gap: 10px; }
-    .user-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #fff; }
-    .user-info { flex: 1; min-width: 0; }
-    .user-name { font-size: 13px; font-weight: 600; color: #e2e8f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .user-role { font-size: 11px; color: #64748b; }
-    .btn-logout { background: none; border: none; color: #64748b; cursor: pointer; font-size: 16px; padding: 4px; border-radius: 4px; transition: color .15s; }
-    .btn-logout:hover { color: #f87171; }
-    .main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
-    .topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: .875rem 1.75rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: .5rem; }
-    .topbar-title { font-size: 17px; font-weight: 700; }
-    .topbar-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-    .badge-online { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--success); background: #dcfce7; padding: 4px 10px; border-radius: 20px; }
-    .badge-online::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--success); animation: pulse 1.5s infinite; }
-    .badge-municipio { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #1e40af; background: #dbeafe; padding: 4px 10px; border-radius: 20px; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
-    .content { padding: 1.75rem; flex: 1; }
-    .auth-overlay { position: fixed; inset: 0; background: rgba(15,23,42,.85); backdrop-filter: blur(6px); z-index: 500; display: flex; align-items: center; justify-content: center; padding: 1rem; }
-    .auth-card { background: var(--surface); border-radius: 14px; padding: 2.5rem 2rem; width: 100%; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
-    .auth-card h2 { font-size: 22px; font-weight: 700; margin-bottom: .25rem; }
-    .auth-card p { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; }
-    .form-group { margin-bottom: 1rem; }
-    .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: .35rem; color: var(--text); }
-    .form-control { width: 100%; padding: .6rem .85rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; color: var(--text); background: var(--surface); transition: border-color .15s, box-shadow .15s; }
-    .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(26,86,219,.12); outline: none; }
-    select.form-control { cursor: pointer; }
-    .file-input-wrapper { position: relative; }
-    .file-input-label { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 1.5rem; border: 2px dashed var(--border); border-radius: var(--radius); cursor: pointer; transition: border-color .15s, background .15s; }
-    .file-input-label:hover { border-color: var(--primary); background: rgba(26,86,219,.05); }
-    .file-input-label input { display: none; }
-    .preview-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 1rem auto 0; display: block; }
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: .6rem 1.25rem; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: opacity .15s, transform .1s; }
-    .btn:active { transform: scale(.98); }
-    .btn:hover { opacity: .88; }
-    .btn-primary { background: var(--primary); color: #fff; }
-    .btn-success { background: var(--success); color: #fff; }
-    .btn-danger  { background: var(--danger);  color: #fff; }
-    .btn-outline { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); }
-    .btn-sm { padding: .35rem .75rem; font-size: 12px; }
-    .btn-full { width: 100%; }
-    .alert { padding: .75rem 1rem; border-radius: var(--radius); font-size: 13px; margin-bottom: 1rem; display: none; }
-    .alert.show { display: block; }
-    .alert-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
-    .alert-danger  { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
-    .alert-info    { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
-    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.75rem; }
-    .metric-card { background: var(--surface); border-radius: var(--radius); padding: 1.25rem 1.5rem; box-shadow: var(--shadow); border: 1px solid var(--border); display: flex; flex-direction: column; }
-    .metric-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; }
-    .metric-value { font-size: 32px; font-weight: 700; color: var(--text); line-height: 1; }
-    .metric-sub   { font-size: 12px; color: var(--muted); }
-    .page { display: none; }
-    .page.active { display: block; }
-    .card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 1.25rem; }
-    .card-header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .5rem; }
-    .card-title { font-size: 15px; font-weight: 700; }
-    .card-body { padding: 1.5rem; }
-    .filters-bar { display: flex; gap: .75rem; align-items: flex-end; flex-wrap: wrap; }
-    .filters-bar .form-group { margin-bottom: 0; min-width: 160px; }
-    .filters-bar label { font-size: 12px; }
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
-    thead th { background: #f8fafc; padding: .75rem 1rem; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); border-bottom: 2px solid var(--border); }
-    tbody td { padding: .75rem 1rem; border-bottom: 1px solid var(--border); color: var(--text); }
-    tbody tr:last-child td { border-bottom: none; }
-    tbody tr:hover td { background: #f8fafc; }
-    .badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-    .badge-green  { background: #dcfce7; color: #166534; }
-    .badge-blue   { background: #dbeafe; color: #1e40af; }
-    .badge-purple { background: #ede9fe; color: #5b21b6; }
-    .badge-yellow { background: #fef9c3; color: #854d0e; }
-    .badge-red    { background: #fee2e2; color: #991b1b; }
-    .badge-gray   { background: #f1f5f9; color: #475569; }
-    .badge-orange { background: #ffedd5; color: #9a3412; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; }
-    .map-placeholder { background: #e2e8f0; border-radius: var(--radius); height: 420px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--muted); }
-    .progress-bar-wrap { background: #e2e8f0; border-radius: 99px; height: 8px; overflow: hidden; }
-    .progress-bar-fill { height: 100%; border-radius: 99px; background: var(--primary); transition: width .4s; }
-    .empty-state { text-align: center; padding: 3rem 1rem; color: var(--muted); }
-    .empty-state .empty-icon { font-size: 40px; margin-bottom: .75rem; }
-    .empty-state p { font-size: 14px; }
-    .config-preview { display: flex; gap: 2rem; align-items: flex-start; padding: 1.5rem; background: #f8fafc; border-radius: var(--radius); }
-    .config-preview-img { width: 120px; height: 120px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 36px; flex-shrink: 0; }
-    .config-preview-info { flex: 1; }
-    .config-preview-label { font-size: 12px; color: var(--muted); text-transform: uppercase; font-weight: 600; }
-    .config-preview-value { font-size: 18px; font-weight: 700; color: var(--text); margin-top: .25rem; }
-    /* Campo municipio coordenador */
-    #municipioField { display: none; }
-    @media (max-width: 768px) {
-      .sidebar { transform: translateX(-100%); transition: transform .3s ease; width: 280px; }
-      .sidebar.open { transform: translateX(0); }
-      .main { margin-left: 0; }
-      .content { padding: 1rem; }
-      .grid-2, .grid-3 { grid-template-columns: 1fr; }
-      .metrics-grid { grid-template-columns: 1fr 1fr; }
+    body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--text); display:flex; min-height:100vh; overflow-x:hidden; }
+    .sidebar { width:240px; min-height:100vh; background:var(--sidebar); display:flex; flex-direction:column; position:fixed; top:0; left:0; bottom:0; z-index:200; }
+    .sidebar-logo { padding:1.5rem 1.25rem 1rem; border-bottom:1px solid rgba(255,255,255,.08); display:flex; align-items:center; gap:12px; }
+    .sidebar-logo-img { width:40px; height:40px; border-radius:50%; background:var(--primary); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:18px; flex-shrink:0; }
+    .sidebar-logo-text h1 { font-size:14px; font-weight:700; color:#fff; line-height:1.2; }
+    .sidebar-logo-text span { font-size:10px; color:#94a3b8; }
+    .sidebar-nav { flex:1; padding:1rem 0; overflow-y:auto; }
+    .nav-label { font-size:10px; font-weight:600; letter-spacing:1.2px; text-transform:uppercase; color:#475569; padding:.5rem 1.25rem .25rem; margin-top:.5rem; }
+    .nav-item { display:flex; align-items:center; gap:10px; padding:.6rem 1.25rem; color:#94a3b8; font-size:13.5px; cursor:pointer; border-left:3px solid transparent; transition:background .15s,color .15s; }
+    .nav-item:hover { background:rgba(255,255,255,.05); color:#e2e8f0; }
+    .nav-item.active { background:rgba(26,86,219,.18); color:#fff; border-left-color:var(--primary); font-weight:600; }
+    .nav-item .icon { font-size:16px; flex-shrink:0; }
+    .nav-label.hidden, .nav-item.hidden { display:none; }
+    .sidebar-footer { padding:1rem 1.25rem; border-top:1px solid rgba(255,255,255,.08); }
+    .user-chip { display:flex; align-items:center; gap:10px; }
+    .user-avatar { width:34px; height:34px; border-radius:50%; background:var(--primary); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:#fff; flex-shrink:0; }
+    .user-info { flex:1; min-width:0; }
+    .user-name { font-size:13px; font-weight:600; color:#e2e8f0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .user-role { font-size:11px; color:#64748b; }
+    .btn-logout { background:none; border:none; color:#64748b; cursor:pointer; font-size:16px; padding:4px; border-radius:4px; }
+    .btn-logout:hover { color:#f87171; }
+    .main { margin-left:240px; flex:1; display:flex; flex-direction:column; min-height:100vh; }
+    .topbar { background:var(--surface); border-bottom:1px solid var(--border); padding:.875rem 1.75rem; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; gap:.5rem; flex-wrap:wrap; }
+    .topbar-title { font-size:17px; font-weight:700; }
+    .topbar-right { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .badge-online { display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--success); background:#dcfce7; padding:4px 10px; border-radius:20px; }
+    .badge-online::before { content:''; width:7px; height:7px; border-radius:50%; background:var(--success); animation:pulse 1.5s infinite; }
+    .badge-mun { display:inline-flex; align-items:center; gap:5px; font-size:12px; color:#1e40af; background:#dbeafe; padding:4px 10px; border-radius:20px; }
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.3} }
+    .content { padding:1.75rem; flex:1; }
+    /* Auth */
+    .auth-overlay { position:fixed; inset:0; background:rgba(15,23,42,.85); backdrop-filter:blur(6px); z-index:500; display:flex; align-items:center; justify-content:center; padding:1rem; }
+    .auth-card { background:var(--surface); border-radius:14px; padding:2.5rem 2rem; width:100%; max-width:400px; box-shadow:0 20px 60px rgba(0,0,0,.3); }
+    .auth-card h2 { font-size:22px; font-weight:700; margin-bottom:.25rem; }
+    .auth-card p { font-size:13px; color:var(--muted); margin-bottom:1.5rem; }
+    /* Forms */
+    .form-group { margin-bottom:1rem; }
+    .form-group label { display:block; font-size:13px; font-weight:600; margin-bottom:.35rem; }
+    .form-control { width:100%; padding:.6rem .85rem; border:1px solid var(--border); border-radius:var(--radius); font-size:14px; color:var(--text); background:var(--surface); transition:border-color .15s,box-shadow .15s; }
+    .form-control:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(26,86,219,.12); outline:none; }
+    select.form-control { cursor:pointer; }
+    /* Buttons */
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:.6rem 1.25rem; border-radius:var(--radius); font-size:14px; font-weight:600; cursor:pointer; border:none; transition:opacity .15s,transform .1s; }
+    .btn:active { transform:scale(.98); }
+    .btn:hover { opacity:.88; }
+    .btn-primary { background:var(--primary); color:#fff; }
+    .btn-success { background:var(--success); color:#fff; }
+    .btn-danger  { background:var(--danger); color:#fff; }
+    .btn-outline { background:transparent; color:var(--primary); border:1.5px solid var(--primary); }
+    .btn-sm { padding:.35rem .75rem; font-size:12px; }
+    .btn-full { width:100%; }
+    /* Alerts */
+    .alert { padding:.75rem 1rem; border-radius:var(--radius); font-size:13px; margin-bottom:1rem; display:none; }
+    .alert.show { display:block; }
+    .alert-success { background:#dcfce7; color:#166534; border:1px solid #bbf7d0; }
+    .alert-danger  { background:#fee2e2; color:#991b1b; border:1px solid #fecaca; }
+    .alert-info    { background:#dbeafe; color:#1e40af; border:1px solid #bfdbfe; }
+    /* Cards */
+    .card { background:var(--surface); border-radius:var(--radius); border:1px solid var(--border); box-shadow:var(--shadow); overflow:hidden; margin-bottom:1.25rem; }
+    .card-header { padding:1rem 1.5rem; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.5rem; }
+    .card-title { font-size:15px; font-weight:700; }
+    .card-body { padding:1.5rem; }
+    /* Metrics */
+    .metrics-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+    .metric-card { background:var(--surface); border-radius:var(--radius); padding:1.25rem 1.5rem; box-shadow:var(--shadow); border:1px solid var(--border); }
+    .metric-label { font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; margin-bottom:.25rem; }
+    .metric-value { font-size:30px; font-weight:700; color:var(--text); line-height:1; }
+    .metric-sub   { font-size:12px; color:var(--muted); margin-top:.25rem; }
+    .metric-card.highlight { background:linear-gradient(135deg,var(--primary),var(--primary-d)); border:none; }
+    .metric-card.highlight .metric-label,
+    .metric-card.highlight .metric-value,
+    .metric-card.highlight .metric-sub { color:#fff; }
+    /* Progress */
+    .progress-wrap { background:#e2e8f0; border-radius:99px; height:10px; overflow:hidden; margin-top:.5rem; }
+    .progress-fill { height:100%; border-radius:99px; background:var(--primary); transition:width .5s; }
+    .progress-fill.green  { background:var(--success); }
+    .progress-fill.yellow { background:var(--warning); }
+    .progress-fill.red    { background:var(--danger); }
+    /* Table */
+    .table-wrap { overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; font-size:13.5px; }
+    thead th { background:#f8fafc; padding:.75rem 1rem; text-align:left; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--muted); border-bottom:2px solid var(--border); }
+    tbody td { padding:.75rem 1rem; border-bottom:1px solid var(--border); }
+    tbody tr:last-child td { border-bottom:none; }
+    tbody tr:hover td { background:#f8fafc; }
+    /* Badges */
+    .badge { display:inline-block; padding:2px 10px; border-radius:20px; font-size:11px; font-weight:600; }
+    .badge-green  { background:#dcfce7; color:#166534; }
+    .badge-blue   { background:#dbeafe; color:#1e40af; }
+    .badge-purple { background:#ede9fe; color:#5b21b6; }
+    .badge-yellow { background:#fef9c3; color:#854d0e; }
+    .badge-red    { background:#fee2e2; color:#991b1b; }
+    .badge-gray   { background:#f1f5f9; color:#475569; }
+    .badge-orange { background:#ffedd5; color:#9a3412; }
+    /* Layout */
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; }
+    .grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.25rem; }
+    .page { display:none; }
+    .page.active { display:block; }
+    .empty-state { text-align:center; padding:3rem 1rem; color:var(--muted); }
+    .empty-state .ei { font-size:40px; margin-bottom:.75rem; }
+    .empty-state p { font-size:14px; }
+    .filters-bar { display:flex; gap:.75rem; align-items:flex-end; flex-wrap:wrap; }
+    .filters-bar .form-group { margin-bottom:0; min-width:150px; }
+    .filters-bar label { font-size:12px; }
+    /* Ranking lideranças */
+    .rank-item { display:flex; align-items:center; gap:12px; padding:.75rem 0; border-bottom:1px solid var(--border); }
+    .rank-item:last-child { border-bottom:none; }
+    .rank-num { width:28px; height:28px; border-radius:50%; background:var(--primary); color:#fff; font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .rank-num.gold   { background:#f59e0b; }
+    .rank-num.silver { background:#94a3b8; }
+    .rank-num.bronze { background:#b45309; }
+    .rank-info { flex:1; }
+    .rank-name { font-size:14px; font-weight:600; }
+    .rank-sub  { font-size:12px; color:var(--muted); }
+    .rank-votos { font-size:20px; font-weight:700; color:var(--primary); }
+    /* Status eleitor */
+    .status-confirmado { background:#dcfce7; color:#166534; }
+    .status-provavel   { background:#dbeafe; color:#1e40af; }
+    .status-indefinido { background:#fef9c3; color:#854d0e; }
+    .status-contra     { background:#fee2e2; color:#991b1b; }
+    /* Config preview */
+    .config-preview { display:flex; gap:2rem; align-items:flex-start; padding:1.5rem; background:#f8fafc; border-radius:var(--radius); }
+    .config-preview-img { width:100px; height:100px; border-radius:50%; background:var(--primary); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:32px; flex-shrink:0; }
+    .file-input-label { display:flex; align-items:center; justify-content:center; gap:10px; padding:1.5rem; border:2px dashed var(--border); border-radius:var(--radius); cursor:pointer; }
+    .file-input-label:hover { border-color:var(--primary); background:rgba(26,86,219,.05); }
+    .file-input-label input { display:none; }
+    .preview-img { width:80px; height:80px; border-radius:50%; object-fit:cover; margin:.75rem auto 0; display:block; }
+    #municipioField { display:none; }
+    @media(max-width:768px){
+      .sidebar{transform:translateX(-100%);transition:transform .3s;width:280px;}
+      .sidebar.open{transform:translateX(0);}
+      .main{margin-left:0;}
+      .content{padding:1rem;}
+      .grid-2,.grid-3{grid-template-columns:1fr;}
+      .metrics-grid{grid-template-columns:1fr 1fr;}
     }
-    @media (max-width: 480px) {
-      .metrics-grid { grid-template-columns: 1fr; }
-      .form-control { font-size: 16px; }
+    @media(max-width:480px){
+      .metrics-grid{grid-template-columns:1fr;}
+      .form-control{font-size:16px;}
     }
   </style>
 </head>
@@ -146,7 +164,7 @@
     <h2>Sistema de Campanha</h2>
     <p>Faça login para acessar o painel.</p>
     <div id="authAlert" class="alert"></div>
-    <form id="loginForm" onsubmit="handleLogin(event)">
+    <form onsubmit="handleLogin(event)">
       <div class="form-group"><label>E-mail</label><input type="email" class="form-control" id="loginEmail" placeholder="seu@email.com" required /></div>
       <div class="form-group"><label>Senha</label><input type="password" class="form-control" id="loginSenha" placeholder="••••••••" required /></div>
       <button type="submit" class="btn btn-primary btn-full">Entrar</button>
@@ -164,16 +182,20 @@
     </div>
   </div>
   <nav class="sidebar-nav">
-    <div class="nav-section-label">Principal</div>
+    <div class="nav-label">Principal</div>
     <div class="nav-item active" onclick="navigate('dashboard')"><span class="icon">📊</span> Dashboard</div>
-    <div class="nav-section-label">Cadastros</div>
-    <div class="nav-item" onclick="navigate('cadastro')"><span class="icon">👤</span> Cadastro de Pessoas</div>
-    <div class="nav-section-label" data-role="coord">Operações</div>
-    <div class="nav-item" data-role="coord" onclick="navigate('mapa')"><span class="icon">📍</span> Mapa Eleitoral</div>
-    <div class="nav-item" data-role="coord" onclick="navigate('monitoramento')"><span class="icon">📊</span> Monitoramento</div>
-    <div class="nav-item" data-role="coord" onclick="navigate('reunioes')"><span class="icon">📅</span> Reuniões</div>
+
+    <div class="nav-label">Eleitores</div>
+    <div class="nav-item" onclick="navigate('cadastro')"><span class="icon">👤</span> Cadastro de Eleitores</div>
+    <div class="nav-item" onclick="navigate('liderancas')"><span class="icon">⭐</span> Lideranças</div>
+
+    <div class="nav-label" data-role="coord">Monitoramento</div>
+    <div class="nav-item" data-role="coord" onclick="navigate('votos')"><span class="icon">🗳️</span> Painel de Votos</div>
     <div class="nav-item" data-role="coord" onclick="navigate('relatorios')"><span class="icon">📋</span> Relatórios</div>
-    <div class="nav-section-label" data-role="admin">Gestão</div>
+    <div class="nav-item" data-role="coord" onclick="navigate('reunioes')"><span class="icon">📅</span> Reuniões</div>
+
+    <div class="nav-label" data-role="admin">Gestão</div>
+    <div class="nav-item" data-role="admin" onclick="navigate('metas')"><span class="icon">🎯</span> Definir Metas</div>
     <div class="nav-item" data-role="admin" onclick="navigate('config')"><span class="icon">⚙️</span> Configurar Campanha</div>
     <div class="nav-item" data-role="admin" onclick="navigate('usuarios')"><span class="icon">🔐</span> Gerenciar Usuários</div>
   </nav>
@@ -184,7 +206,7 @@
         <div class="user-name" id="userEmail">—</div>
         <div class="user-role" id="userRoleLabel">—</div>
       </div>
-      <button class="btn-logout" title="Sair" onclick="logout()">⏻</button>
+      <button class="btn-logout" onclick="logout()" title="Sair">⏻</button>
     </div>
   </div>
 </aside>
@@ -194,174 +216,373 @@
   <div class="topbar">
     <div class="topbar-title" id="topbarTitle">Dashboard</div>
     <div class="topbar-right">
-      <span id="municipioBadge" class="badge-municipio" style="display:none;">📍 <span id="municipioBadgeText"></span></span>
-      <span class="badge-online">Sistema online</span>
+      <span id="munBadge" class="badge-mun" style="display:none">📍 <span id="munBadgeText"></span></span>
+      <span class="badge-online">Online</span>
     </div>
   </div>
 
   <div class="content">
 
-    <!-- DASHBOARD -->
+    <!-- ══ DASHBOARD ══ -->
     <div class="page active" id="page-dashboard">
       <div id="dashAlert" class="alert"></div>
+
+      <!-- Métricas principais -->
       <div class="metrics-grid">
-        <div class="metric-card"><div class="metric-label">Total de Pessoas</div><div class="metric-value" id="metricTotal">—</div><div class="metric-sub">cadastradas</div></div>
-        <div class="metric-card"><div class="metric-label">Lideranças</div><div class="metric-value" id="metricLiderancas">—</div><div class="metric-sub">ativas</div></div>
-        <div class="metric-card"><div class="metric-label">Regiões</div><div class="metric-value" id="metricRegioes">—</div><div class="metric-sub">cobertas</div></div>
-        <div class="metric-card"><div class="metric-label">Meta de Votos</div><div class="metric-value">70%</div><div class="metric-sub">progresso estimado</div></div>
+        <div class="metric-card highlight">
+          <div class="metric-label">🗳️ Votos Estimados</div>
+          <div class="metric-value" id="mVotosEst">—</div>
+          <div class="metric-sub">apoiadores + lideranças</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">🎯 Meta de Votos</div>
+          <div class="metric-value" id="mMeta">—</div>
+          <div class="metric-sub" id="mMetaSub">definida pelo admin</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">👥 Total Cadastrados</div>
+          <div class="metric-value" id="mTotal">—</div>
+          <div class="metric-sub">eleitores registrados</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">⭐ Lideranças</div>
+          <div class="metric-value" id="mLider">—</div>
+          <div class="metric-sub">ativas na campanha</div>
+        </div>
       </div>
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-header"><span class="card-title">Progresso Regional</span></div>
-          <div class="card-body">
-            <div style="display:flex;flex-direction:column;gap:14px">
-              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Região A</span><span style="color:var(--muted)">82%</span></div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:82%"></div></div></div>
-              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Região B</span><span style="color:var(--muted)">67%</span></div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:67%"></div></div></div>
-              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Região C</span><span style="color:var(--muted)">54%</span></div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:54%"></div></div></div>
-            </div>
+
+      <!-- Barra de progresso geral -->
+      <div class="card" style="margin-bottom:1.25rem">
+        <div class="card-body" style="padding:1.25rem 1.5rem">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+            <span style="font-weight:700;font-size:14px">Progresso para a Meta</span>
+            <span id="pctMeta" style="font-weight:700;color:var(--primary);font-size:18px">—%</span>
+          </div>
+          <div class="progress-wrap"><div class="progress-fill" id="barMeta" style="width:0%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:.4rem">
+            <span id="barSubLeft">0 votos estimados</span>
+            <span id="barSubRight">Meta: —</span>
           </div>
         </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Status dos eleitores -->
         <div class="card">
-          <div class="card-header"><span class="card-title">Atividades Recentes</span></div>
-          <div class="card-body">
-            <div style="display:flex;flex-direction:column;gap:12px;font-size:13px">
-              <div><strong>Novo contato registrado</strong><br><span style="color:var(--muted)">há 15 minutos</span></div>
-              <div><strong>Liderança confirmada</strong><br><span style="color:var(--muted)">há 1 hora</span></div>
-              <div><strong>Reunião agendada</strong><br><span style="color:var(--muted)">há 2 horas</span></div>
-            </div>
+          <div class="card-header"><span class="card-title">Status dos Eleitores</span></div>
+          <div class="card-body" id="statusBreakdown">
+            <div class="empty-state"><div class="ei">📊</div><p>Carregando...</p></div>
           </div>
+        </div>
+
+        <!-- Top lideranças -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">Top Lideranças por Votos</span></div>
+          <div class="card-body" id="topLiderancas" style="padding:1rem 1.5rem">
+            <div class="empty-state"><div class="ei">⭐</div><p>Nenhuma liderança cadastrada.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progresso por município -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">Votos Estimados por Município</span></div>
+        <div class="card-body" id="municipioBreakdown">
+          <div class="empty-state"><div class="ei">📍</div><p>Carregando...</p></div>
         </div>
       </div>
     </div>
 
-    <!-- CADASTRO -->
+    <!-- ══ CADASTRO DE ELEITORES ══ -->
     <div class="page" id="page-cadastro">
       <div class="card">
-        <div class="card-header"><span class="card-title">Registrar Novo Contato</span></div>
+        <div class="card-header"><span class="card-title">Registrar Eleitor</span></div>
         <div class="card-body">
           <div id="cadastroAlert" class="alert"></div>
           <form onsubmit="handleCadastro(event)">
             <div class="grid-2">
-              <div class="form-group"><label>Nome Completo *</label><input type="text" class="form-control" id="cNome" placeholder="Nome da pessoa" required /></div>
+              <div class="form-group"><label>Nome Completo *</label><input type="text" class="form-control" id="cNome" required /></div>
               <div class="form-group"><label>Data de Nascimento</label><input type="date" class="form-control" id="cDataNasc" /></div>
             </div>
-            <div class="form-group"><label>Endereço</label><input type="text" class="form-control" id="cEndereco" placeholder="Rua, número, bairro..." /></div>
             <div class="grid-2">
-              <div class="form-group"><label>Telefone</label><input type="tel" class="form-control" id="cTelefone" placeholder="(00) 9 9999-9999" /></div>
-              <div class="form-group" id="municipioCadastroField">
+              <div class="form-group"><label>Telefone</label><input type="tel" class="form-control" id="cTelefone" placeholder="(68) 9 9999-9999" /></div>
+              <div class="form-group" id="cMunicipioField">
                 <label>Município *</label>
                 <select class="form-control" id="cMunicipio" required>
                   <option value="">Selecione...</option>
                   <option>Rio Branco</option><option>Cruzeiro do Sul</option><option>Sena Madureira</option>
+                  <option>Tarauacá</option><option>Feijó</option><option>Brasileia</option>
+                  <option>Epitaciolândia</option><option>Xapuri</option><option>Senador Guiomard</option>
                 </select>
               </div>
             </div>
-            <div class="form-group">
-              <label>Tipo de Liderança</label>
-              <select class="form-control" id="cLideranca">
-                <option value="Nenhuma">Apoiador</option>
-                <option value="Liderança">Liderança Local</option>
+            <div class="grid-2">
+              <div class="form-group"><label>Bairro / Referência</label><input type="text" class="form-control" id="cBairro" placeholder="Ex: Bairro da Paz" /></div>
+              <div class="form-group"><label>Endereço Completo</label><input type="text" class="form-control" id="cEndereco" placeholder="Rua, número..." /></div>
+            </div>
+            <div class="grid-2">
+              <div class="form-group"><label>Zona Eleitoral</label><input type="text" class="form-control" id="cZona" placeholder="Ex: 001" /></div>
+              <div class="form-group"><label>Seção Eleitoral</label><input type="text" class="form-control" id="cSecao" placeholder="Ex: 0123" /></div>
+            </div>
+            <div class="grid-2">
+              <div class="form-group"><label>Partido / Filiação</label><input type="text" class="form-control" id="cPartido" placeholder="Ex: MDB, PT, PSD..." /></div>
+              <div class="form-group">
+                <label>Status do Eleitor *</label>
+                <select class="form-control" id="cStatus">
+                  <option value="Confirmado">✅ Confirmado — voto garantido</option>
+                  <option value="Provável">🔵 Provável — tende a votar</option>
+                  <option value="Indefinido">🟡 Indefinido — em aberto</option>
+                  <option value="Contra">🔴 Contra — não vai votar</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid-2">
+              <div class="form-group">
+                <label>Tipo</label>
+                <select class="form-control" id="cLideranca" onchange="toggleVotosField()">
+                  <option value="Nenhuma">👤 Apoiador</option>
+                  <option value="Liderança">⭐ Liderança Local</option>
+                </select>
+              </div>
+              <div class="form-group" id="votosField" style="display:none">
+                <label>Votos que esta liderança traz *</label>
+                <input type="number" class="form-control" id="cVotos" min="1" placeholder="Ex: 50" />
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">Registrar Eleitor</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Lista -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Eleitores Cadastrados</span>
+          <div class="filters-bar">
+            <div class="form-group" id="filtroMunWrap"><label>Município</label>
+              <select class="form-control" id="filtroMun" onchange="loadPessoas()">
+                <option value="">Todos</option>
+                <option>Rio Branco</option><option>Cruzeiro do Sul</option><option>Sena Madureira</option>
+                <option>Tarauacá</option><option>Feijó</option><option>Brasileia</option>
+                <option>Epitaciolândia</option><option>Xapuri</option><option>Senador Guiomard</option>
               </select>
             </div>
-            <button type="submit" class="btn btn-primary btn-full">Registrar Contato</button>
-          </form>
+            <div class="form-group"><label>Status</label>
+              <select class="form-control" id="filtroStatus" onchange="loadPessoas()">
+                <option value="">Todos</option>
+                <option>Confirmado</option><option>Provável</option><option>Indefinido</option><option>Contra</option>
+              </select>
+            </div>
+            <button class="btn btn-success btn-sm" onclick="baixarCSV()">⬇ CSV</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Nome</th><th>Município</th><th>Bairro</th><th>Zona/Seção</th><th>Status</th><th>Tipo</th><th>Votos</th><th>Ação</th></tr></thead>
+            <tbody id="pessoasBody">
+              <tr><td colspan="9"><div class="empty-state"><div class="ei">👥</div><p>Nenhum eleitor cadastrado.</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ LIDERANÇAS ══ -->
+    <div class="page" id="page-liderancas">
+      <div class="metrics-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr))">
+        <div class="metric-card highlight">
+          <div class="metric-label">⭐ Total Lideranças</div>
+          <div class="metric-value" id="lTotalCount">—</div>
+          <div class="metric-sub">cadastradas</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">🗳️ Votos Declarados</div>
+          <div class="metric-value" id="lTotalVotos">—</div>
+          <div class="metric-sub">total pelas lideranças</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">📍 Municípios</div>
+          <div class="metric-value" id="lMunicipios">—</div>
+          <div class="metric-sub">com lideranças</div>
         </div>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <span class="card-title">Contatos Registrados</span>
+          <span class="card-title">Ranking de Lideranças</span>
           <div class="filters-bar">
-            <div class="form-group" id="filtroMunicipioWrap"><label>Município</label>
-              <select class="form-control" id="filtroMunicipio" onchange="loadPessoas()">
+            <div class="form-group"><label>Município</label>
+              <select class="form-control" id="filtroLiderMun" onchange="loadLiderancas()">
                 <option value="">Todos</option>
                 <option>Rio Branco</option><option>Cruzeiro do Sul</option><option>Sena Madureira</option>
+                <option>Tarauacá</option><option>Feijó</option><option>Brasileia</option>
               </select>
             </div>
-            <button class="btn btn-outline btn-sm" onclick="loadPessoas()">Atualizar</button>
-            <button class="btn btn-success btn-sm" onclick="baixarCSV()">Baixar CSV</button>
           </div>
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>#</th><th>Nome</th><th>Município</th><th>Telefone</th><th>Tipo</th><th>Ação</th></tr></thead>
-            <tbody id="pessoasTableBody">
-              <tr><td colspan="6"><div class="empty-state"><div class="empty-icon">👥</div><p>Nenhum contato registrado ainda.</p></div></td></tr>
+            <thead><tr><th>#</th><th>Nome</th><th>Município</th><th>Bairro</th><th>Zona/Seção</th><th>Telefone</th><th>Votos Declarados</th><th>Ação</th></tr></thead>
+            <tbody id="liderancasBody">
+              <tr><td colspan="8"><div class="empty-state"><div class="ei">⭐</div><p>Nenhuma liderança cadastrada.</p></div></td></tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- MAPA -->
-    <div class="page" id="page-mapa">
-      <div class="card">
-        <div class="card-header"><span class="card-title">Mapa de Cobertura</span></div>
-        <div class="card-body">
-          <div class="map-placeholder"><strong>Mapa Interativo</strong><p style="max-width:360px;text-align:center">Visualização de cobertura e distribuição de contatos por município</p></div>
-          <div class="grid-3" style="margin-top:1.25rem">
-            <div class="metric-card"><div class="metric-label">Municípios Cobertos</div><div class="metric-value">3</div></div>
-            <div class="metric-card"><div class="metric-label">Pontos Ativos</div><div class="metric-value">45</div></div>
-            <div class="metric-card"><div class="metric-label">Cobertura Total</div><div class="metric-value">78%</div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- MONITORAMENTO -->
-    <div class="page" id="page-monitoramento">
+    <!-- ══ PAINEL DE VOTOS ══ -->
+    <div class="page" id="page-votos">
       <div class="metrics-grid">
-        <div class="metric-card"><div class="metric-label">Intenção de Voto</div><div class="metric-value">58%</div><div class="metric-sub">última pesquisa</div></div>
-        <div class="metric-card"><div class="metric-label">Rejeição</div><div class="metric-value">12%</div><div class="metric-sub">índice atual</div></div>
-        <div class="metric-card"><div class="metric-label">Indecisos</div><div class="metric-value">30%</div><div class="metric-sub">a conquistar</div></div>
-        <div class="metric-card"><div class="metric-label">Contatos Ativos</div><div class="metric-value">142</div><div class="metric-sub">últimos 7 dias</div></div>
+        <div class="metric-card highlight">
+          <div class="metric-label">🗳️ Total Estimado</div>
+          <div class="metric-value" id="vTotalEst">—</div>
+          <div class="metric-sub">apoiadores + lideranças</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">✅ Confirmados</div>
+          <div class="metric-value" id="vConfirmado" style="color:var(--success)">—</div>
+          <div class="metric-sub">votos garantidos</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">🔵 Prováveis</div>
+          <div class="metric-value" id="vProvavel" style="color:#1e40af">—</div>
+          <div class="metric-sub">tendem a votar</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">🟡 Indefinidos</div>
+          <div class="metric-value" id="vIndefinido" style="color:var(--warning)">—</div>
+          <div class="metric-sub">a conquistar</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">🔴 Contra</div>
+          <div class="metric-value" id="vContra" style="color:var(--danger)">—</div>
+          <div class="metric-sub">não vão votar</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">🎯 Meta</div>
+          <div class="metric-value" id="vMeta">—</div>
+          <div class="metric-sub" id="vMetaPct">—% atingido</div>
+        </div>
       </div>
-    </div>
 
-    <!-- REUNIÕES -->
-    <div class="page" id="page-reunioes">
+      <!-- Progresso por município no painel de votos -->
       <div class="card">
-        <div class="card-header"><span class="card-title">Próximas Reuniões</span></div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Data</th><th>Horário</th><th>Título</th><th>Município</th><th>Status</th></tr></thead>
-            <tbody id="reunioesTableBody">
-              <tr><td colspan="5"><div class="empty-state"><div class="empty-icon">📅</div><p>Nenhuma reunião agendada.</p></div></td></tr>
-            </tbody>
-          </table>
+        <div class="card-header"><span class="card-title">Votos por Município</span></div>
+        <div class="card-body" id="votosporMun">
+          <div class="empty-state"><div class="ei">📍</div><p>Carregando...</p></div>
         </div>
       </div>
     </div>
 
-    <!-- RELATÓRIOS -->
+    <!-- ══ RELATÓRIOS ══ -->
     <div class="page" id="page-relatorios">
       <div class="grid-2">
         <div class="card">
-          <div class="card-header"><span class="card-title">Gerar Relatório</span></div>
+          <div class="card-header"><span class="card-title">Exportar Dados</span></div>
           <div class="card-body">
-            <div class="form-group"><label>Filtrar por Município</label>
-              <select class="form-control" id="relMunicipio">
+            <div class="form-group"><label>Município</label>
+              <select class="form-control" id="relMun">
                 <option value="">Todos</option>
                 <option>Rio Branco</option><option>Cruzeiro do Sul</option><option>Sena Madureira</option>
               </select>
             </div>
-            <button class="btn btn-success btn-full" onclick="baixarCSVRelatorio()">Baixar Relatório CSV</button>
+            <div class="form-group"><label>Status</label>
+              <select class="form-control" id="relStatus">
+                <option value="">Todos</option>
+                <option>Confirmado</option><option>Provável</option><option>Indefinido</option><option>Contra</option>
+              </select>
+            </div>
+            <button class="btn btn-success btn-full" onclick="baixarCSVRel()">⬇ Baixar CSV</button>
           </div>
         </div>
         <div class="card">
           <div class="card-header"><span class="card-title">Resumo Geral</span></div>
           <div class="card-body">
-            <div style="display:flex;flex-direction:column;gap:12px;font-size:13.5px">
-              <div style="display:flex;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid var(--border)"><span>Total de Contatos</span><strong id="relTotal">—</strong></div>
-              <div style="display:flex;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid var(--border)"><span>Lideranças</span><strong id="relLiderancas">—</strong></div>
-              <div style="display:flex;justify-content:space-between;padding:.6rem 0"><span>Taxa de Engajamento</span><strong>78%</strong></div>
+            <div style="display:flex;flex-direction:column;gap:10px;font-size:13.5px">
+              <div style="display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--border)"><span>Total de Eleitores</span><strong id="relTotal">—</strong></div>
+              <div style="display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--border)"><span>Votos Estimados</span><strong id="relVotos">—</strong></div>
+              <div style="display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--border)"><span>Lideranças Ativas</span><strong id="relLider">—</strong></div>
+              <div style="display:flex;justify-content:space-between;padding:.5rem 0"><span>Meta</span><strong id="relMeta">—</strong></div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- CONFIGURAR CAMPANHA -->
+    <!-- ══ REUNIÕES ══ -->
+    <div class="page" id="page-reunioes">
+      <div class="card" style="margin-bottom:1.25rem">
+        <div class="card-header"><span class="card-title">Agendar Reunião</span></div>
+        <div class="card-body">
+          <form onsubmit="handleReuniao(event)">
+            <div class="grid-2">
+              <div class="form-group"><label>Título *</label><input type="text" class="form-control" id="rTitulo" required /></div>
+              <div class="form-group"><label>Município</label>
+                <select class="form-control" id="rMun">
+                  <option>Rio Branco</option><option>Cruzeiro do Sul</option><option>Sena Madureira</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid-2">
+              <div class="form-group"><label>Data *</label><input type="date" class="form-control" id="rData" required /></div>
+              <div class="form-group"><label>Horário *</label><input type="time" class="form-control" id="rHora" required /></div>
+            </div>
+            <div class="form-group"><label>Observações</label><textarea class="form-control" id="rObs" rows="2"></textarea></div>
+            <button type="submit" class="btn btn-primary btn-full">Agendar</button>
+          </form>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Próximas Reuniões</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Data</th><th>Hora</th><th>Título</th><th>Município</th><th>Status</th></tr></thead>
+            <tbody id="reunioesBody"><tr><td colspan="5"><div class="empty-state"><div class="ei">📅</div><p>Nenhuma reunião.</p></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ DEFINIR METAS ══ -->
+    <div class="page" id="page-metas">
+      <div class="card">
+        <div class="card-header"><span class="card-title">🎯 Definir Meta de Votos</span></div>
+        <div class="card-body">
+          <div id="metaAlert" class="alert"></div>
+          <p style="font-size:14px;color:var(--muted);margin-bottom:1.25rem">
+            Defina quantos votos o candidato precisa atingir. O sistema calculará automaticamente o progresso com base nos eleitores cadastrados e votos declarados pelas lideranças.
+          </p>
+          <form onsubmit="handleSalvarMeta(event)">
+            <div class="grid-2">
+              <div class="form-group">
+                <label>Meta Total de Votos *</label>
+                <input type="number" class="form-control" id="metaTotal" min="1" placeholder="Ex: 5000" required />
+              </div>
+              <div class="form-group">
+                <label>Descrição / Observação</label>
+                <input type="text" class="form-control" id="metaDesc" placeholder="Ex: Meta eleição 2026" />
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Salvar Meta</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Meta por município (opcional) -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">Metas por Município (opcional)</span></div>
+        <div class="card-body">
+          <p style="font-size:13px;color:var(--muted);margin-bottom:1rem">Defina metas individuais por município para acompanhar o progresso regional.</p>
+          <div id="metasMunGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+            <!-- gerado dinamicamente -->
+          </div>
+          <button class="btn btn-outline" style="margin-top:1rem" onclick="salvarMetasMun()">Salvar Metas Municipais</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CONFIGURAR CAMPANHA ══ -->
     <div class="page" id="page-config">
       <div class="card" style="margin-bottom:1.25rem">
         <div class="card-header"><span class="card-title">Configurar Campanha</span></div>
@@ -375,6 +596,9 @@
                   <option value="">Selecione...</option>
                   <option value="estadual">Deputado Estadual</option>
                   <option value="federal">Deputado Federal</option>
+                  <option value="senador">Senador</option>
+                  <option value="governador">Governador</option>
+                  <option value="prefeito">Prefeito</option>
                 </select>
               </div>
               <div class="form-group">
@@ -383,52 +607,53 @@
               </div>
             </div>
             <div class="form-group">
-              <label>Foto do Candidato</label>
-              <div class="file-input-wrapper">
-                <label class="file-input-label">
-                  <span>Clique para fazer upload</span>
-                  <input type="file" id="configFoto" accept="image/*" />
-                </label>
-                <img id="configPreviewImg" class="preview-img" style="display:none;" />
-              </div>
+              <label>Número do Candidato</label>
+              <input type="text" class="form-control" id="configNumero" placeholder="Ex: 15123" style="max-width:200px" />
             </div>
-            <button type="submit" class="btn btn-primary btn-full" style="margin-top:1.5rem">Salvar Configurações</button>
+            <div class="form-group">
+              <label>Foto do Candidato</label>
+              <label class="file-input-label">
+                <span>Clique para fazer upload</span>
+                <input type="file" id="configFoto" accept="image/*" />
+              </label>
+              <img id="configPreviewImg" class="preview-img" style="display:none" />
+            </div>
+            <button type="submit" class="btn btn-primary btn-full" style="margin-top:1rem">Salvar Configurações</button>
           </form>
         </div>
       </div>
       <div class="card">
-        <div class="card-header"><span class="card-title">Prévia da Campanha</span></div>
+        <div class="card-header"><span class="card-title">Prévia</span></div>
         <div class="card-body">
           <div class="config-preview">
             <div id="previewLogo" class="config-preview-img">?</div>
-            <div class="config-preview-info">
-              <div class="config-preview-label">Nome do Candidato</div>
-              <div class="config-preview-value" id="previewNome">—</div>
-              <div class="config-preview-label" style="margin-top:1rem">Tipo de Cargo</div>
-              <div class="config-preview-value" id="previewCargo">—</div>
+            <div>
+              <div style="font-size:11px;color:var(--muted);text-transform:uppercase;font-weight:600">Candidato</div>
+              <div style="font-size:22px;font-weight:700;margin:.25rem 0" id="previewNome">—</div>
+              <div style="font-size:11px;color:var(--muted);text-transform:uppercase;font-weight:600;margin-top:.75rem">Cargo</div>
+              <div style="font-size:16px;font-weight:600;margin:.25rem 0" id="previewCargo">—</div>
+              <div id="previewNumero" style="font-size:28px;font-weight:800;color:var(--primary);margin-top:.5rem"></div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- GERENCIAR USUÁRIOS — somente admin -->
+    <!-- ══ GERENCIAR USUÁRIOS ══ -->
     <div class="page" id="page-usuarios">
-
-      <!-- Criar novo usuário -->
       <div class="card" style="margin-bottom:1.25rem">
         <div class="card-header"><span class="card-title">Criar Novo Usuário</span></div>
         <div class="card-body">
           <div id="userAlert" class="alert"></div>
           <form onsubmit="handleCriarUsuario(event)">
             <div class="grid-2">
-              <div class="form-group"><label>E-mail *</label><input type="email" class="form-control" id="novoEmail" placeholder="usuario@email.com" required /></div>
-              <div class="form-group"><label>Senha *</label><input type="password" class="form-control" id="novaSenha" placeholder="••••••••" required /></div>
+              <div class="form-group"><label>E-mail *</label><input type="email" class="form-control" id="novoEmail" required /></div>
+              <div class="form-group"><label>Senha *</label><input type="password" class="form-control" id="novaSenha" required /></div>
             </div>
             <div class="grid-2">
               <div class="form-group">
-                <label>Perfil de Acesso *</label>
-                <select class="form-control" id="novoRole" onchange="toggleMunicipioField()">
+                <label>Perfil *</label>
+                <select class="form-control" id="novoRole" onchange="toggleMunField()">
                   <option value="operador">Operador — só cadastro</option>
                   <option value="coordenador">Coordenador — vê seu município</option>
                   <option value="admin">Administrador — acesso total</option>
@@ -438,9 +663,8 @@
                 <label>Município do Coordenador *</label>
                 <select class="form-control" id="novoMunicipio">
                   <option value="">Selecione...</option>
-                  <option>Rio Branco</option>
-                  <option>Cruzeiro do Sul</option>
-                  <option>Sena Madureira</option>
+                  <option>Rio Branco</option><option>Cruzeiro do Sul</option><option>Sena Madureira</option>
+                  <option>Tarauacá</option><option>Feijó</option><option>Brasileia</option>
                 </select>
               </div>
             </div>
@@ -448,23 +672,6 @@
           </form>
         </div>
       </div>
-
-      <!-- Tabela de permissões -->
-      <div class="card" style="margin-bottom:1.25rem">
-        <div class="card-header"><span class="card-title">Níveis de Acesso</span></div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Perfil</th><th>Permissões</th><th>Restrição de Município</th></tr></thead>
-            <tbody>
-              <tr><td><span class="badge badge-red">Admin</span></td><td>Acesso total ao sistema</td><td>Nenhuma — vê tudo</td></tr>
-              <tr><td><span class="badge badge-blue">Coordenador</span></td><td>Dashboard, cadastro, relatórios, reuniões</td><td>Apenas o município vinculado</td></tr>
-              <tr><td><span class="badge badge-gray">Operador</span></td><td>Somente cadastro de contatos</td><td>Livre</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Lista de usuários cadastrados -->
       <div class="card">
         <div class="card-header">
           <span class="card-title">Usuários Cadastrados</span>
@@ -473,392 +680,579 @@
         <div class="table-wrap">
           <table>
             <thead><tr><th>#</th><th>E-mail</th><th>Perfil</th><th>Município</th><th>Ação</th></tr></thead>
-            <tbody id="usuariosTableBody">
-              <tr><td colspan="5"><div class="empty-state"><div class="empty-icon">👤</div><p>Carregando usuários...</p></div></td></tr>
-            </tbody>
+            <tbody id="usuariosBody"></tbody>
           </table>
         </div>
       </div>
     </div>
 
-  </div>
+  </div><!-- /content -->
 </main>
 
 <script>
-  let campaignConfig = JSON.parse(localStorage.getItem('campaignConfig') || 'null');
-  let token    = localStorage.getItem('campanha_token') || null;
-  let userInfo = JSON.parse(localStorage.getItem('campanha_user') || 'null');
+// ── Estado global ────────────────────────────────────────────
+let token    = localStorage.getItem('campanha_token') || null;
+let userInfo = JSON.parse(localStorage.getItem('campanha_user') || 'null');
+let cfg      = JSON.parse(localStorage.getItem('campaignConfig') || 'null');
+let metas    = JSON.parse(localStorage.getItem('campanha_metas') || '{"total":0,"municipios":{}}');
+let reunioes = [];
 
-  const PERMISSIONS = {
-    admin:       ['dashboard','cadastro','mapa','monitoramento','reunioes','relatorios','config','usuarios'],
-    coordenador: ['dashboard','cadastro','mapa','monitoramento','reunioes','relatorios'],
-    operador:    ['dashboard','cadastro'],
-  };
+const MUNICIPIOS = ['Rio Branco','Cruzeiro do Sul','Sena Madureira','Tarauacá','Feijó','Brasileia','Epitaciolândia','Xapuri','Senador Guiomard'];
 
-  window.addEventListener('DOMContentLoaded', () => {
-    if (token && userInfo) showApp();
-    else document.getElementById('authOverlay').style.display = 'flex';
+const PERMS = {
+  admin:       ['dashboard','cadastro','liderancas','votos','relatorios','reunioes','metas','config','usuarios'],
+  coordenador: ['dashboard','cadastro','liderancas','votos','relatorios','reunioes'],
+  operador:    ['dashboard','cadastro','liderancas'],
+};
+
+// ── Init ─────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  if (token && userInfo) showApp();
+  else document.getElementById('authOverlay').style.display = 'flex';
+});
+
+// ── Helpers ──────────────────────────────────────────────────
+function showAlert(id, msg, type='danger') {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg; el.className = `alert alert-${type} show`;
+  if (type === 'success') setTimeout(() => el.className = 'alert', 3000);
+}
+function clearAlert(id) {
+  const el = document.getElementById(id); if (el) el.className = 'alert';
+}
+async function apiFetch(url, opts={}) {
+  const h = {'Content-Type':'application/json',...(opts.headers||{})};
+  if (token) h['Authorization'] = token;
+  return fetch(url, {...opts, headers:h});
+}
+
+// ── Auth ──────────────────────────────────────────────────────
+async function handleLogin(e) {
+  e.preventDefault(); clearAlert('authAlert');
+  const email = document.getElementById('loginEmail').value;
+  const senha = document.getElementById('loginSenha').value;
+  try {
+    const res  = await fetch('/auth/login', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,senha})});
+    const data = await res.json();
+    if (!res.ok) { showAlert('authAlert', data.error || 'Erro ao fazer login'); return; }
+    token = data.token;
+    let p = {}; try { p = JSON.parse(atob(token.split('.')[1])); } catch(_) {}
+    userInfo = {email, role: p.role||'operador', municipio: p.municipio||''};
+    localStorage.setItem('campanha_token', token);
+    localStorage.setItem('campanha_user', JSON.stringify(userInfo));
+    showApp();
+  } catch { showAlert('authAlert','Erro de conexão.'); }
+}
+
+function logout() {
+  token=null; userInfo=null;
+  localStorage.removeItem('campanha_token');
+  localStorage.removeItem('campanha_user');
+  ['sidebar','main'].forEach(id => document.getElementById(id).style.display='none');
+  document.getElementById('authOverlay').style.display='flex';
+  document.getElementById('munBadge').style.display='none';
+}
+
+// ── Show App ─────────────────────────────────────────────────
+function showApp() {
+  document.getElementById('authOverlay').style.display='none';
+  document.getElementById('sidebar').style.display='flex';
+  document.getElementById('main').style.display='flex';
+
+  const {email='', role='operador', municipio=''} = userInfo||{};
+  document.getElementById('userEmail').textContent = email;
+  document.getElementById('userAvatar').textContent = email.charAt(0).toUpperCase();
+  document.getElementById('userRoleLabel').textContent = {admin:'Administrador',coordenador:'Coordenador',operador:'Operador'}[role]||role;
+
+  if (role==='coordenador' && municipio) {
+    document.getElementById('munBadge').style.display='inline-flex';
+    document.getElementById('munBadgeText').textContent = municipio;
+  }
+
+  // Sidebar campanha
+  if (cfg) {
+    document.getElementById('sidebarNome').textContent  = cfg.nome||'Sistema';
+    document.getElementById('sidebarCargo').textContent = cfg.cargo||'Campanha';
+    if (cfg.foto) document.getElementById('sidebarLogo').innerHTML = `<img src="${cfg.foto}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+    else document.getElementById('sidebarLogo').textContent = (cfg.nome||'?').charAt(0).toUpperCase();
+  }
+
+  // Mostrar/ocultar nav por role
+  document.querySelectorAll('[data-role]').forEach(el => {
+    const r = el.getAttribute('data-role');
+    const show = r==='coord' ? (role==='admin'||role==='coordenador') : role==='admin';
+    el.classList.toggle('hidden', !show);
   });
 
-  function showAlert(id, msg, type = 'danger') {
-    const el = document.getElementById(id);
-    el.textContent = msg; el.className = `alert alert-${type} show`;
-  }
-  function clearAlert(id) {
-    const el = document.getElementById(id);
-    el.className = 'alert'; el.textContent = '';
-  }
-
-  async function handleLogin(e) {
-    e.preventDefault(); clearAlert('authAlert');
-    const email = document.getElementById('loginEmail').value;
-    const senha = document.getElementById('loginSenha').value;
-    try {
-      const res  = await fetch('/auth/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email,senha}) });
-      const data = await res.json();
-      if (!res.ok) { showAlert('authAlert', data.error || 'Erro ao fazer login'); return; }
-      token = data.token;
-      let payload = {};
-      try { payload = JSON.parse(atob(token.split('.')[1])); } catch(_) {}
-      userInfo = { email, role: payload.role || 'operador', municipio: payload.municipio || '' };
-      localStorage.setItem('campanha_token', token);
-      localStorage.setItem('campanha_user', JSON.stringify(userInfo));
-      showApp();
-    } catch(err) { showAlert('authAlert', 'Erro de conexão.'); }
-  }
-
-  function showApp() {
-    document.getElementById('authOverlay').style.display = 'none';
-    document.getElementById('sidebar').style.display = 'flex';
-    document.getElementById('main').style.display = 'flex';
-
-    const email     = userInfo?.email     || '—';
-    const role      = userInfo?.role      || 'operador';
-    const municipio = userInfo?.municipio || '';
-
-    document.getElementById('userEmail').textContent = email;
-
-    // Badge município para coordenador
-    if (role === 'coordenador' && municipio) {
-      document.getElementById('municipioBadge').style.display = 'inline-flex';
-      document.getElementById('municipioBadgeText').textContent = municipio;
-    }
-
-    if (campaignConfig) {
-      document.getElementById('sidebarNome').textContent  = campaignConfig.nome || 'Sistema';
-      document.getElementById('sidebarCargo').textContent = campaignConfig.cargo === 'estadual' ? 'Dep. Estadual' : 'Dep. Federal';
-      if (campaignConfig.foto) {
-        const logo = document.getElementById('sidebarLogo');
-        logo.innerHTML = `<img src="${campaignConfig.foto}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" />`;
-      } else {
-        document.getElementById('sidebarLogo').textContent = (campaignConfig.nome || '?').charAt(0).toUpperCase();
-      }
-    }
-
-    const roleLabels = { admin: 'Administrador', coordenador: 'Coordenador', operador: 'Operador' };
-    document.getElementById('userRoleLabel').textContent = roleLabels[role] || role;
-    document.getElementById('userAvatar').textContent = email.charAt(0).toUpperCase();
-
-    // Mostrar/ocultar itens do menu por role
-    document.querySelectorAll('[data-role]').forEach(el => {
-      const itemRole = el.getAttribute('data-role');
-      if (itemRole === 'coord') el.classList.toggle('hidden', role !== 'admin' && role !== 'coordenador');
-      else if (itemRole === 'admin') el.classList.toggle('hidden', role !== 'admin');
+  // Coordenador: ocultar filtro de município no cadastro
+  if (role==='coordenador' && municipio) {
+    ['filtroMunWrap','cMunicipioField'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.style.display='none';
     });
-
-    // Coordenador: ocultar filtro de município no cadastro (é fixo)
-    if (role === 'coordenador' && municipio) {
-      const fm = document.getElementById('filtroMunicipioWrap');
-      if (fm) fm.style.display = 'none';
-      const cm = document.getElementById('municipioCadastroField');
-      if (cm) cm.style.display = 'none';
-    }
-
-    loadConfigForm();
-    loadDashboard();
   }
 
-  function logout() {
-    token = null; userInfo = null;
-    localStorage.removeItem('campanha_token');
-    localStorage.removeItem('campanha_user');
-    document.getElementById('sidebar').style.display = 'none';
-    document.getElementById('main').style.display = 'none';
-    document.getElementById('authOverlay').style.display = 'flex';
-    document.getElementById('municipioBadge').style.display = 'none';
-  }
+  loadMetasMunGrid();
+  loadConfigForm();
+  loadDashboard();
+}
 
-  const pageTitles = {
-    dashboard:'Dashboard', cadastro:'Cadastro de Contatos',
-    mapa:'Mapa de Cobertura', monitoramento:'Monitoramento',
-    reunioes:'Reuniões', relatorios:'Relatórios',
-    config:'Configurar Campanha', usuarios:'Gerenciar Usuários',
-  };
+// ── Navigate ─────────────────────────────────────────────────
+const PAGE_TITLES = {
+  dashboard:'Dashboard', cadastro:'Cadastro de Eleitores', liderancas:'Lideranças',
+  votos:'Painel de Votos', relatorios:'Relatórios', reunioes:'Reuniões',
+  metas:'Definir Metas', config:'Configurar Campanha', usuarios:'Gerenciar Usuários',
+};
 
-  function navigate(page) {
-    const role    = userInfo?.role || 'operador';
-    const allowed = PERMISSIONS[role] || ['dashboard','cadastro'];
-    if (!allowed.includes(page)) { alert('Você não tem permissão para acessar esta página.'); return; }
-
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-
-    const pageEl = document.getElementById('page-' + page);
-    if (pageEl) pageEl.classList.add('active');
-    document.querySelectorAll('.nav-item').forEach(n => {
-      if (n.getAttribute('onclick') === `navigate('${page}')`) n.classList.add('active');
-    });
-    document.getElementById('topbarTitle').textContent = pageTitles[page] || page;
-
-    if (page === 'dashboard')  loadDashboard();
-    if (page === 'cadastro')   loadPessoas();
-    if (page === 'relatorios') loadRelatoriosSummary();
-    if (page === 'config')     loadConfigForm();
-    if (page === 'usuarios')   loadUsuarios();
-  }
-
-  async function apiFetch(url, opts = {}) {
-    const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
-    if (token) headers['Authorization'] = token;
-    return fetch(url, { ...opts, headers });
-  }
-
-  // ── Config ──────────────────────────────────────────────────
-  function loadConfigForm() {
-    if (!campaignConfig) return;
-    document.getElementById('configCargo').value = campaignConfig.cargo || '';
-    document.getElementById('configNome').value  = campaignConfig.nome  || '';
-    if (campaignConfig.foto) {
-      document.getElementById('configPreviewImg').src          = campaignConfig.foto;
-      document.getElementById('configPreviewImg').style.display = 'block';
-    }
-    updateConfigPreview();
-  }
-
-  document.getElementById('configFoto')?.addEventListener('change', e => {
-    if (!e.target.files[0]) return;
-    const reader = new FileReader();
-    reader.onload = ev => {
-      document.getElementById('configPreviewImg').src          = ev.target.result;
-      document.getElementById('configPreviewImg').style.display = 'block';
-    };
-    reader.readAsDataURL(e.target.files[0]);
+function navigate(page) {
+  const role = userInfo?.role||'operador';
+  if (!(PERMS[role]||[]).includes(page)) { alert('Sem permissão.'); return; }
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+page)?.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>{
+    if (n.getAttribute('onclick')===`navigate('${page}')`) n.classList.add('active');
   });
+  document.getElementById('topbarTitle').textContent = PAGE_TITLES[page]||page;
+  if (page==='dashboard')  loadDashboard();
+  if (page==='cadastro')   loadPessoas();
+  if (page==='liderancas') loadLiderancas();
+  if (page==='votos')      loadVotos();
+  if (page==='relatorios') loadRelatoriosSummary();
+  if (page==='usuarios')   loadUsuarios();
+  if (page==='config')     loadConfigForm();
+}
 
-  function updateConfigPreview() {
-    const cargo = document.getElementById('configCargo').value;
-    const nome  = document.getElementById('configNome').value || '—';
-    document.getElementById('previewNome').textContent  = nome;
-    document.getElementById('previewCargo').textContent = cargo === 'estadual' ? 'Deputado Estadual' : cargo === 'federal' ? 'Deputado Federal' : '—';
-    document.getElementById('previewLogo').textContent  = nome.charAt(0).toUpperCase();
-  }
+// ── Dashboard ────────────────────────────────────────────────
+async function loadDashboard() {
+  try {
+    const [resD, resP] = await Promise.all([
+      apiFetch('/dashboard/'),
+      apiFetch('/dashboard/pessoas')
+    ]);
+    if (resD.status===401) { logout(); return; }
+    const d = await resD.json();
+    const p = await resP.json();
 
-  async function handleSaveConfig(e) {
-    e.preventDefault(); clearAlert('configAlert');
-    const cargo     = document.getElementById('configCargo').value;
-    const nome      = document.getElementById('configNome').value.trim();
-    const fotoInput = document.getElementById('configFoto');
-    if (!cargo || !nome) { showAlert('configAlert', 'Preencha todos os campos obrigatórios', 'danger'); return; }
+    const pessoas = p.pessoas || [];
+    const stats   = calcStats(pessoas);
+    const meta    = metas.total || 0;
+    const pct     = meta ? Math.min(Math.round(stats.totalVotos/meta*100),100) : 0;
 
-    const save = foto => {
-      campaignConfig = { cargo, nome, foto };
-      localStorage.setItem('campaignConfig', JSON.stringify(campaignConfig));
-      showAlert('configAlert', 'Configurações salvas com sucesso!', 'success');
-      showApp();
-    };
+    document.getElementById('mVotosEst').textContent  = stats.totalVotos;
+    document.getElementById('mMeta').textContent      = meta || '—';
+    document.getElementById('mTotal').textContent     = d.total ?? pessoas.length;
+    document.getElementById('mLider').textContent     = d.liderancas ?? stats.liderancas;
+    document.getElementById('pctMeta').textContent    = meta ? pct+'%' : '—%';
+    document.getElementById('barSubLeft').textContent = stats.totalVotos+' votos estimados';
+    document.getElementById('barSubRight').textContent= 'Meta: '+(meta||'—');
 
-    if (fotoInput.files[0]) {
-      const reader = new FileReader();
-      reader.onload = ev => save(ev.target.result);
-      reader.readAsDataURL(fotoInput.files[0]);
-    } else {
-      save(campaignConfig?.foto || null);
-    }
-  }
+    const bar = document.getElementById('barMeta');
+    bar.style.width = pct+'%';
+    bar.className   = 'progress-fill'+(pct>=100?' green':pct>=60?' yellow':' ');
 
-  // ── Dashboard ────────────────────────────────────────────────
-  async function loadDashboard() {
-    try {
-      const res  = await apiFetch('/dashboard/');
-      if (res.status === 401) { logout(); return; }
-      const data = await res.json();
-      document.getElementById('metricTotal').textContent      = data.total      ?? '—';
-      document.getElementById('metricLiderancas').textContent = data.liderancas ?? '—';
-      document.getElementById('metricRegioes').textContent    = data.municipio ? '1' : '3';
-    } catch(err) { showAlert('dashAlert', 'Não foi possível carregar os dados.', 'info'); }
-  }
+    // Status breakdown
+    const sbEl = document.getElementById('statusBreakdown');
+    const statusCores = {Confirmado:'green',Provável:'blue',Indefinido:'yellow',Contra:'red'};
+    const statusIcons = {Confirmado:'✅',Provável:'🔵',Indefinido:'🟡',Contra:'🔴'};
+    sbEl.innerHTML = Object.entries(stats.porStatus).map(([st, n]) => `
+      <div style="margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
+          <span>${statusIcons[st]||''} ${st}</span><span style="font-weight:700">${n}</span>
+        </div>
+        <div class="progress-wrap"><div class="progress-fill ${statusCores[st]||''}" style="width:${pessoas.length?Math.round(n/pessoas.length*100):0}%"></div></div>
+      </div>`).join('') || '<p style="color:var(--muted)">Nenhum dado.</p>';
 
-  // ── Cadastro ─────────────────────────────────────────────────
-  async function handleCadastro(e) {
-    e.preventDefault(); clearAlert('cadastroAlert');
-    const role      = userInfo?.role      || 'operador';
-    const municipio = userInfo?.municipio || '';
-    const payload = {
-      nome:            document.getElementById('cNome').value.trim(),
-      endereco:        document.getElementById('cEndereco').value.trim(),
-      telefone:        document.getElementById('cTelefone').value.trim(),
-      municipio:       role === 'coordenador' ? municipio : document.getElementById('cMunicipio').value,
-      data_nascimento: document.getElementById('cDataNasc').value || null,
-      lideranca:       document.getElementById('cLideranca').value,
-    };
-    if (!payload.municipio) { showAlert('cadastroAlert', 'Selecione um município.', 'danger'); return; }
-    try {
-      const res = await apiFetch('/dashboard/pessoas', { method:'POST', body:JSON.stringify(payload) });
-      if (res.status === 401) { logout(); return; }
-      if (res.ok) {
-        showAlert('cadastroAlert', `"${payload.nome}" registrado(a) com sucesso!`, 'success');
-        e.target.reset(); loadPessoas(); loadDashboard();
-      } else {
-        const d = await res.json(); showAlert('cadastroAlert', d.error || 'Erro ao registrar.');
-      }
-    } catch(err) { showAlert('cadastroAlert', 'Erro de conexão.'); }
-  }
-
-  async function loadPessoas() {
-    const role      = userInfo?.role      || 'operador';
-    const municipio = userInfo?.municipio || '';
-    const filtro    = role === 'coordenador' ? municipio : (document.getElementById('filtroMunicipio')?.value || '');
-    const params    = new URLSearchParams();
-    if (filtro) params.append('municipio', filtro);
-    try {
-      const res  = await apiFetch('/dashboard/pessoas?' + params.toString());
-      if (!res.ok) return;
-      const data = await res.json();
-      const tbody = document.getElementById('pessoasTableBody');
-      if (!data.pessoas?.length) {
-        tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">👥</div><p>Nenhum contato registrado.</p></div></td></tr>';
-        return;
-      }
-      const badge = l => l === 'Liderança'
-        ? '<span class="badge badge-purple">Liderança</span>'
-        : '<span class="badge badge-gray">Apoiador</span>';
-      tbody.innerHTML = data.pessoas.map(p => `
-        <tr>
-          <td>${p.id}</td>
-          <td><strong>${p.nome}</strong></td>
-          <td>${p.municipio || '—'}</td>
-          <td>${p.telefone || '—'}</td>
-          <td>${badge(p.lideranca)}</td>
-          <td><button class="btn btn-danger btn-sm" onclick="deletarPessoa(${p.id},'${p.nome.replace(/'/g,"\\'")}')">Remover</button></td>
-        </tr>`).join('');
-    } catch(err) {}
-  }
-
-  async function deletarPessoa(id, nome) {
-    if (!confirm(`Remover "${nome}"?`)) return;
-    try {
-      const res = await apiFetch(`/dashboard/pessoas/${id}`, { method:'DELETE' });
-      if (res.ok) { loadPessoas(); loadDashboard(); }
-      else { const d = await res.json(); alert(d.error || 'Erro ao remover.'); }
-    } catch(err) { alert('Erro de conexão.'); }
-  }
-
-  function _dispararDownloadCSV(municipio) {
-    const params = new URLSearchParams();
-    if (municipio) params.append('municipio', municipio);
-    apiFetch('/dashboard/exportar-csv?' + params.toString())
-      .then(res => { if (res.status === 401) { logout(); return; } return res.blob(); })
-      .then(blob => {
-        if (!blob) return;
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = 'contatos.csv';
-        document.body.appendChild(a); a.click();
-        document.body.removeChild(a); URL.revokeObjectURL(url);
-      })
-      .catch(() => alert('Erro ao baixar CSV.'));
-  }
-
-  function baixarCSV() {
-    const role      = userInfo?.role      || 'operador';
-    const municipio = userInfo?.municipio || '';
-    _dispararDownloadCSV(role === 'coordenador' ? municipio : (document.getElementById('filtroMunicipio')?.value || ''));
-  }
-
-  function baixarCSVRelatorio() {
-    _dispararDownloadCSV(document.getElementById('relMunicipio')?.value || '');
-  }
-
-  async function loadRelatoriosSummary() {
-    try {
-      const res  = await apiFetch('/dashboard/');
-      if (!res.ok) return;
-      const data = await res.json();
-      document.getElementById('relTotal').textContent      = data.total      ?? '—';
-      document.getElementById('relLiderancas').textContent = data.liderancas ?? '—';
-    } catch(err) {}
-  }
-
-  // ── Usuários ─────────────────────────────────────────────────
-  function toggleMunicipioField() {
-    const role = document.getElementById('novoRole').value;
-    document.getElementById('municipioField').style.display = role === 'coordenador' ? 'block' : 'none';
-    document.getElementById('novoMunicipio').required = role === 'coordenador';
-  }
-
-  async function handleCriarUsuario(e) {
-    e.preventDefault(); clearAlert('userAlert');
-    const email     = document.getElementById('novoEmail').value.trim();
-    const senha     = document.getElementById('novaSenha').value;
-    const role      = document.getElementById('novoRole').value;
-    const municipio = document.getElementById('novoMunicipio').value;
-
-    if (role === 'coordenador' && !municipio) {
-      showAlert('userAlert', 'Selecione o município do coordenador.', 'danger'); return;
+    // Top lideranças
+    const lids = pessoas.filter(p=>p.lideranca==='Liderança').sort((a,b)=>(b.votos_declarados||0)-(a.votos_declarados||0)).slice(0,5);
+    const tlEl = document.getElementById('topLiderancas');
+    if (!lids.length) { tlEl.innerHTML='<div class="empty-state"><div class="ei">⭐</div><p>Nenhuma liderança.</p></div>'; }
+    else {
+      const nums = ['gold','silver','bronze'];
+      tlEl.innerHTML = lids.map((l,i) => `
+        <div class="rank-item">
+          <div class="rank-num ${nums[i]||''}">${i+1}</div>
+          <div class="rank-info">
+            <div class="rank-name">${l.nome}</div>
+            <div class="rank-sub">${l.municipio||'—'} • ${l.bairro||'—'}</div>
+          </div>
+          <div class="rank-votos">${l.votos_declarados||0}</div>
+        </div>`).join('');
     }
 
-    try {
-      const res  = await apiFetch('/auth/register', { method:'POST', body:JSON.stringify({email, senha, role, municipio}) });
-      const data = await res.json();
-      if (res.ok) {
-        showAlert('userAlert', `Usuário "${email}" criado com sucesso!`, 'success');
-        e.target.reset();
-        document.getElementById('municipioField').style.display = 'none';
-        loadUsuarios();
-      } else {
-        showAlert('userAlert', data.error || 'Erro ao criar usuário.');
-      }
-    } catch(err) { showAlert('userAlert', 'Erro de conexão.'); }
-  }
+    // Por município
+    const munEl = document.getElementById('municipioBreakdown');
+    const porMun = {};
+    pessoas.forEach(p => {
+      if (!p.municipio) return;
+      if (!porMun[p.municipio]) porMun[p.municipio] = 0;
+      porMun[p.municipio] += (p.lideranca==='Liderança' ? (p.votos_declarados||0) : 1);
+    });
+    const maxV = Math.max(...Object.values(porMun),1);
+    munEl.innerHTML = Object.entries(porMun).sort((a,b)=>b[1]-a[1]).map(([m,v]) => {
+      const metaMun = metas.municipios?.[m] || 0;
+      const pctM = metaMun ? Math.min(Math.round(v/metaMun*100),100) : 0;
+      return `
+        <div style="margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
+            <span><strong>${m}</strong></span>
+            <span>${v} votos${metaMun?' / meta '+metaMun+' ('+pctM+'%)':''}</span>
+          </div>
+          <div class="progress-wrap"><div class="progress-fill" style="width:${Math.round(v/maxV*100)}%"></div></div>
+        </div>`;
+    }).join('') || '<div class="empty-state"><div class="ei">📍</div><p>Nenhum dado.</p></div>';
+  } catch(err) { showAlert('dashAlert','Erro ao carregar dados.','info'); }
+}
 
-  async function loadUsuarios() {
-    try {
-      const res  = await apiFetch('/auth/usuarios');
-      if (res.status === 401) { logout(); return; }
-      const data = await res.json();
-      const tbody = document.getElementById('usuariosTableBody');
-      if (!data.usuarios?.length) {
-        tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">👤</div><p>Nenhum usuário cadastrado.</p></div></td></tr>';
-        return;
-      }
-      const roleBadge = r => {
-        if (r === 'admin')       return '<span class="badge badge-red">Admin</span>';
-        if (r === 'coordenador') return '<span class="badge badge-blue">Coordenador</span>';
-        return '<span class="badge badge-gray">Operador</span>';
-      };
-      const myId = (() => { try { return JSON.parse(atob(token.split('.')[1])).id; } catch(_) { return null; } })();
-      tbody.innerHTML = data.usuarios.map(u => `
-        <tr>
-          <td>${u.id}</td>
-          <td><strong>${u.email}</strong></td>
-          <td>${roleBadge(u.role)}</td>
-          <td>${u.municipio || '<span style="color:var(--muted)">—</span>'}</td>
-          <td>${u.id === myId
-            ? '<span style="color:var(--muted);font-size:12px">você</span>'
-            : `<button class="btn btn-danger btn-sm" onclick="deletarUsuario(${u.id},'${u.email.replace(/'/g,"\\'")}')">Remover</button>`
-          }</td>
-        </tr>`).join('');
-    } catch(err) {}
-  }
+function calcStats(pessoas) {
+  let totalVotos = 0, liderancas = 0;
+  const porStatus = {Confirmado:0,Provável:0,Indefinido:0,Contra:0};
+  pessoas.forEach(p => {
+    if (p.lideranca==='Liderança') { liderancas++; totalVotos += (p.votos_declarados||0); }
+    else totalVotos++;
+    if (p.status in porStatus) porStatus[p.status]++;
+    else porStatus['Indefinido']++;
+  });
+  return {totalVotos, liderancas, porStatus};
+}
 
-  async function deletarUsuario(id, email) {
-    if (!confirm(`Remover o usuário "${email}"? Esta ação não pode ser desfeita.`)) return;
-    try {
-      const res = await apiFetch(`/auth/usuarios/${id}`, { method:'DELETE' });
-      if (res.ok) { loadUsuarios(); }
-      else { const d = await res.json(); alert(d.error || 'Erro ao remover.'); }
-    } catch(err) { alert('Erro de conexão.'); }
+// ── Cadastro ─────────────────────────────────────────────────
+function toggleVotosField() {
+  const isLider = document.getElementById('cLideranca').value === 'Liderança';
+  document.getElementById('votosField').style.display = isLider ? 'block' : 'none';
+  document.getElementById('cVotos').required = isLider;
+}
+
+async function handleCadastro(e) {
+  e.preventDefault(); clearAlert('cadastroAlert');
+  const role      = userInfo?.role||'operador';
+  const municipio = userInfo?.municipio||'';
+  const payload = {
+    nome:              document.getElementById('cNome').value.trim(),
+    telefone:          document.getElementById('cTelefone').value.trim(),
+    municipio:         role==='coordenador' ? municipio : document.getElementById('cMunicipio').value,
+    bairro:            document.getElementById('cBairro').value.trim(),
+    endereco:          document.getElementById('cEndereco').value.trim(),
+    zona_eleitoral:    document.getElementById('cZona').value.trim(),
+    secao_eleitoral:   document.getElementById('cSecao').value.trim(),
+    partido:           document.getElementById('cPartido').value.trim(),
+    status:            document.getElementById('cStatus').value,
+    lideranca:         document.getElementById('cLideranca').value,
+    votos_declarados:  document.getElementById('cLideranca').value==='Liderança' ? parseInt(document.getElementById('cVotos').value)||0 : 0,
+    data_nascimento:   document.getElementById('cDataNasc').value||null,
+  };
+  if (!payload.municipio) { showAlert('cadastroAlert','Selecione um município.','danger'); return; }
+  if (payload.lideranca==='Liderança' && !payload.votos_declarados) { showAlert('cadastroAlert','Informe os votos que esta liderança traz.','danger'); return; }
+  try {
+    const res = await apiFetch('/dashboard/pessoas', {method:'POST',body:JSON.stringify(payload)});
+    if (res.status===401) { logout(); return; }
+    const data = await res.json();
+    if (res.ok) {
+      showAlert('cadastroAlert',`"${payload.nome}" registrado com sucesso!`,'success');
+      e.target.reset();
+      document.getElementById('votosField').style.display='none';
+      loadPessoas(); loadDashboard();
+    } else showAlert('cadastroAlert', data.error||'Erro ao registrar.');
+  } catch { showAlert('cadastroAlert','Erro de conexão.'); }
+}
+
+async function loadPessoas() {
+  const role      = userInfo?.role||'operador';
+  const municipio = userInfo?.municipio||'';
+  const filtroMun = role==='coordenador' ? municipio : (document.getElementById('filtroMun')?.value||'');
+  const filtroSt  = document.getElementById('filtroStatus')?.value||'';
+  const params    = new URLSearchParams();
+  if (filtroMun) params.append('municipio',filtroMun);
+  if (filtroSt)  params.append('status',filtroSt);
+  try {
+    const res  = await apiFetch('/dashboard/pessoas?'+params);
+    if (!res.ok) return;
+    const data = await res.json();
+    const tbody = document.getElementById('pessoasBody');
+    if (!data.pessoas?.length) {
+      tbody.innerHTML='<tr><td colspan="9"><div class="empty-state"><div class="ei">👥</div><p>Nenhum eleitor.</p></div></td></tr>';
+      return;
+    }
+    tbody.innerHTML = data.pessoas.map(p => `
+      <tr>
+        <td>${p.id}</td>
+        <td><strong>${p.nome}</strong><br><span style="font-size:11px;color:var(--muted)">${p.partido||''}</span></td>
+        <td>${p.municipio||'—'}</td>
+        <td>${p.bairro||'—'}</td>
+        <td style="font-size:12px">${p.zona_eleitoral||'—'}/${p.secao_eleitoral||'—'}</td>
+        <td><span class="badge status-${(p.status||'Indefinido').toLowerCase().replace('á','a').replace('ó','o')}">${p.status||'Indefinido'}</span></td>
+        <td>${p.lideranca==='Liderança'?'<span class="badge badge-purple">⭐ Liderança</span>':'<span class="badge badge-gray">👤 Apoiador</span>'}</td>
+        <td style="font-weight:700;color:var(--primary)">${p.lideranca==='Liderança'?(p.votos_declarados||0):'1'}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="deletarPessoa(${p.id},'${p.nome.replace(/'/g,"\\'")}')">Remover</button></td>
+      </tr>`).join('');
+  } catch {}
+}
+
+async function deletarPessoa(id, nome) {
+  if (!confirm(`Remover "${nome}"?`)) return;
+  try {
+    const res = await apiFetch(`/dashboard/pessoas/${id}`,{method:'DELETE'});
+    if (res.ok) { loadPessoas(); loadDashboard(); }
+    else { const d=await res.json(); alert(d.error||'Erro.'); }
+  } catch { alert('Erro de conexão.'); }
+}
+
+// ── Lideranças ───────────────────────────────────────────────
+async function loadLiderancas() {
+  const filtro = document.getElementById('filtroLiderMun')?.value||'';
+  const params = new URLSearchParams({lideranca:'Liderança'});
+  if (filtro) params.append('municipio',filtro);
+  try {
+    const res  = await apiFetch('/dashboard/pessoas?'+params);
+    const data = await res.json();
+    const lids = data.pessoas||[];
+    const totalVotos = lids.reduce((a,l)=>a+(l.votos_declarados||0),0);
+    const muns = new Set(lids.map(l=>l.municipio).filter(Boolean));
+    document.getElementById('lTotalCount').textContent = lids.length;
+    document.getElementById('lTotalVotos').textContent = totalVotos;
+    document.getElementById('lMunicipios').textContent = muns.size;
+    const tbody = document.getElementById('liderancasBody');
+    if (!lids.length) { tbody.innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="ei">⭐</div><p>Nenhuma liderança.</p></div></td></tr>'; return; }
+    const sorted = [...lids].sort((a,b)=>(b.votos_declarados||0)-(a.votos_declarados||0));
+    tbody.innerHTML = sorted.map((l,i)=>`
+      <tr>
+        <td><strong>#${i+1}</strong></td>
+        <td><strong>${l.nome}</strong></td>
+        <td>${l.municipio||'—'}</td>
+        <td>${l.bairro||'—'}</td>
+        <td style="font-size:12px">${l.zona_eleitoral||'—'}/${l.secao_eleitoral||'—'}</td>
+        <td>${l.telefone||'—'}</td>
+        <td style="font-weight:700;font-size:18px;color:var(--primary)">${l.votos_declarados||0}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="deletarPessoa(${l.id},'${l.nome.replace(/'/g,"\\'")}')">Remover</button></td>
+      </tr>`).join('');
+  } catch {}
+}
+
+// ── Painel de Votos ──────────────────────────────────────────
+async function loadVotos() {
+  try {
+    const res  = await apiFetch('/dashboard/pessoas');
+    const data = await res.json();
+    const pessoas = data.pessoas||[];
+    const stats   = calcStats(pessoas);
+    const meta    = metas.total||0;
+    const pct     = meta ? Math.min(Math.round(stats.totalVotos/meta*100),100) : 0;
+
+    document.getElementById('vTotalEst').textContent   = stats.totalVotos;
+    document.getElementById('vConfirmado').textContent = stats.porStatus.Confirmado;
+    document.getElementById('vProvavel').textContent   = stats.porStatus.Provável;
+    document.getElementById('vIndefinido').textContent = stats.porStatus.Indefinido;
+    document.getElementById('vContra').textContent     = stats.porStatus.Contra;
+    document.getElementById('vMeta').textContent       = meta||'—';
+    document.getElementById('vMetaPct').textContent    = meta ? pct+'% atingido' : 'meta não definida';
+
+    // Por município
+    const porMun = {};
+    pessoas.forEach(p => {
+      if (!p.municipio) return;
+      if (!porMun[p.municipio]) porMun[p.municipio] = {votos:0,total:0};
+      porMun[p.municipio].votos += p.lideranca==='Liderança' ? (p.votos_declarados||0) : 1;
+      porMun[p.municipio].total++;
+    });
+    const vmEl = document.getElementById('votosporMun');
+    const maxV = Math.max(...Object.values(porMun).map(v=>v.votos),1);
+    vmEl.innerHTML = Object.entries(porMun).sort((a,b)=>b[1].votos-a[1].votos).map(([m,v])=>{
+      const metaMun = metas.municipios?.[m]||0;
+      const pctM = metaMun ? Math.min(Math.round(v.votos/metaMun*100),100) : 0;
+      return `
+        <div style="margin-bottom:16px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+            <span style="font-weight:600;font-size:14px">📍 ${m}</span>
+            <span style="font-size:13px"><strong style="color:var(--primary)">${v.votos} votos</strong> · ${v.total} cadastrados${metaMun?' · meta '+metaMun+' <span style="color:var(--success)">('+pctM+'%)</span>':''}</span>
+          </div>
+          <div class="progress-wrap"><div class="progress-fill ${pctM>=100?'green':pctM>=60?'yellow':''}" style="width:${Math.round(v.votos/maxV*100)}%"></div></div>
+        </div>`;
+    }).join('')||'<div class="empty-state"><div class="ei">📍</div><p>Nenhum dado.</p></div>';
+  } catch {}
+}
+
+// ── Metas ────────────────────────────────────────────────────
+function loadMetasMunGrid() {
+  const grid = document.getElementById('metasMunGrid');
+  if (!grid) return;
+  grid.innerHTML = MUNICIPIOS.map(m=>`
+    <div class="form-group">
+      <label>${m}</label>
+      <input type="number" class="form-control" id="meta_${m.replace(/\s/g,'_')}" min="0"
+        placeholder="Ex: 500" value="${metas.municipios?.[m]||''}" />
+    </div>`).join('');
+  if (metas.total) document.getElementById('metaTotal').value = metas.total;
+  if (metas.desc)  document.getElementById('metaDesc').value  = metas.desc;
+}
+
+function handleSalvarMeta(e) {
+  e.preventDefault(); clearAlert('metaAlert');
+  const total = parseInt(document.getElementById('metaTotal').value)||0;
+  const desc  = document.getElementById('metaDesc').value;
+  metas = {...metas, total, desc};
+  localStorage.setItem('campanha_metas', JSON.stringify(metas));
+  showAlert('metaAlert','Meta salva com sucesso!','success');
+  loadDashboard();
+}
+
+function salvarMetasMun() {
+  const munMetas = {};
+  MUNICIPIOS.forEach(m => {
+    const v = parseInt(document.getElementById('meta_'+m.replace(/\s/g,'_'))?.value)||0;
+    if (v) munMetas[m] = v;
+  });
+  metas = {...metas, municipios: munMetas};
+  localStorage.setItem('campanha_metas', JSON.stringify(metas));
+  alert('Metas municipais salvas!');
+  loadDashboard();
+}
+
+// ── Relatórios ───────────────────────────────────────────────
+async function loadRelatoriosSummary() {
+  try {
+    const res  = await apiFetch('/dashboard/pessoas');
+    const data = await res.json();
+    const p    = data.pessoas||[];
+    const s    = calcStats(p);
+    document.getElementById('relTotal').textContent = p.length;
+    document.getElementById('relVotos').textContent = s.totalVotos;
+    document.getElementById('relLider').textContent = s.liderancas;
+    document.getElementById('relMeta').textContent  = metas.total||'—';
+  } catch {}
+}
+
+function baixarCSV() {
+  const role = userInfo?.role||'operador';
+  const mun  = role==='coordenador' ? userInfo?.municipio : (document.getElementById('filtroMun')?.value||'');
+  const st   = document.getElementById('filtroStatus')?.value||'';
+  _downloadCSV(mun,st);
+}
+function baixarCSVRel() {
+  _downloadCSV(document.getElementById('relMun')?.value||'', document.getElementById('relStatus')?.value||'');
+}
+function _downloadCSV(municipio, status) {
+  const params = new URLSearchParams();
+  if (municipio) params.append('municipio',municipio);
+  if (status)    params.append('status',status);
+  apiFetch('/dashboard/exportar-csv?'+params)
+    .then(r => r.status===401 ? (logout(),null) : r.blob())
+    .then(b => {
+      if (!b) return;
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(b); a.download='eleitores.csv';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    }).catch(()=>alert('Erro ao baixar.'));
+}
+
+// ── Reuniões ─────────────────────────────────────────────────
+function handleReuniao(e) {
+  e.preventDefault();
+  reunioes.push({
+    titulo: document.getElementById('rTitulo').value,
+    municipio: document.getElementById('rMun').value,
+    data: document.getElementById('rData').value,
+    hora: document.getElementById('rHora').value,
+  });
+  document.getElementById('reunioesBody').innerHTML = reunioes.map(r=>
+    `<tr><td>${r.data}</td><td>${r.hora}</td><td>${r.titulo}</td><td>${r.municipio}</td><td><span class="badge badge-yellow">Agendada</span></td></tr>`
+  ).join('');
+  e.target.reset();
+}
+
+// ── Config ───────────────────────────────────────────────────
+function loadConfigForm() {
+  if (!cfg) return;
+  document.getElementById('configCargo').value   = cfg.cargo||'';
+  document.getElementById('configNome').value    = cfg.nome||'';
+  document.getElementById('configNumero').value  = cfg.numero||'';
+  if (cfg.foto) {
+    document.getElementById('configPreviewImg').src = cfg.foto;
+    document.getElementById('configPreviewImg').style.display='block';
   }
+  updateConfigPreview();
+}
+document.getElementById('configFoto')?.addEventListener('change', e => {
+  if (!e.target.files[0]) return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    document.getElementById('configPreviewImg').src=ev.target.result;
+    document.getElementById('configPreviewImg').style.display='block';
+  };
+  r.readAsDataURL(e.target.files[0]);
+});
+function updateConfigPreview() {
+  const nome   = document.getElementById('configNome')?.value||'—';
+  const cargo  = document.getElementById('configCargo')?.value||'';
+  const numero = document.getElementById('configNumero')?.value||'';
+  document.getElementById('previewNome').textContent  = nome;
+  document.getElementById('previewCargo').textContent = cargo;
+  document.getElementById('previewNumero').textContent= numero;
+  document.getElementById('previewLogo').textContent  = nome.charAt(0).toUpperCase();
+}
+async function handleSaveConfig(e) {
+  e.preventDefault(); clearAlert('configAlert');
+  const cargo  = document.getElementById('configCargo').value;
+  const nome   = document.getElementById('configNome').value.trim();
+  const numero = document.getElementById('configNumero').value.trim();
+  if (!cargo||!nome) { showAlert('configAlert','Preencha os campos obrigatórios.'); return; }
+  const fi = document.getElementById('configFoto');
+  const save = foto => {
+    cfg = {cargo,nome,numero,foto};
+    localStorage.setItem('campaignConfig',JSON.stringify(cfg));
+    showAlert('configAlert','Configurações salvas!','success');
+    showApp();
+  };
+  if (fi.files[0]) { const r=new FileReader(); r.onload=ev=>save(ev.target.result); r.readAsDataURL(fi.files[0]); }
+  else save(cfg?.foto||null);
+}
+
+// ── Usuários ─────────────────────────────────────────────────
+function toggleMunField() {
+  const r = document.getElementById('novoRole').value==='coordenador';
+  document.getElementById('municipioField').style.display = r?'block':'none';
+  document.getElementById('novoMunicipio').required = r;
+}
+async function handleCriarUsuario(e) {
+  e.preventDefault(); clearAlert('userAlert');
+  const email     = document.getElementById('novoEmail').value.trim();
+  const senha     = document.getElementById('novaSenha').value;
+  const role      = document.getElementById('novoRole').value;
+  const municipio = document.getElementById('novoMunicipio').value;
+  if (role==='coordenador'&&!municipio) { showAlert('userAlert','Selecione o município.'); return; }
+  try {
+    const res  = await apiFetch('/auth/register',{method:'POST',body:JSON.stringify({email,senha,role,municipio})});
+    const data = await res.json();
+    if (res.ok) { showAlert('userAlert',`Usuário "${email}" criado!`,'success'); e.target.reset(); document.getElementById('municipioField').style.display='none'; loadUsuarios(); }
+    else showAlert('userAlert', data.error||'Erro.');
+  } catch { showAlert('userAlert','Erro de conexão.'); }
+}
+async function loadUsuarios() {
+  try {
+    const res  = await apiFetch('/auth/usuarios');
+    if (res.status===401) { logout(); return; }
+    const data = await res.json();
+    const tbody = document.getElementById('usuariosBody');
+    const myId = (()=>{ try{return JSON.parse(atob(token.split('.')[1])).id;}catch{return null;} })();
+    if (!data.usuarios?.length) { tbody.innerHTML='<tr><td colspan="5"><div class="empty-state"><div class="ei">👤</div><p>Nenhum usuário.</p></div></td></tr>'; return; }
+    const rb = r => r==='admin'?'<span class="badge badge-red">Admin</span>':r==='coordenador'?'<span class="badge badge-blue">Coordenador</span>':'<span class="badge badge-gray">Operador</span>';
+    tbody.innerHTML = data.usuarios.map(u=>`
+      <tr>
+        <td>${u.id}</td>
+        <td><strong>${u.email}</strong></td>
+        <td>${rb(u.role)}</td>
+        <td>${u.municipio||'<span style="color:var(--muted)">—</span>'}</td>
+        <td>${u.id===myId?'<span style="color:var(--muted);font-size:12px">você</span>':`<button class="btn btn-danger btn-sm" onclick="deletarUsuario(${u.id},'${u.email.replace(/'/g,"\\'")}')">Remover</button>`}</td>
+      </tr>`).join('');
+  } catch {}
+}
+async function deletarUsuario(id, email) {
+  if (!confirm(`Remover "${email}"?`)) return;
+  try {
+    const res = await apiFetch(`/auth/usuarios/${id}`,{method:'DELETE'});
+    if (res.ok) loadUsuarios();
+    else { const d=await res.json(); alert(d.error||'Erro.'); }
+  } catch { alert('Erro.'); }
+}
 </script>
 </body>
 </html>
